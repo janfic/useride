@@ -1,2 +1,2 @@
-# useride
-USER IDE: A Game to teach others how to code
+# USER IDE
+A Game to teach others how to code
