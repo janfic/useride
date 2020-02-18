@@ -44,8 +44,6 @@ public class FileLoadSystem extends EntitySystem {
             FileComponent fileComponent = new FileComponent();
             fileComponent.file = Gdx.files.local(loadRequest.fileName);
 
-            System.out.println("Loaded File: " + fileComponent.file);
-            
             entity.remove(FileLoadRequestComponent.class);
             entity.add(fileComponent);
         }
