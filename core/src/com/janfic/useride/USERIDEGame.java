@@ -1,12 +1,12 @@
 package com.janfic.useride;
 
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.janfic.useride.kernel.systems.BootSystem;
 
-public class USERIDEGame extends ApplicationAdapter {
+public class USERIDEGame extends Game {
     
     Engine engine;
     
@@ -25,6 +25,6 @@ public class USERIDEGame extends ApplicationAdapter {
     
     @Override
     public void dispose() {
-        
+        engine.removeAllEntities();
     }
 }
