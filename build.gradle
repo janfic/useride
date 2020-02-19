@@ -51,7 +51,7 @@ project(":desktop") {
 
 project(":core") {
     apply plugin: "java-library"
-
+    apply plugin: "groovy"
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -62,9 +62,11 @@ project(":core") {
         api "com.kotcrab.vis:vis-ui:1.3.0"
         api 'junit:junit:4.12'
         testImplementation 'junit:junit:4.12'
+        implementation 'org.codehaus.groovy:groovy-all:2.4.15'
     }
     
     test {
         useJUnit()
+        
     }
 }

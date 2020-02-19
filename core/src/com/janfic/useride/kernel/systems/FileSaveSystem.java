@@ -16,20 +16,19 @@ import com.janfic.useride.kernel.components.FileSaveRequestComponent;
  * order to save a file to the players os. This system handles entities that
  * have such components and saves the file to the system
  *
- *
  * @author janfic
  */
 public class FileSaveSystem extends EntitySystem {
 
     /**
-     * A Entity to Component Mapper that allows quick retrieval of FileSaveRequestComponent
-     * from entities. 
+     * A Entity to Component Mapper that allows quick retrieval of
+     * FileSaveRequestComponent from entities.
      */
     private final ComponentMapper<FileSaveRequestComponent> fileSaveRequestMapper;
-    
+
     /**
      * A Entity to Component Mapper that allows quick retrieval of FileComponent
-     * from entities. 
+     * from entities.
      */
     private final ComponentMapper<FileComponent> fileMapper;
 
@@ -60,7 +59,7 @@ public class FileSaveSystem extends EntitySystem {
             FileComponent fileComponent = fileMapper.get(entity);
 
             fileComponent.file.writeBytes(saveRequest.data, false);
-            
+
             entity.remove(FileSaveRequestComponent.class);
         }
     }
