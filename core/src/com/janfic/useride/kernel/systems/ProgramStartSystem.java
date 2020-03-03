@@ -72,7 +72,7 @@ public class ProgramStartSystem extends EntitySystem {
             try {
                 for (FileHandle component : components.list(".groovy")) {
                     Class c = classLoaderComponent.classLoader.loadClass(
-                            rootProgramDirectory.name() + ".components." + component.nameWithoutExtension());
+                            "components." + component.nameWithoutExtension());
                     System.out.println(c);
                 }
 
