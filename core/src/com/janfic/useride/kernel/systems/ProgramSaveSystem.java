@@ -62,12 +62,17 @@ public class ProgramSaveSystem extends EntitySystem {
     private void save(Engine engine, FileHandle file) {
         for (int i = 0; i < engine.getEntities().size(); i++) {
             Entity entity = engine.getEntities().get(i);
-            FileHandle entityFolder = file.child("entity" + i);
+            FileHandle entityFolder = file.child("entities").child("entity" + i);
             for (int j = 0; j < entity.getComponents().size(); j++) {
                 Component component = entity.getComponents().get(j);
                 FileHandle componentFile = entityFolder.child(component.getClass().getName() + ".json");
                 componentFile.writeString(json.toJson(component, component.getClass()), false);
             }
+        }
+        FileHandle systemsFolder = file.child("systems");
+        for (EntitySystem system : engine.getSystems()) {
+            FileHandle systemSaveFile = systemsFolder.child(system.getClass().getName() + ".json");
+            systemSaveFile.writeString(json.toJson(system), false);
         }
     }
 

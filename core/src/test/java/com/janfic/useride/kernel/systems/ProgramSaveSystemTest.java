@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package test.java.com.janfic.useride.kernel.systems;
 
 import com.badlogic.ashley.core.Engine;
@@ -71,7 +66,7 @@ public class ProgramSaveSystemTest {
     }
 
     /**
-     * Test of addedToEngine method, of class ProgramSaveSystem.
+     * Test of update method, of class ProgramSaveSystem.
      */
     @Test
     public void testUpdate() {
@@ -79,5 +74,7 @@ public class ProgramSaveSystemTest {
         engine.addSystem(instance);
         engine.update(0);
 
+        assert (saveEntity.getComponent(ProgramSaveRequestComponent.class) == null);
+        assert (saveEntity.getComponent(FileComponent.class).file.exists());
     }
 }

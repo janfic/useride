@@ -55,7 +55,7 @@ public class ProgramLoadSystem extends EntitySystem {
 
                 if (request.id == idComponent.id) {
                     try {
-                        load(fileComponent.file, engineComponent.engine, loaderComponent.classLoader);
+                        load(fileComponent.file, engineComponent.engine = new Engine(), loaderComponent.classLoader);
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -66,9 +66,11 @@ public class ProgramLoadSystem extends EntitySystem {
     }
 
     private void load(FileHandle saveRoot, Engine engine, GroovyClassLoader loader) throws ClassNotFoundException {
-        engine.removeAllEntities();
 
-        for (FileHandle entityFile : saveRoot.list()) {
+        FileHandle entitiesFolder = saveRoot.child("entities");
+        FileHandle systemsFolder = saveRoot.child("systems");
+
+        for (FileHandle entityFile : entitiesFolder.list()) {
             Entity entity = new Entity();
             for (FileHandle componentFile : entityFile.list(".json")) {
                 Class componentClass = loader.loadClass(componentFile.nameWithoutExtension());
@@ -76,6 +78,15 @@ public class ProgramLoadSystem extends EntitySystem {
                 entity.add(c);
             }
             engine.addEntity(entity);
+        }
+        for (FileHandle system : systemsFolder.list(".json")) {
+            try {
+                Class systemClass = loader.loadClass(system.nameWithoutExtension());
+                EntitySystem s = (EntitySystem) json.fromJson(systemClass, system);
+                engine.addSystem(s);
+            } catch (Exception e) {
+
+            }
         }
     }
 

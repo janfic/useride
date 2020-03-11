@@ -59,7 +59,7 @@ public class ProgramStartSystem extends EntitySystem {
             ClassLoaderComponent classLoaderComponent = new ClassLoaderComponent();
             classLoaderComponent.classLoader = new GroovyClassLoader();
 
-            classLoaderComponent.classLoader.addClasspath(rootProgramDirectory.path());
+            classLoaderComponent.classLoader.addClasspath(rootProgramDirectory.parent().path());
 
             IDComponent idComponent = new IDComponent();
             idComponent.id = idCount++;
@@ -72,18 +72,16 @@ public class ProgramStartSystem extends EntitySystem {
             try {
                 for (FileHandle component : components.list(".groovy")) {
                     Class c = classLoaderComponent.classLoader.loadClass(
-                            "components." + component.nameWithoutExtension());
-                    System.out.println(c);
+                            rootProgramDirectory.nameWithoutExtension() + ".components." + component.nameWithoutExtension());
                 }
 
                 for (FileHandle system : systems.list(".groovy")) {
                     Class c = classLoaderComponent.classLoader.loadClass(
-                            "systems." + system.nameWithoutExtension());
+                            rootProgramDirectory.nameWithoutExtension() + ".systems." + system.nameWithoutExtension());
                     if (system.nameWithoutExtension().equals("BootSystem")) {
                         EntitySystem bootSystem = (EntitySystem) c.newInstance();
                         engineComponent.engine.addSystem(bootSystem);
                     }
-                    System.out.println(c);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

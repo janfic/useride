@@ -8,6 +8,7 @@ public class BootSystem extends EntitySystem {
     @Override
     public void addedToEngine(Engine engine) {
         System.out.println("- BOOT SYSTEM: Added to Engine");
+        engine.removeSystem(this);
     }
 
     @Override

@@ -52,6 +52,10 @@ public class ProgramLoadSystemTest {
 
     @AfterClass
     public static void tearDownClass() {
+        engine.removeAllEntities();
+        engine = null;
+        programEntity = null;
+        loadRequestEntity = null;
     }
 
     /**
@@ -67,7 +71,10 @@ public class ProgramLoadSystemTest {
 
         engine.update(0);
 
-        System.out.println(programEntity.getComponent(EngineComponent.class).engine.getEntities());
+        assert (loadRequestEntity.getComponent(ProgramLoadRequestComponent.class) == null);
+        System.out.println(programEntity.getComponent(EngineComponent.class).engine.getEntities().size());
+        assert (programEntity.getComponent(EngineComponent.class).engine.getEntities().size() == 1);
+
         for (Entity entity : programEntity.getComponent(EngineComponent.class).engine.getEntities()) {
             System.out.println(entity.getComponents());
         }

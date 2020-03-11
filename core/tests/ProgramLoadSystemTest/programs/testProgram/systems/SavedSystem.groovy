@@ -1,14 +1,13 @@
 package systems;
 
 import com.badlogic.ashley.core.*;
+import components.*;
 
-public class BootSystem extends EntitySystem {
+public class SavedSystem extends EntitySystem {
 
     @Override
     public void addedToEngine(Engine engine) {
-        System.out.println("- BOOT SYSTEM: Added to Engine");
-        System.out.println("- Adding other systems: TestSystem");
-        engine.addSystem(new TestSystem());
+        System.out.println("- Saved System: Added to Engine");
     }
 
     @Override
