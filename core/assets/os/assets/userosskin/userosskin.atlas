@@ -1,0 +1,29 @@
+
+userosskin.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Lucida Sans Regular
+  rotate: false
+  xy: 1, 397
+  size: 502, 46
+  orig: 502, 46
+  offset: 0, 0
+  index: -1
+Lucida Sans Regular 16px
+  rotate: false
+  xy: 1, 445
+  size: 506, 60
+  orig: 506, 60
+  offset: 0, 0
+  index: -1
+window
+  rotate: false
+  xy: 1, 333
+  size: 62, 62
+  split: 6, 6, 23, 1
+  pad: 1, 1, 23, 1
+  orig: 62, 62
+  offset: 0, 0
+  index: -1

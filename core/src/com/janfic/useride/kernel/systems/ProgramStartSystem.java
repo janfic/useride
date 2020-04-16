@@ -60,7 +60,7 @@ public class ProgramStartSystem extends EntitySystem {
             classLoaderComponent.classLoader = new GroovyClassLoader();
 
             classLoaderComponent.classLoader.addClasspath(rootProgramDirectory.parent().path());
-
+            
             IDComponent idComponent = new IDComponent();
             idComponent.id = idCount++;
 

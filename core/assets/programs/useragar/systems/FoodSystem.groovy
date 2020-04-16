@@ -31,11 +31,11 @@ public class FoodSystem extends EntitySystem {
             circle.radius = 10;
         
             MassComponent mass = new MassComponent();
-            mass.mass = 50;
+            mass.mass = 200;
         
             ColorComponent color = new ColorComponent();
             color.r = 128;
-            color.g = 255;
+            color.g = 0;
             color.b = 255;
             
             food.add(color);
