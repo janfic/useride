@@ -29,10 +29,10 @@ public class BootSystem extends EntitySystem {
         FollowMouseComponent follow = new FollowMouseComponent();
         
         CircleComponent circle = new CircleComponent();
-        circle.radius = 20;
+        circle.radius = 20
         
         MassComponent mass = new MassComponent();
-        mass.mass = 100;
+        mass.mass = 300;
         
         ColorComponent color = new ColorComponent();
         color.r = 255;

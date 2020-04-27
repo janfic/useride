@@ -26,16 +26,16 @@ public class BootSystem extends EntitySystem {
         Entity entity = new Entity();
 
         FileLoadRequestComponent loadRequest = new FileLoadRequestComponent();
-        loadRequest.fileName = "programs/useragar";
+        loadRequest.fileName = "os";
 
         ProgramStartRequestComponent startRequest = new ProgramStartRequestComponent();
-        startRequest.name = "User Agar";
+        startRequest.name = "OS";
 
         entity.add(loadRequest);
         entity.add(startRequest);
 
         engine.addEntity(entity);
-
+        
         engine.removeSystem(this);
     }
 }
