@@ -1,6 +1,6 @@
 package os.systems;
 
-import os.components;
+import os.components.*;
 import com.badlogic.gdx.assets.*;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;

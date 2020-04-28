@@ -2,6 +2,6 @@ package os.components;
 
 import com.badlogic.ashley.core.*;
 
-public class LoadAllAssetsComponent implements Component {
+public class LoadAssetsComponent implements Component {
 	float progress;
 }

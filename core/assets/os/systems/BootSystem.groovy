@@ -18,10 +18,6 @@ import os.systems.*;
 public class BootSystem extends EntitySystem {	
 	public void addedToEngine(Engine engine) {
 		
-		engine.addSystem(new RenderSystem());
-		engine.addSystem(new CommandsSystem());
-		engine.addSystem(new ClickEventSystem());
-		
 		Entity testEntity = new Entity();
 		
 		TextureComponent texture = new TextureComponent();
@@ -49,45 +45,16 @@ public class BootSystem extends EntitySystem {
 		SpriteBatchComponent sbComponent = new SpriteBatchComponent();
 		sbComponent.batch = new SpriteBatch();
 
-		
-
 		renderEntity.add(viewportComponent);
 		renderEntity.add(sbComponent);
 		
 		engine.addEntity(renderEntity);
 		
-		Entity secondEntity = new Entity();
-		
-		PositionComponent position2 = new PositionComponent();
-		position2.x = 400;
-		position2.y = 150;
-		position2.z = 1;
-		
-		
-		TextureComponent texture2 = new TextureComponent();
-		texture2.texture = new Texture("os/assets/badlogic.jpg");
-		
-		CommandsComponent command = new CommandsComponent();
-		command.family = Family.all(PositionComponent.class, TextureComponent.class, OnMousePressedEventComponent.class).get();
-		command.entity = renderEntity;
-		command.add = new ArrayList<Component>();
-		ColorComponent color = new ColorComponent();
-		color.color = Color.GREEN;
-		command.add.add(color);
-		
-		SizeComponent size = new SizeComponent();
-		size.width = texture2.texture.getWidth();
-		size.height = texture2.texture.getHeight();
-		
-		secondEntity.add(position2);
-		secondEntity.add(texture2);
-		secondEntity.add(size);
-		secondEntity.add(command);
-		testEntity.add(command);
-		
-		engine.addEntity(secondEntity);
-		
-		
+
+		engine.addSystem(new RenderSystem());
+		engine.addSystem(new MouseClickSystem());
+		engine.addSystem(new MouseHoverSystem());
+		engine.addSystem(new TableSystem());
 		engine.removeSystem(this);
 	}
 }

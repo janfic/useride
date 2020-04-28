@@ -38,7 +38,7 @@ public class TableSystem extends EntitySystem {
 			Family.all(
 				PositionComponent.class,
 				TableComponent.class,
-				TablePositionComponent.class
+				TablePositionComponent.class,
 				SizeComponent.class
 			).get()
 		);

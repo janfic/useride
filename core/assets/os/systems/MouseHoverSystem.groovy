@@ -1,14 +1,16 @@
 package os.systems;
 
-import os.components;
+import os.components.*;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2s.*;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.utils.viewport.*;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
+import com.badlogic.ashley.systems.*;
 
-public class MouseHoverSystem extends EntitySystem {
+public class MouseHoverSystem extends SortedIteratingSystem {
 	
 	private final ComponentMapper<HoverableComponent> hoverableMapper;
 	private final ComponentMapper<HitBoxComponent> hitboxMapper;
@@ -28,13 +30,6 @@ public class MouseHoverSystem extends EntitySystem {
 	}
 	
 	public void addedToEngine(Engine engine) {
-		this.entities = engine.getEntitiesFor(
-			Family.all(
-				PositionComponent.class,
-				HitBoxComponent.class,
-				HoverableComponent.class
-			).get()
-		);
 		this.oldEvents = engine.getEntitiesFor(
 			Family.all(MouseHoverEventComponent.class).get()
 		);
@@ -58,7 +53,7 @@ public class MouseHoverSystem extends EntitySystem {
 	}
 
 	
-	public void processEntity(Entity entity) {
+	public void processEntity(Entity entity, float delta) {
 		PositionComponent position = positionMapper.get(entity);
 		HitBoxComponent hitBox = hitboxMapper.get(entity);
 
