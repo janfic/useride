@@ -40,7 +40,9 @@ public class BootSystem extends EntitySystem {
 		assetManagerEntity.add(loadAssetsComponent);
 
 		ViewportComponent viewportComponent = new ViewportComponent();
-		viewportComponent.viewport = new StretchViewport(800, 800);
+		viewportComponent.viewport = new ScreenViewport();
+		viewportComponent.viewport.setWorldWidth(1920);
+		viewportComponent.viewport.setWorldHeight(1080);
 		assetManagerEntity.add(viewportComponent);
 		
 		SpriteBatchComponent sbComponent = new SpriteBatchComponent();
@@ -96,7 +98,7 @@ public class BootSystem extends EntitySystem {
 		topbarTableSize.cellWidth = tableSize.cellHeight;
 		topbarTableSize.cellHeight = tableSize.cellHeight;
 
-		ColorComponent topbarColor = new ColorComponent(color: Color.BLUE);
+		ColorComponent topbarColor = new ColorComponent(color: Color.LIGHT_GRAY);
 
 		topbar.add(size);
 		topbar.add(topbarColor);
@@ -114,7 +116,7 @@ public class BootSystem extends EntitySystem {
 		TableComponent menuTableComponent = new TableComponent(table: topbar);
 		SizeComponent menuButtonSizeComponent = new SizeComponent(width: 52, height: 52);
 		GetTextureRegionComponent getMenuIcon = new GetTextureRegionComponent(name: 'menu');
-		ColorComponent menuButtonColor = new ColorComponent(color: Color.BLUE);
+		ColorComponent menuButtonColor = new ColorComponent(color: Color.GRAY);
 
 		menuButton.add(menuPosition);
 		menuButton.add(menuTableComponent);
@@ -123,9 +125,32 @@ public class BootSystem extends EntitySystem {
 		menuButton.add(getMenuIcon);
 		menuButton.add(menuButtonColor);
 
+		Entity textEntity = new Entity();
+
+		PositionComponent textPosition = new PositionComponent(x: 100, y: 200, z:6);
+		RegisterBitmapFontAssetComponent registerFont = new RegisterBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt");
+		GetBitmapFontAssetComponent getFont = new GetBitmapFontAssetComponent(fileName: registerFont.fileName);
+		TextComponent textComponent = new TextComponent(text: "Hello World!");
+		ColorComponent textColor = new ColorComponent(color: Color.GRAY);
+		TablePositionComponent textTablePositionComponent = new TablePositionComponent(x: 32, y: 0.5);
+		TableComponent textTableComponent = new TableComponent(table: topbar);
+		TableSpanComponent textTableSpanComponent = new TableSpanComponent(height:1, width:3);
+		SizeComponent textSizeComponent = new SizeComponent();
+
+		textEntity.add(textPosition);
+		textEntity.add(registerFont);
+		textEntity.add(getFont);
+		textEntity.add(textColor);
+		textEntity.add(textTablePositionComponent);
+		textEntity.add(textTableComponent);
+		textEntity.add(textComponent);
+		textEntity.add(textSizeComponent);
+		textEntity.add(textTableSpanComponent);
+
 		engine.addEntity(topbar);
 		engine.addEntity(menuButton);
 		engine.addEntity(table);
+		engine.addEntity(textEntity);
 		
 		engine.addSystem(new RenderSystem());
 		engine.addSystem(new TableSystem());
@@ -133,6 +158,7 @@ public class BootSystem extends EntitySystem {
 		engine.addSystem(new AssetGetSystem());
 		engine.addSystem(new AssetRegisterSystem());
 		engine.addSystem(new TextureAtlasGetSystem());
+		engine.addSystem(new TextToTimeSystem());
 
 		engine.removeSystem(this);
 	}

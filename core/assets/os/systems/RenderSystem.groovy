@@ -8,6 +8,8 @@ import com.badlogic.ashley.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.utils.viewport.*;
+import com.badlogic.gdx.utils.*;
+
 
 import com.janfic.useride.kernel.components.*;
 
@@ -21,6 +23,8 @@ public class RenderSystem extends SortedIteratingSystem {
 	private final ComponentMapper<TextureRegionComponent> regionMapper;
 	private final ComponentMapper<NinePatchComponent> ninePatchMapper;
 	private final ComponentMapper<RotationComponent> rotationMapper;
+	private final ComponentMapper<BitmapFontComponent> fontMapper;
+	private final ComponentMapper<TextComponent> textMapper;
 	
 	private final ComponentMapper<EngineComponent> engineMapper;
 	
@@ -35,7 +39,8 @@ public class RenderSystem extends SortedIteratingSystem {
 				TextureComponent.class, 
 				NinePatchComponent.class, 
 				EngineComponent.class, 
-				TextureRegionComponent.class
+				TextureRegionComponent.class,
+				TextComponent.class
 			).get(), 
 			new ZComparator()
 		);
@@ -48,6 +53,8 @@ public class RenderSystem extends SortedIteratingSystem {
 		this.rotationMapper = ComponentMapper.getFor(RotationComponent.class);
 		this.engineMapper = ComponentMapper.getFor(EngineComponent.class);
 		this.regionMapper = ComponentMapper.getFor(TextureRegionComponent.class);
+		this.textMapper = ComponentMapper.getFor(TextComponent.class);
+		this.fontMapper = ComponentMapper.getFor(BitmapFontComponent.class);
 	}
 	
 	public void addedToEngine(Engine engine) {
@@ -82,15 +89,18 @@ public class RenderSystem extends SortedIteratingSystem {
 		TextureComponent texture = textureMapper.get(entity);
 		NinePatchComponent ninePatch = ninePatchMapper.get(entity);
 		EngineComponent engineComponent = engineMapper.get(entity);
+		TextComponent textComponent = textMapper.get(entity);
+		BitmapFontComponent fontComponent = fontMapper.get(entity);
 		
 		SizeComponent size = sizeMapper.get(entity);
 		ScaleComponent scale = scaleMapper.get(entity);
 		RotationComponent rot = rotationMapper.get(entity);
 		ColorComponent color = colorMapper.get(entity);
 		
-		
-		float width = size == null ? texture.texture.getWidth() : size.width;
-		float height = size == null ? texture.texture.getHeight() : size.height;
+		float width = 0, height = 0;
+		if(texture != null ) { width = texture.texture.getWidth(); height = texture.texture.getHeight(); } 
+		if(region != null ) { width = region.textureRegion.getRegionWidth(); height =  region.textureRegion.getRegionHeight(); } 
+		if(size != null ) { width = size.width; height = size.height; } 
 		float scaleX = scale == null ? 1f : scale.scaleX;
 		float scaleY = scale == null ? 1f : scale.scaleY;
 		float rotation = rot == null ? 0f : rot.rotation;
@@ -115,6 +125,14 @@ public class RenderSystem extends SortedIteratingSystem {
 		}
 		if(region != null) {
 			batch.draw(region.textureRegion, position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation);
+		}
+		if(textComponent != null && fontComponent != null) {
+			if(color != null) fontComponent.font.setColor(color.color);
+			if(size != null)
+				fontComponent.font.draw( batch, textComponent.text, position.x , (float) (position.y + fontComponent.font.getCapHeight() / 2), width, Align.center, true);
+			else
+				fontComponent.font.draw( batch, textComponent.text, position.x, (float) (position.y + fontComponent.font.getCapHeight() / 2));
+			if(color != null) fontComponent.font.setColor(Color.WHITE); 
 		}
 		batch.setColor(Color.WHITE);
 	}

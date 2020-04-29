@@ -77,6 +77,7 @@ public class AssetGetSystem extends EntitySystem {
 			if(getFont != null && assetManager.manager.isLoaded(getFont.fileName, BitmapFont.class)) {
 				BitmapFontComponent fontComponent = new BitmapFontComponent();
 				fontComponent.font = assetManager.manager.get(getFont.fileName, BitmapFont.class);
+				fontComponent.font.setUseIntegerPositions(true);
 				if(fontComponent.font != null) {
 					entity.add(fontComponent);
 					entity.remove(GetBitmapFontAssetComponent.class);
