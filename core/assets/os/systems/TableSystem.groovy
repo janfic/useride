@@ -56,8 +56,8 @@ public class TableSystem extends EntitySystem {
 				PositionComponent tableEntityPosition = positionMapper.get(tableComponent.table);
 				if(tableEntityPosition == null) continue; 
 
-				position.x = tableEntityPosition.x + tableSize.width * tablePosition.x;
-				position.y = tableEntityPosition.y + tableSize.height * tablePosition.y;
+				position.x = tableEntityPosition.x + tableSize.cellWidth * tablePosition.x;
+				position.y = tableEntityPosition.y + tableSize.cellHeight * tablePosition.y;
 
 				size.width = tableSize.cellWidth;
 				size.height = tableSize.cellHeight;

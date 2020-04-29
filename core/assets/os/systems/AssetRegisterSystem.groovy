@@ -13,7 +13,6 @@ public class AssetRegisterSystem extends EntitySystem {
 	private final ComponentMapper<RegisterTextureAssetComponent> registerTextureMapper;
 	private final ComponentMapper<RegisterTextureAtlasAssetComponent> registerAtlasMapper;
 	private final ComponentMapper<RegisterSoundAssetComponent> registerSoundMapper;
-	private final ComponentMapper<RegisterNinePatchAssetComponent> registerNinePatchMapper;
 	private final ComponentMapper<RegisterBitmapFontAssetComponent> registerFontMapper;
 
 	private final ComponentMapper<AssetManagerComponent> assetManagerMapper;
@@ -24,7 +23,6 @@ public class AssetRegisterSystem extends EntitySystem {
 		this.registerTextureMapper = ComponentMapper.getFor(RegisterTextureAssetComponent.class);
 		this.registerAtlasMapper = ComponentMapper.getFor(RegisterTextureAtlasAssetComponent.class);
 		this.registerSoundMapper = ComponentMapper.getFor(RegisterSoundAssetComponent.class);
-		this.registerNinePatchMapper = ComponentMapper.getFor(RegisterNinePatchAssetComponent.class);
 		this.registerFontMapper = ComponentMapper.getFor(RegisterBitmapFontAssetComponent.class);
 		this.assetManagerMapper = ComponentMapper.getFor(AssetManagerComponent.class);
 	}
@@ -35,7 +33,6 @@ public class AssetRegisterSystem extends EntitySystem {
 				RegisterTextureAssetComponent.class,
 				RegisterTextureAtlasAssetComponent.class,
 				RegisterSoundAssetComponent.class,
-				RegisterNinePatchAssetComponent.class,
 				RegisterBitmapFontAssetComponent.class
 			).get()
 		);
@@ -52,7 +49,6 @@ public class AssetRegisterSystem extends EntitySystem {
 			RegisterTextureAssetComponent registerTexture = registerTextureMapper.get(entity);
 			RegisterTextureAtlasAssetComponent registerTextureAtlas = registerAtlasMapper.get(entity);
 			RegisterSoundAssetComponent registerSound = registerSoundMapper.get(entity);
-			RegisterNinePatchAssetComponent registerNinePatch = registerNinePatchMapper.get(entity);
 			RegisterBitmapFontAssetComponent registerFont = registerFontMapper.get(entity);
 
 			if(registerTexture != null ) {
@@ -66,10 +62,6 @@ public class AssetRegisterSystem extends EntitySystem {
 			if(registerSound != null ) {
 				assetManager.manager.load(registerSound.fileName, Sound.class);
 				entity.remove(RegisterSoundAssetComponent.class);
-			}
-			if(registerNinePatch != null ) {
-				assetManager.manager.load(registerNinePatch.fileName, NinePatch.class);
-				entity.remove(RegisterNinePatchAssetComponent.class);
 			}
 			if(registerFont != null ) {
 				assetManager.manager.load(registerFont.fileName, BitmapFont.class);

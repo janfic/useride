@@ -28,73 +28,81 @@ public class BootSystem extends EntitySystem {
 		registerTexture.fileName = "os/assets/badlogic.jpg";
 		assetManagerEntity.add(registerTexture);
 
+		RegisterTextureAtlasAssetComponent registerAtlas = new RegisterTextureAtlasAssetComponent();
+		registerAtlas.fileName = "os/assets/userosgui/userosgui.atlas";
+		assetManagerEntity.add(registerAtlas);
+
+		GetTextureAtlasAssetComponent getAtlas = new GetTextureAtlasAssetComponent();
+		getAtlas.fileName = registerAtlas.fileName;
+		assetManagerEntity.add(getAtlas);
+
 		LoadAssetsComponent loadAssetsComponent = new LoadAssetsComponent();
 		assetManagerEntity.add(loadAssetsComponent);
+
+		ViewportComponent viewportComponent = new ViewportComponent();
+		viewportComponent.viewport = new ScreenViewport();
+		assetManagerEntity.add(viewportComponent);
+		
+		SpriteBatchComponent sbComponent = new SpriteBatchComponent();
+		sbComponent.batch = new SpriteBatch();
+		assetManagerEntity.add(sbComponent);
+
 		engine.addEntity(assetManagerEntity);
 
 		Entity table = new Entity();
 		
 		PositionComponent tablePosition = new PositionComponent();
-		tablePosition.x = 100
-		tablePosition.y = 100;
-		tablePosition.z = 100;
+		tablePosition.x = 0
+		tablePosition.y = 0;
+		tablePosition.z = 0;
+
+		System.out.println(Gdx.graphics.getHeight() / 20);
 
 		TableSizeComponent tableSize = new TableSizeComponent();
-		tableSize.cellWidth = 100;
-		tableSize.cellHeight = 100;
-		tableSize.width = 10;
-		tableSize.height = 10;
+		tableSize.cellWidth = Gdx.graphics.getWidth() / 20;
+		tableSize.cellHeight = Gdx.graphics.getHeight() / 20;
+		tableSize.width = 20;
+		tableSize.height = 20;
 
 		table.add(tablePosition);
 		table.add(tableSize);
 
-		Entity testEntity = new Entity();
-		
-		TableComponent tableComponnet = new TableComponent();
-		tableComponnet.table = table;
+		Entity topbar = new Entity();
 
-		TablePositionComponent tablePos = new TablePositionComponent();
-		tablePos.x = 2;
-		tablePos.y = 2;
+		GetNinePatchComponent getNinePatch = new GetNinePatchComponent()
+		getNinePatch.name = "box";
 
-		GetTextureAssetComponent getTexture = new GetTextureAssetComponent();
-		getTexture.fileName = "os/assets/badlogic.jpg";
-		
-		PositionComponent position = new PositionComponent();
-		position.x = 300;
-		position.y = 100;
-		position.z = 2;
-		
-		SizeComponent size1 = new SizeComponent();
-		
-		testEntity.add(getTexture);
-		testEntity.add(position);
-		testEntity.add(size1);
-		testEntity.add(tablePos);
-		testEntity.add(tableComponnet);
-		
-		engine.addEntity(testEntity);
+		PositionComponent topbarPosition = new PositionComponent();
+		topbarPosition.x = 0;
+		topbarPosition.y = 0;
+
+		SizeComponent size = new SizeComponent();
+		size.width = 100;
+		size.height = 200;
+
+		TableComponent tableComponent = new TableComponent();
+		tableComponent.table = table;
+
+		TablePositionComponent tablePositionComponent = new TablePositionComponent();
+		tablePositionComponent.x = 0;
+		tablePositionComponent.y = 19;
+
+		topbar.add(size);
+		topbar.add(tableComponent);
+		topbar.add(tablePositionComponent);
+		topbar.add(topbarPosition);
+		topbar.add(getNinePatch);
+
+
+		engine.addEntity(topbar);
 		engine.addEntity(table);
 		
-		Entity renderEntity = new Entity();
-		ViewportComponent viewportComponent = new ViewportComponent();
-		viewportComponent.viewport = new ScreenViewport();
-		
-		SpriteBatchComponent sbComponent = new SpriteBatchComponent();
-		sbComponent.batch = new SpriteBatch();
-
-		renderEntity.add(viewportComponent);
-		renderEntity.add(sbComponent);
-		
-		engine.addEntity(renderEntity);
-		
-
 		engine.addSystem(new RenderSystem());
 		engine.addSystem(new TableSystem());
 		engine.addSystem(new AssetLoadSystem());
 		engine.addSystem(new AssetGetSystem());
 		engine.addSystem(new AssetRegisterSystem());
-		engine.addSystem(new TableSystem());
+		engine.addSystem(new TextureAtlasGetSystem());
 
 		engine.removeSystem(this);
 	}

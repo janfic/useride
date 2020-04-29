@@ -58,7 +58,6 @@ public class RenderSystem extends SortedIteratingSystem {
 		this.batch = renderEntities.first().getComponent(SpriteBatchComponent.class).batch;
 		this.viewport = renderEntities.first().getComponent(ViewportComponent.class).viewport;
 		
-		
 		viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		viewport.apply();
 		
@@ -98,7 +97,7 @@ public class RenderSystem extends SortedIteratingSystem {
 			batch.draw(texture.texture, position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation, 0, 0, (int) texture.texture.getWidth(), (int) texture.texture.getHeight(), false, false);
 		}
 		else if( ninePatch != null) {
-			ninePatch.draw(batch, position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation); 
+			ninePatch.ninePatch.draw(batch, position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation); 
 		}
 		else if(engineComponent != null) {
 			RenderSystem renderSystem = engineComponent.engine.getSystem(RenderSystem.class);

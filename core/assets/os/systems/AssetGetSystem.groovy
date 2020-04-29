@@ -6,14 +6,13 @@ import com.badlogic.ashley.utils.*;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.*;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.gdx.*;
+import com.badlogic.gdx.graphics.g2d.*;
 
 public class AssetGetSystem extends EntitySystem {
 	
 	private final ComponentMapper<GetTextureAssetComponent> getTextureMapper;
 	private final ComponentMapper<GetTextureAtlasAssetComponent> getAtlasMapper;
 	private final ComponentMapper<GetSoundAssetComponent> getSoundMapper;
-	private final ComponentMapper<GetNinePatchAssetComponent> getNinePatchMapper;
 	private final ComponentMapper<GetBitmapFontAssetComponent> getFontMapper;
 
 	private final ComponentMapper<AssetManagerComponent> assetManagerMapper;
@@ -24,7 +23,6 @@ public class AssetGetSystem extends EntitySystem {
 		this.getTextureMapper = ComponentMapper.getFor(GetTextureAssetComponent.class);
 		this.getAtlasMapper = ComponentMapper.getFor(GetTextureAtlasAssetComponent.class);
 		this.getSoundMapper = ComponentMapper.getFor(GetSoundAssetComponent.class);
-		this.getNinePatchMapper = ComponentMapper.getFor(GetNinePatchAssetComponent.class);
 		this.getFontMapper = ComponentMapper.getFor(GetBitmapFontAssetComponent.class);
 		this.assetManagerMapper = ComponentMapper.getFor(AssetManagerComponent.class);
 	}
@@ -35,7 +33,6 @@ public class AssetGetSystem extends EntitySystem {
 				GetTextureAssetComponent.class,
 				GetTextureAtlasAssetComponent.class,
 				GetSoundAssetComponent.class,
-				GetNinePatchAssetComponent.class,
 				GetBitmapFontAssetComponent.class
 			).get()
 		);
@@ -47,18 +44,14 @@ public class AssetGetSystem extends EntitySystem {
 	public void update(float delta) {
 		if(assetManagerEntities.size() < 1) return;
 		AssetManagerComponent assetManager = assetManagerMapper.get(assetManagerEntities.first());
-
 		for(Entity entity : entities) {
 			GetTextureAssetComponent getTexture = getTextureMapper.get(entity);
 			GetTextureAtlasAssetComponent getAtlas = getAtlasMapper.get(entity);
 			GetSoundAssetComponent  getSound = getSoundMapper.get(entity);
-			GetNinePatchAssetComponent getNinePatch = getNinePatchMapper.get(entity);
 			GetBitmapFontAssetComponent getFont = getFontMapper.get(entity);
-			System.out.println(assetManager.manager.getLoadedAssets());
 			if(getTexture != null && assetManager.manager.isLoaded(getTexture.fileName, Texture.class)) {
 				TextureComponent textureComponent = new TextureComponent();
 				textureComponent.texture = assetManager.manager.get(getTexture.fileName, Texture.class);
-				System.out.println(textureComponent.texture);
 				if(textureComponent.texture != null) {
 					entity.add(textureComponent);
 					entity.remove(GetTextureAssetComponent.class);
@@ -68,6 +61,7 @@ public class AssetGetSystem extends EntitySystem {
 				TextureAtlasComponent textureAtlasComponent = new TextureAtlasComponent();
 				textureAtlasComponent.atlas = assetManager.manager.get(getAtlas.fileName, TextureAtlas.class);
 				if(textureAtlasComponent.atlas != null) {
+				System.out.println("Success Getting Atlas");
 					entity.add(textureAtlasComponent);
 					entity.remove(GetTextureAtlasAssetComponent.class);
 				}
@@ -78,14 +72,6 @@ public class AssetGetSystem extends EntitySystem {
 				if(soundComponent.sound != null) {
 					entity.add(soundComponent);
 					entity.remove(GetSoundAssetComponent.class);
-				}
-			}
-			if(getNinePatch != null && assetManager.manager.isLoaded(getNinePatch.fileName, NinePatch.class)) {
-				NinePatchComponent ninePatchComponent = new NinePatchComponent();
-				ninePatchComponent.ninePatch = assetManager.manager.get(getNinePatch.fileName, NinePatch.class);
-				if(ninePatchComponent.ninePatch != null) {
-					entity.add(ninePatchComponent);
-					entity.remove(GetNinePatchAssetComponent.class);
 				}
 			}
 			if(getFont != null && assetManager.manager.isLoaded(getFont.fileName, BitmapFont.class)) {
