@@ -87,12 +87,21 @@ public class BootSystem extends EntitySystem {
 		tablePositionComponent.x = 0;
 		tablePositionComponent.y = 19;
 
+		TableSpanComponent tableSpan = new TableSpanComponent();
+		tableSpan.height = 1;
+		tableSpan.width = 20;
+
+		TableSizeComponent topbarTableSize = new TableSizeComponent();
+		topbarTableSize.cellWidth = 54;
+		topbarTableSize.cellHeight = 54;
+
 		topbar.add(size);
 		topbar.add(tableComponent);
 		topbar.add(tablePositionComponent);
+		topbar.add(tableSpan);
 		topbar.add(topbarPosition);
 		topbar.add(getNinePatch);
-
+		topbar.add(topbarTableSize);
 
 		engine.addEntity(topbar);
 		engine.addEntity(table);

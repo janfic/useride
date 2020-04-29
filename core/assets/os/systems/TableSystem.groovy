@@ -49,6 +49,7 @@ public class TableSystem extends EntitySystem {
 			PositionComponent position = positionMapper.get(entity);
 			TableComponent tableComponent = tableMapper.get(entity);
 			TablePositionComponent tablePosition = tablePositionMapper.get(entity);
+			TableSpanComponent tableSpan = tableSpanMapper.get(entity);
 			SizeComponent size = sizeMapper.get(entity);
 
 			if(tableComponent.table != null) {
@@ -59,8 +60,8 @@ public class TableSystem extends EntitySystem {
 				position.x = tableEntityPosition.x + tableSize.cellWidth * tablePosition.x;
 				position.y = tableEntityPosition.y + tableSize.cellHeight * tablePosition.y;
 
-				size.width = tableSize.cellWidth;
-				size.height = tableSize.cellHeight;
+				size.width = tableSize.cellWidth * ( tableSpan != null ? tableSpan.width : 1 );
+				size.height = tableSize.cellHeight * ( tableSpan != null ? tableSpan.height : 1 );
 
 			}
 		}
