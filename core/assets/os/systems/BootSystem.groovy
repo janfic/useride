@@ -40,7 +40,7 @@ public class BootSystem extends EntitySystem {
 		assetManagerEntity.add(loadAssetsComponent);
 
 		ViewportComponent viewportComponent = new ViewportComponent();
-		viewportComponent.viewport = new ScreenViewport();
+		viewportComponent.viewport = new StretchViewport(800, 800);
 		assetManagerEntity.add(viewportComponent);
 		
 		SpriteBatchComponent sbComponent = new SpriteBatchComponent();
@@ -57,10 +57,11 @@ public class BootSystem extends EntitySystem {
 		tablePosition.z = 0;
 
 		System.out.println(Gdx.graphics.getHeight() / 20);
+		System.out.println(viewportComponent.viewport.getWorldHeight() / 20);
 
 		TableSizeComponent tableSize = new TableSizeComponent();
-		tableSize.cellWidth = Gdx.graphics.getWidth() / 20;
-		tableSize.cellHeight = Gdx.graphics.getHeight() / 20;
+		tableSize.cellWidth = viewportComponent.viewport.getWorldWidth() / 20;
+		tableSize.cellHeight = viewportComponent.viewport.getWorldHeight() / 20;
 		tableSize.width = 20;
 		tableSize.height = 20;
 
@@ -92,10 +93,13 @@ public class BootSystem extends EntitySystem {
 		tableSpan.width = 20;
 
 		TableSizeComponent topbarTableSize = new TableSizeComponent();
-		topbarTableSize.cellWidth = 54;
-		topbarTableSize.cellHeight = 54;
+		topbarTableSize.cellWidth = tableSize.cellHeight;
+		topbarTableSize.cellHeight = tableSize.cellHeight;
+
+		ColorComponent topbarColor = new ColorComponent(color: Color.BLUE);
 
 		topbar.add(size);
+		topbar.add(topbarColor);
 		topbar.add(tableComponent);
 		topbar.add(tablePositionComponent);
 		topbar.add(tableSpan);
@@ -103,7 +107,24 @@ public class BootSystem extends EntitySystem {
 		topbar.add(getNinePatch);
 		topbar.add(topbarTableSize);
 
+		Entity menuButton = new Entity();
+		
+		PositionComponent menuPosition = new PositionComponent(x: 100, y:100, z:2);
+		TablePositionComponent menuTablePositionComponent = new TablePositionComponent(x: 0, y: 0);
+		TableComponent menuTableComponent = new TableComponent(table: topbar);
+		SizeComponent menuButtonSizeComponent = new SizeComponent(width: 52, height: 52);
+		GetTextureRegionComponent getMenuIcon = new GetTextureRegionComponent(name: 'menu');
+		ColorComponent menuButtonColor = new ColorComponent(color: Color.BLUE);
+
+		menuButton.add(menuPosition);
+		menuButton.add(menuTableComponent);
+		menuButton.add(menuTablePositionComponent);
+		menuButton.add(menuButtonSizeComponent);
+		menuButton.add(getMenuIcon);
+		menuButton.add(menuButtonColor);
+
 		engine.addEntity(topbar);
+		engine.addEntity(menuButton);
 		engine.addEntity(table);
 		
 		engine.addSystem(new RenderSystem());

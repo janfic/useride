@@ -1,14 +1,17 @@
 {
   "ExpandedNodes": [
     "",
-    "\\desktop",
+    "\\core",
+    "\\core\\assets",
+    "\\core\\assets\\os",
+    "\\core\\assets\\os\\components",
+    "\\core\\assets\\os\\systems",
     "\\desktop\\src",
     "\\desktop\\src\\com",
     "\\desktop\\src\\com\\janfic",
     "\\desktop\\src\\com\\janfic\\useride",
-    "\\desktop\\src\\com\\janfic\\useride\\desktop",
-    "\\gradle\\wrapper"
+    "\\desktop\\src\\com\\janfic\\useride\\desktop"
   ],
-  "SelectedNode": "\\gradlew.bat",
+  "SelectedNode": "\\core\\assets\\os\\systems\\TextureAtlasGetSystem.groovy",
   "PreviewInSolutionExplorer": false
 }

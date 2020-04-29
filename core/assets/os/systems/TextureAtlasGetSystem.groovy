@@ -58,8 +58,8 @@ public class TextureAtlasGetSystem extends EntitySystem {
 					TextureRegion region =  textureAtlas.atlas.findRegion(getRegion.name);
 					if(region != null) {
 						TextureRegionComponent textureRegionComponent = new TextureRegionComponent();
-						textureRegionComponent.region = region;
-
+						textureRegionComponent.textureRegion = region;
+						System.out.println("REGION");
 						entity.add(textureRegionComponent);
 						entity.remove(GetTextureRegionComponent.class);
 						break;
@@ -74,7 +74,6 @@ public class TextureAtlasGetSystem extends EntitySystem {
 						System.out.println("Loaded Patch!");
 						NinePatchComponent ninePatchComponent = new NinePatchComponent();
 						ninePatchComponent.ninePatch = patch;
-
 						entity.add(ninePatchComponent);
 						entity.remove(GetNinePatchComponent.class);
 						break;

@@ -18,6 +18,7 @@ public class RenderSystem extends SortedIteratingSystem {
 	private final ComponentMapper<SizeComponent> sizeMapper;
 	private final ComponentMapper<ColorComponent> colorMapper;
 	private final ComponentMapper<TextureComponent> textureMapper;
+	private final ComponentMapper<TextureRegionComponent> regionMapper;
 	private final ComponentMapper<NinePatchComponent> ninePatchMapper;
 	private final ComponentMapper<RotationComponent> rotationMapper;
 	
@@ -30,7 +31,12 @@ public class RenderSystem extends SortedIteratingSystem {
 	
 	public RenderSystem() {
 		super(
-			Family.all(PositionComponent.class).one(TextureComponent.class, NinePatchComponent.class, EngineComponent.class).get(), 
+			Family.all(PositionComponent.class).one(
+				TextureComponent.class, 
+				NinePatchComponent.class, 
+				EngineComponent.class, 
+				TextureRegionComponent.class
+			).get(), 
 			new ZComparator()
 		);
 		this.positionMapper = ComponentMapper.getFor(PositionComponent.class);
@@ -41,6 +47,7 @@ public class RenderSystem extends SortedIteratingSystem {
 		this.ninePatchMapper = ComponentMapper.getFor(NinePatchComponent.class);
 		this.rotationMapper = ComponentMapper.getFor(RotationComponent.class);
 		this.engineMapper = ComponentMapper.getFor(EngineComponent.class);
+		this.regionMapper = ComponentMapper.getFor(TextureRegionComponent.class);
 	}
 	
 	public void addedToEngine(Engine engine) {
@@ -71,7 +78,7 @@ public class RenderSystem extends SortedIteratingSystem {
 	
 	public void processEntity(Entity entity, float delta) {	
 		PositionComponent position = positionMapper.get(entity);
-			
+		TextureRegionComponent region = regionMapper.get(entity);
 		TextureComponent texture = textureMapper.get(entity);
 		NinePatchComponent ninePatch = ninePatchMapper.get(entity);
 		EngineComponent engineComponent = engineMapper.get(entity);
@@ -96,15 +103,18 @@ public class RenderSystem extends SortedIteratingSystem {
 		if(texture != null) {
 			batch.draw(texture.texture, position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation, 0, 0, (int) texture.texture.getWidth(), (int) texture.texture.getHeight(), false, false);
 		}
-		else if( ninePatch != null) {
+		if(ninePatch != null) {
 			ninePatch.ninePatch.draw(batch, position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation); 
 		}
-		else if(engineComponent != null) {
+		if(engineComponent != null) {
 			RenderSystem renderSystem = engineComponent.engine.getSystem(RenderSystem.class);
 			if(renderSystem != null) {
 				renderSystem.update(delta); 
 				renderSystem.setProcessing(false);
 			}
+		}
+		if(region != null) {
+			batch.draw(region.textureRegion, position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation);
 		}
 		batch.setColor(Color.WHITE);
 	}
