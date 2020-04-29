@@ -125,3 +125,7 @@ Thumbs.db
 !/ios-moe/xcode/*.xcodeproj/xcshareddata
 !/ios-moe/xcode/*.xcodeproj/project.pbxproj
 /ios-moe/xcode/native/
+core/.vs/VSWorkspaceState.json
+core/.vs/slnx.sqlite
+core/.vs/ProjectSettings.json
+core/.vs/core/v16/.suo

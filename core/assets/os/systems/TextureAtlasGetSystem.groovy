@@ -4,6 +4,7 @@ import os.components.*;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.utils.*;
 
 public class TextureAtlasGetSystem extends EntitySystem {
 	

@@ -39,7 +39,7 @@ public class AssetLoadSystem extends EntitySystem {
 
 		for(Entity entity : loadEntities) {
 			LoadAssetsComponent load = loadMapper.get(entity);
-			load.progress = assetManager.getProgress();
+			load.progress = assetManager.manager.getProgress();
 		}
 
 		if(loadAllEntities.size() > 0) assetManager.manager.finishLoading();

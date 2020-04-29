@@ -46,7 +46,7 @@ public class TableSystem extends EntitySystem {
 	
 	public void update(float delta) {
 		for(Entity entity : entities) {
-			PositionComponent positionMapper.get(entity);
+			PositionComponent position = positionMapper.get(entity);
 			TableComponent tableComponent = tableMapper.get(entity);
 			TablePositionComponent tablePosition = tablePositionMapper.get(entity);
 			SizeComponent size = sizeMapper.get(entity);
@@ -59,8 +59,8 @@ public class TableSystem extends EntitySystem {
 				position.x = tableEntityPosition.x + tableSize.width * tablePosition.x;
 				position.y = tableEntityPosition.y + tableSize.height * tablePosition.y;
 
-				size.width = tableSize.width;
-				size.height = tableSize.height;
+				size.width = tableSize.cellWidth;
+				size.height = tableSize.cellHeight;
 
 			}
 		}

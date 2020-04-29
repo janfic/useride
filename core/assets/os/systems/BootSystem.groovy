@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.viewport.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.*;
 import os.components.*;
 import os.systems.*;
@@ -18,10 +19,46 @@ import os.systems.*;
 public class BootSystem extends EntitySystem {	
 	public void addedToEngine(Engine engine) {
 		
+		Entity assetManagerEntity = new Entity();
+		AssetManagerComponent amComp = new AssetManagerComponent();
+		amComp.manager = new AssetManager();
+		assetManagerEntity.add(amComp);
+
+		RegisterTextureAssetComponent registerTexture = new RegisterTextureAssetComponent();
+		registerTexture.fileName = "os/assets/badlogic.jpg";
+		assetManagerEntity.add(registerTexture);
+
+		LoadAssetsComponent loadAssetsComponent = new LoadAssetsComponent();
+		assetManagerEntity.add(loadAssetsComponent);
+		engine.addEntity(assetManagerEntity);
+
+		Entity table = new Entity();
+		
+		PositionComponent tablePosition = new PositionComponent();
+		tablePosition.x = 100
+		tablePosition.y = 100;
+		tablePosition.z = 100;
+
+		TableSizeComponent tableSize = new TableSizeComponent();
+		tableSize.cellWidth = 100;
+		tableSize.cellHeight = 100;
+		tableSize.width = 10;
+		tableSize.height = 10;
+
+		table.add(tablePosition);
+		table.add(tableSize);
+
 		Entity testEntity = new Entity();
 		
-		TextureComponent texture = new TextureComponent();
-		texture.texture = new Texture("os/assets/badlogic.jpg");
+		TableComponent tableComponnet = new TableComponent();
+		tableComponnet.table = table;
+
+		TablePositionComponent tablePos = new TablePositionComponent();
+		tablePos.x = 2;
+		tablePos.y = 2;
+
+		GetTextureAssetComponent getTexture = new GetTextureAssetComponent();
+		getTexture.fileName = "os/assets/badlogic.jpg";
 		
 		PositionComponent position = new PositionComponent();
 		position.x = 300;
@@ -29,14 +66,15 @@ public class BootSystem extends EntitySystem {
 		position.z = 2;
 		
 		SizeComponent size1 = new SizeComponent();
-		size1.width = texture.texture.getWidth();
-		size1.height = texture.texture.getHeight();
 		
-		testEntity.add(texture);
+		testEntity.add(getTexture);
 		testEntity.add(position);
 		testEntity.add(size1);
+		testEntity.add(tablePos);
+		testEntity.add(tableComponnet);
 		
 		engine.addEntity(testEntity);
+		engine.addEntity(table);
 		
 		Entity renderEntity = new Entity();
 		ViewportComponent viewportComponent = new ViewportComponent();
@@ -52,9 +90,12 @@ public class BootSystem extends EntitySystem {
 		
 
 		engine.addSystem(new RenderSystem());
-		engine.addSystem(new MouseClickSystem());
-		engine.addSystem(new MouseHoverSystem());
 		engine.addSystem(new TableSystem());
+		engine.addSystem(new AssetLoadSystem());
+		engine.addSystem(new AssetGetSystem());
+		engine.addSystem(new AssetRegisterSystem());
+		engine.addSystem(new TableSystem());
+
 		engine.removeSystem(this);
 	}
 }

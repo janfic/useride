@@ -50,29 +50,29 @@ public class AssetRegisterSystem extends EntitySystem {
 
 		for(Entity entity : entities) {
 			RegisterTextureAssetComponent registerTexture = registerTextureMapper.get(entity);
-			RegisterTextureAtlasAssetComponent registerTextureAtlas = registerTextureAtlasMapper.get(entity);
+			RegisterTextureAtlasAssetComponent registerTextureAtlas = registerAtlasMapper.get(entity);
 			RegisterSoundAssetComponent registerSound = registerSoundMapper.get(entity);
 			RegisterNinePatchAssetComponent registerNinePatch = registerNinePatchMapper.get(entity);
 			RegisterBitmapFontAssetComponent registerFont = registerFontMapper.get(entity);
 
 			if(registerTexture != null ) {
-				assetManager.load(registerTexture.fileName, Texture.class);
+				assetManager.manager.load(registerTexture.fileName, Texture.class);
 				entity.remove(RegisterTextureAssetComponent.class);
 			}
 			if(registerTextureAtlas != null ) {
-				assetManager.load(registerTextureAtlas.fileName, TextureAtlas.class);
+				assetManager.manager.load(registerTextureAtlas.fileName, TextureAtlas.class);
 				entity.remove(RegisterTextureAtlasAssetComponent.class);
 			}
 			if(registerSound != null ) {
-				assetManager.load(registerSound.fileName, Sound.class);
+				assetManager.manager.load(registerSound.fileName, Sound.class);
 				entity.remove(RegisterSoundAssetComponent.class);
 			}
 			if(registerNinePatch != null ) {
-				assetManager.load(registerNinePatch.fileName, NinePatch.class);
+				assetManager.manager.load(registerNinePatch.fileName, NinePatch.class);
 				entity.remove(RegisterNinePatchAssetComponent.class);
 			}
 			if(registerFont != null ) {
-				assetManager.load(registerFont.fileName, BitmapFont.class);
+				assetManager.manager.load(registerFont.fileName, BitmapFont.class);
 				entity.remove(RegisterBitmapFontAssetComponent.class);
 			}
 		}

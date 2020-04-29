@@ -95,7 +95,7 @@ public class RenderSystem extends SortedIteratingSystem {
 			batch.setColor(color.color);
 		}
 		if(texture != null) {
-			batch.draw(texture.texture, position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation, 0, 0, (int) width, (int) height, false, false);
+			batch.draw(texture.texture, position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation, 0, 0, (int) texture.texture.getWidth(), (int) texture.texture.getHeight(), false, false);
 		}
 		else if( ninePatch != null) {
 			ninePatch.draw(batch, position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation); 
