@@ -40,7 +40,10 @@ public class TableSystem extends EntitySystem {
 				TableComponent.class,
 				TablePositionComponent.class,
 				SizeComponent.class
-			).get()
+			).exclude(
+				DraggingComponent.class
+			)
+			.get()
 		);
 	}
 	

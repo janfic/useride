@@ -1,5 +1,7 @@
 package os.systems;
 
+import groovy.transform.CompileStatic;
+
 import os.components.*;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
@@ -10,6 +12,7 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.*;
 import com.badlogic.ashley.utils.*;
 
+@CompileStatic
 public class MouseClickSystem extends SortedIteratingSystem {
 	
 	private final ComponentMapper<ClickableComponent> clickableMapper;
@@ -36,6 +39,7 @@ public class MouseClickSystem extends SortedIteratingSystem {
 		this.renderEntity = engine.getEntitiesFor(
 			Family.all(ViewportComponent.class, SpriteBatchComponent.class).get()
 		);
+		super.addedToEngine(engine);
 	}
 
 	public void update(float delta) {
@@ -43,7 +47,7 @@ public class MouseClickSystem extends SortedIteratingSystem {
 		for(Entity entity : oldEvents) {
 			entity.remove(MouseClickEventComponent.class);
 		}
-
+		
 		if(renderEntity.size() < 1) return;
 		ViewportComponent viewportComponent = viewportMapper.get(renderEntity.first());
 		
@@ -53,14 +57,15 @@ public class MouseClickSystem extends SortedIteratingSystem {
 	}
 
 	public void processEntity(Entity entity, float delta) {
+
 		PositionComponent position = positionMapper.get(entity);
 		HitBoxComponent hitBox = hitboxMapper.get(entity);
 
 		Vector2 temp = new Vector2(hitBox.rectangle.getX(), hitBox.rectangle.getY());
 
-		hitBox.setPosition(temp.x + position.x, temp.y + position.y);
-
-		if(hitBox.contains(this.mouseCoords) && Gdx.input.isTouched()) {
+		hitBox.rectangle.setPosition(temp.x + position.x, temp.y + position.y);
+		
+		if(hitBox.rectangle.contains(this.mouseCoords) && Gdx.input.isTouched()) {
 			MouseClickEventComponent clickEvent = new MouseClickEventComponent();
 			clickEvent.x = this.mouseCoords.x;
 			clickEvent.y = this.mouseCoords.y;
@@ -68,7 +73,7 @@ public class MouseClickSystem extends SortedIteratingSystem {
 			entity.add(clickEvent);
 		}
 
-		hitBox.setPosition(temp);
+		hitBox.rectangle.setPosition(temp);
 	}
 
 	public Vector2 getViewportCoords(Viewport viewport, float mx, float my) {

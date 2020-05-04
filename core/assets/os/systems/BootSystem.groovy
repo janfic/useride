@@ -12,13 +12,15 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.input.*;
+import com.badlogic.gdx.math.*;
 import os.components.*;
 import os.systems.*;
 
 
 public class BootSystem extends EntitySystem {	
+
 	public void addedToEngine(Engine engine) {
-		
 		Entity assetManagerEntity = new Entity();
 		AssetManagerComponent amComp = new AssetManagerComponent();
 		amComp.manager = new AssetManager();
@@ -49,7 +51,7 @@ public class BootSystem extends EntitySystem {
 		sbComponent.batch = new SpriteBatch();
 		assetManagerEntity.add(sbComponent);
 
-		engine.addEntity(assetManagerEntity);
+		this.engine.addEntity(assetManagerEntity);
 
 		Entity table = new Entity();
 		
@@ -57,9 +59,6 @@ public class BootSystem extends EntitySystem {
 		tablePosition.x = 0
 		tablePosition.y = 0;
 		tablePosition.z = 0;
-
-		System.out.println(Gdx.graphics.getHeight() / 20);
-		System.out.println(viewportComponent.viewport.getWorldHeight() / 20);
 
 		TableSizeComponent tableSize = new TableSizeComponent();
 		tableSize.cellWidth = viewportComponent.viewport.getWorldWidth() / 20;
@@ -147,11 +146,42 @@ public class BootSystem extends EntitySystem {
 		textEntity.add(textSizeComponent);
 		textEntity.add(textTableSpanComponent);
 
+		Entity background = new Entity();
+
+		background.add(new PositionComponent(x: 0, y: 0, z: -1));
+		background.add(new RegisterTextureAssetComponent(fileName: "os/assets/background.jpg"));
+		background.add(new GetTextureAssetComponent(fileName: "os/assets/background.jpg"));
+		background.add(new SizeComponent());
+		background.add(new TablePositionComponent(x: 0, y:0));
+		background.add(new TableComponent(table: table));
+		background.add(new TableSpanComponent(width: 20, height: 19));
+
+		engine.addEntity(background);
 		engine.addEntity(topbar);
 		engine.addEntity(menuButton);
 		engine.addEntity(table);
 		engine.addEntity(textEntity);
 		
+		Entity shortcutTable = new Entity();
+		shortcutTable.add(new TableSizeComponent(cellWidth: 75, cellHeight: 75));
+		shortcutTable.add(new PositionComponent(x: 25, y: 25));
+		engine.addEntity(shortcutTable);
+
+
+		Entity terminalShortcut = new Entity();
+
+		terminalShortcut.add(new PositionComponent(z: 0));
+		terminalShortcut.add(new RegisterTextureAssetComponent(fileName: "os/assets/icons/terminal.png"));
+		terminalShortcut.add(new GetTextureAssetComponent(fileName: "os/assets/icons/terminal.png"));
+		terminalShortcut.add(new SizeComponent(width: 100, height: 100));
+		terminalShortcut.add(new HitBoxComponent(rectangle: new Rectangle(0,0,75,75)));
+		terminalShortcut.add(new TablePositionComponent(x: 0, y: 12));
+		terminalShortcut.add(new TableComponent(table: shortcutTable));
+		terminalShortcut.add(new DragableComponent());
+		terminalShortcut.add(new ClickableComponent());
+
+		engine.addEntity(terminalShortcut);
+
 		engine.addSystem(new RenderSystem());
 		engine.addSystem(new TableSystem());
 		engine.addSystem(new AssetLoadSystem());
@@ -159,7 +189,7 @@ public class BootSystem extends EntitySystem {
 		engine.addSystem(new AssetRegisterSystem());
 		engine.addSystem(new TextureAtlasGetSystem());
 		engine.addSystem(new TextToTimeSystem());
-
-		engine.removeSystem(this);
+		engine.addSystem(new MouseClickSystem());
+		engine.addSystem(new DragSystem());
 	}
 }

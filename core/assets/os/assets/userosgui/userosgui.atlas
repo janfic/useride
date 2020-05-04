@@ -7,14 +7,14 @@ repeat: none
 box
   rotate: false
   xy: 2, 2
-  size: 9, 9
-  split: 4, 4, 3, 5
-  orig: 9, 9
+  size: 9, 8
+  split: 4, 4, 3, 4
+  orig: 9, 8
   offset: 0, 0
   index: -1
 menu
   rotate: false
-  xy: 2, 13
+  xy: 2, 12
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
