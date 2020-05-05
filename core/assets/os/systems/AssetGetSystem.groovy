@@ -81,6 +81,7 @@ public class AssetGetSystem extends EntitySystem {
 				if(fontComponent.font != null) {
 					entity.add(fontComponent);
 					entity.remove(GetBitmapFontAssetComponent.class);
+					System.out.println("Loaded font");
 				}
 			}
 		}

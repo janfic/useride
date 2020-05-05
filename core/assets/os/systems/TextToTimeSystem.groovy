@@ -21,7 +21,7 @@ public class TextToTimeSystem extends EntitySystem {
 	
 	public void addedToEngine(Engine engine) {
 		this.entities = engine.getEntitiesFor(
-			Family.one(TextComponent.class, TextToTimeComponent.class).get()
+			Family.all(TextComponent.class, TextToTimeComponent.class).get()
 		);
 	}
 

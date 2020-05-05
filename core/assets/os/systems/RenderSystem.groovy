@@ -72,8 +72,8 @@ public class RenderSystem extends SortedIteratingSystem {
 		this.batch = renderEntities.first().getComponent(SpriteBatchComponent.class).batch;
 		this.viewport = renderEntities.first().getComponent(ViewportComponent.class).viewport;
 		
-		viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-		viewport.apply();
+		//viewport.update(viewport.getScreenWidth(), viewport.getScreenHeight(), true);
+		viewport.apply(true);
 		
 		batch.setProjectionMatrix(viewport.getCamera().combined);
 		batch.begin();
@@ -119,8 +119,13 @@ public class RenderSystem extends SortedIteratingSystem {
 		if(engineComponent != null) {
 			RenderSystem renderSystem = engineComponent.engine.getSystem(RenderSystem.class);
 			if(renderSystem != null) {
+				batch.end();
 				renderSystem.update(delta); 
 				renderSystem.setProcessing(false);
+				viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+				viewport.apply();
+				batch.setProjectionMatrix(viewport.getCamera().combined);
+				batch.begin();
 			}
 		}
 		if(region != null) {
@@ -129,7 +134,7 @@ public class RenderSystem extends SortedIteratingSystem {
 		if(textComponent != null && fontComponent != null) {
 			if(color != null) fontComponent.font.setColor(color.color);
 			if(size != null)
-				fontComponent.font.draw( batch, textComponent.text, position.x , (float) (position.y + fontComponent.font.getCapHeight() / 2), width, Align.center, true);
+				fontComponent.font.draw( batch, textComponent.text, position.x , (float) (position.y + fontComponent.font.getCapHeight() / 2), width, Align.left, true);
 			else
 				fontComponent.font.draw( batch, textComponent.text, position.x, (float) (position.y + fontComponent.font.getCapHeight() / 2));
 			if(color != null) fontComponent.font.setColor(Color.WHITE); 

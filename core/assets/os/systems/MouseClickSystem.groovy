@@ -136,8 +136,6 @@ public class MouseClickSystem extends SortedIteratingSystem {
 			}
 
 			click.count = Math.min(press.count, release.count);
-
-			System.out.println("CLICK: " + click.count);
 		}
 
 		hitBox.rectangle.setPosition(temp);

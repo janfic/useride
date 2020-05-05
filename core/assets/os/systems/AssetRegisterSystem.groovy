@@ -36,7 +36,7 @@ public class AssetRegisterSystem extends EntitySystem {
 				RegisterBitmapFontAssetComponent.class
 			).get()
 		);
-		this.assetManagerEntities = engine.getEntitiesFor(
+		this.assetManagerEntities = getEngine().getEntitiesFor(
 			Family.all(AssetManagerComponent.class).get()
 		)
 	}	

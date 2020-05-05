@@ -3,13 +3,11 @@
     "",
     "\\core",
     "\\core\\assets",
-    "\\core\\src",
-    "\\core\\src\\com",
-    "\\core\\src\\com\\janfic",
-    "\\core\\src\\com\\janfic\\useride",
-    "\\core\\src\\com\\janfic\\useride\\kernel",
-    "\\core\\src\\com\\janfic\\useride\\kernel\\systems"
+    "\\core\\assets\\helloworld",
+    "\\core\\assets\\helloworld\\systems",
+    "\\core\\assets\\os",
+    "\\core\\assets\\os\\systems"
   ],
-  "SelectedNode": "\\core\\src\\com\\janfic\\useride\\USERIDEGame.java",
+  "SelectedNode": "\\core\\assets\\helloworld\\systems\\PrintTextSystem.groovy",
   "PreviewInSolutionExplorer": false
 }

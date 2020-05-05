@@ -45,10 +45,15 @@ public class BootSystem extends EntitySystem {
 
 		ViewportComponent viewportComponent = new ViewportComponent();
 		viewportComponent.viewport = new ScreenViewport();
-		viewportComponent.viewport.setWorldWidth(1920);
-		viewportComponent.viewport.setWorldHeight(1080);
+		viewportComponent.viewport.setWorldSize(1920, 1080);
 		assetManagerEntity.add(viewportComponent);
-		
+
+		SizeComponent viewportSize = new SizeComponent(width: 1920, height: 1080);
+		assetManagerEntity.add(viewportSize);
+
+		PositionComponent viewportPosition = new PositionComponent();
+		assetManagerEntity.add(viewportPosition);
+
 		SpriteBatchComponent sbComponent = new SpriteBatchComponent();
 		sbComponent.batch = new SpriteBatch();
 		assetManagerEntity.add(sbComponent);
@@ -137,6 +142,8 @@ public class BootSystem extends EntitySystem {
 		TableComponent textTableComponent = new TableComponent(table: topbar);
 		TableSpanComponent textTableSpanComponent = new TableSpanComponent(height:1, width:3);
 		SizeComponent textSizeComponent = new SizeComponent();
+		TextToTimeComponent t2t = new TextToTimeComponent()
+		textEntity.add(t2t);
 
 		textEntity.add(textPosition);
 		textEntity.add(registerFont);
@@ -181,22 +188,9 @@ public class BootSystem extends EntitySystem {
 		terminalShortcut.add(new TableComponent(table: shortcutTable));
 		terminalShortcut.add(new DragableComponent());
 		terminalShortcut.add(new ClickableComponent());
-		terminalShortcut.add(new ProgramStartOnMouseClickComponent(name: "test", path:"useragar"));
+		terminalShortcut.add(new ProgramStartOnMouseClickComponent(name: "Hello World!", path:"helloworld"));
 
 		engine.addEntity(terminalShortcut);
-
-		Entity window = new Entity();
-		
-		window.add(new PositionComponent(x: 100, y: 100, z: 1));
-		window.add(new SizeComponent(width: 400, height: 400));
-		window.add(new GetNinePatchComponent(name: "window"));
-		window.add(new HitBoxComponent(rectangle: new Rectangle(0,374,400,26)));
-		window.add(new ColorComponent(color: Color.GRAY));
-		window.add(new ClickableComponent());
-		window.add(new DragableComponent());
-		window.add(new EngineComponent(engine: new Engine()));
-
-		engine.addEntity(window);
 
 		engine.addSystem(new RenderSystem());
 		engine.addSystem(new TableSystem());
@@ -211,6 +205,7 @@ public class BootSystem extends EntitySystem {
 		engine.addSystem(new ProgramStartSystem());
 		engine.addSystem(new ProgramManagerSystem());
 		engine.addSystem(new FileLoadSystem());
+		engine.addSystem(new ViewportSystem());
 
 	}
 }

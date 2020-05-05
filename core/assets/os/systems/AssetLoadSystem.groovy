@@ -32,6 +32,7 @@ public class AssetLoadSystem extends EntitySystem {
 	}
 
 	public void update(float delta) {
+
 		if(assetManagers.size() < 1) return;
 		AssetManagerComponent assetManager = assetManagerMapper.get(assetManagers.first());
 

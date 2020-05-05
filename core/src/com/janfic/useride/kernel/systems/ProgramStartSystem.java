@@ -5,6 +5,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.files.FileHandle;
 import com.janfic.useride.kernel.components.*;
 import groovy.lang.GroovyClassLoader;
+import java.util.Arrays;
 
 /**
  *
@@ -18,6 +19,8 @@ public class ProgramStartSystem extends EntitySystem {
     private final ComponentMapper<IDComponent> idMapper;
     private final ComponentMapper<FileComponent> fileMapper;
 
+    private static GroovyClassLoader parent = ProgramStartSystem.parent == null ? new GroovyClassLoader() : ProgramStartSystem.parent;
+
     private ImmutableArray<Entity> entities;
 
     private int idCount;
@@ -28,7 +31,6 @@ public class ProgramStartSystem extends EntitySystem {
         this.fileMapper = ComponentMapper.getFor(FileComponent.class);
         this.injectionMapper = ComponentMapper.getFor(ProgramEntityInjectionComponent.class);
         this.argumentMapper = ComponentMapper.getFor(ProgramArgumentsComponent.class);
-
         this.idCount = 0;
     }
 
@@ -62,8 +64,10 @@ public class ProgramStartSystem extends EntitySystem {
             }
 
             ClassLoaderComponent classLoaderComponent = new ClassLoaderComponent();
-            classLoaderComponent.classLoader = new GroovyClassLoader();
+            classLoaderComponent.classLoader = parent;
 
+            classLoaderComponent.classLoader.setShouldRecompile(Boolean.FALSE);
+            System.out.println("Recompile: " + Arrays.toString(classLoaderComponent.classLoader.getLoadedClasses()));
             classLoaderComponent.classLoader.addClasspath(rootProgramDirectory.parent().path());
 
             IDComponent idComponent = new IDComponent();
@@ -74,6 +78,19 @@ public class ProgramStartSystem extends EntitySystem {
 
             EngineComponent engineComponent = new EngineComponent();
             engineComponent.engine = new Engine();
+
+            if (entityInjection != null) {
+                Entity e = new Entity();
+                e.add(entityInjection);
+                engineComponent.engine.addEntity(e);
+            }
+
+            ProgramArgumentsComponent arguments = argumentMapper.get(entity);
+            if (arguments != null) {
+                Entity e = new Entity();
+                e.add(arguments);
+            }
+
             try {
                 for (FileHandle component : components.list(".groovy")) {
                     Class c = classLoaderComponent.classLoader.loadClass(
@@ -93,17 +110,7 @@ public class ProgramStartSystem extends EntitySystem {
                 e.printStackTrace();
             }
 
-            if (entityInjection != null) {
-                Entity e = new Entity();
-                e.add(entityInjection);
-                engineComponent.engine.addEntity(e);
-            }
-
-            ProgramArgumentsComponent arguments = argumentMapper.get(entity);
-            if (arguments != null) {
-                Entity e = new Entity();
-                e.add(arguments);
-            }
+            System.out.println("Recompile: " + Arrays.toString(classLoaderComponent.classLoader.getLoadedClasses()));
 
             entity.add(engineComponent);
             entity.add(idComponent);
