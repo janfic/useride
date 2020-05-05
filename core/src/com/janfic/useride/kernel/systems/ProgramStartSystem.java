@@ -13,6 +13,8 @@ import groovy.lang.GroovyClassLoader;
 public class ProgramStartSystem extends EntitySystem {
 
     private final ComponentMapper<ProgramStartRequestComponent> startRequestMapper;
+    private final ComponentMapper<ProgramEntityInjectionComponent> injectionMapper;
+    private final ComponentMapper<ProgramArgumentsComponent> argumentMapper;
     private final ComponentMapper<IDComponent> idMapper;
     private final ComponentMapper<FileComponent> fileMapper;
 
@@ -24,6 +26,8 @@ public class ProgramStartSystem extends EntitySystem {
         this.startRequestMapper = ComponentMapper.getFor(ProgramStartRequestComponent.class);
         this.idMapper = ComponentMapper.getFor(IDComponent.class);
         this.fileMapper = ComponentMapper.getFor(FileComponent.class);
+        this.injectionMapper = ComponentMapper.getFor(ProgramEntityInjectionComponent.class);
+        this.argumentMapper = ComponentMapper.getFor(ProgramArgumentsComponent.class);
 
         this.idCount = 0;
     }
@@ -41,6 +45,7 @@ public class ProgramStartSystem extends EntitySystem {
 
             FileComponent fileComponent = fileMapper.get(entity);
             ProgramStartRequestComponent startRequest = startRequestMapper.get(entity);
+            ProgramEntityInjectionComponent entityInjection = injectionMapper.get(entity);
 
             FileHandle rootProgramDirectory = fileComponent.file;
 
@@ -60,7 +65,7 @@ public class ProgramStartSystem extends EntitySystem {
             classLoaderComponent.classLoader = new GroovyClassLoader();
 
             classLoaderComponent.classLoader.addClasspath(rootProgramDirectory.parent().path());
-            
+
             IDComponent idComponent = new IDComponent();
             idComponent.id = idCount++;
 
@@ -83,8 +88,21 @@ public class ProgramStartSystem extends EntitySystem {
                         engineComponent.engine.addSystem(bootSystem);
                     }
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+
+            if (entityInjection != null) {
+                Entity e = new Entity();
+                e.add(entityInjection);
+                engineComponent.engine.addEntity(e);
+            }
+
+            ProgramArgumentsComponent arguments = argumentMapper.get(entity);
+            if (arguments != null) {
+                Entity e = new Entity();
+                e.add(arguments);
             }
 
             entity.add(engineComponent);
