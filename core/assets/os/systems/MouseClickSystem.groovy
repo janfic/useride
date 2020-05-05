@@ -20,6 +20,10 @@ public class MouseClickSystem extends SortedIteratingSystem {
 	private final ComponentMapper<PositionComponent> positionMapper;
 	private final ComponentMapper<ViewportComponent> viewportMapper;
 
+	private final ComponentMapper<MouseClickEventComponent> clickMapper;
+	private final ComponentMapper<MousePressEventComponent> pressMapper;
+	private final ComponentMapper<MouseReleaseEventComponent> releaseMapper;
+
 	private ImmutableArray<Entity> renderEntity, oldEvents;
 
 	private Vector2 mouseCoords;
@@ -30,11 +34,19 @@ public class MouseClickSystem extends SortedIteratingSystem {
 		this.hitboxMapper = ComponentMapper.getFor(HitBoxComponent.class);
 		this.positionMapper = ComponentMapper.getFor(PositionComponent.class);
 		this.viewportMapper = ComponentMapper.getFor(ViewportComponent.class);
+
+		this.clickMapper = ComponentMapper.getFor(MouseClickEventComponent.class);
+		this.pressMapper = ComponentMapper.getFor(MousePressEventComponent.class);
+		this.releaseMapper = ComponentMapper.getFor(MouseReleaseEventComponent.class);
 	}
 	
 	public void addedToEngine(Engine engine) {
 		this.oldEvents = engine.getEntitiesFor(
-			Family.all(MouseClickEventComponent.class).get()
+			Family.one(
+				MouseClickEventComponent.class, 
+				MousePressEventComponent.class, 
+				MouseReleaseEventComponent.class
+			).get()
 		);
 		this.renderEntity = engine.getEntitiesFor(
 			Family.all(ViewportComponent.class, SpriteBatchComponent.class).get()
@@ -45,7 +57,29 @@ public class MouseClickSystem extends SortedIteratingSystem {
 	public void update(float delta) {
 
 		for(Entity entity : oldEvents) {
+			MouseClickEventComponent click = clickMapper.get(entity);
+			MousePressEventComponent press = pressMapper.get(entity);
+			MouseReleaseEventComponent release = releaseMapper.get(entity);
+
 			entity.remove(MouseClickEventComponent.class);
+
+			if(press != null) {
+				press.timer -= delta;
+				if(press.timer < 0) {
+					press.count -= 1;
+					press.timer += 0.25f;
+				}
+				if(press.count <= 0) entity.remove(MousePressEventComponent.class);
+			}
+			if(release != null) {
+				release.timer -= delta;
+				if(release.timer < 0) {
+					release.timer += 0.25f;
+					release.count -= 1;
+				}
+				if(release.count <= 0) entity.remove(MouseReleaseEventComponent.class);
+			}
+
 		}
 		
 		if(renderEntity.size() < 1) return;
@@ -61,16 +95,49 @@ public class MouseClickSystem extends SortedIteratingSystem {
 		PositionComponent position = positionMapper.get(entity);
 		HitBoxComponent hitBox = hitboxMapper.get(entity);
 
+		MouseClickEventComponent click = clickMapper.get(entity);
+		MousePressEventComponent press = pressMapper.get(entity);
+		MouseReleaseEventComponent release = releaseMapper.get(entity);
+
 		Vector2 temp = new Vector2(hitBox.rectangle.getX(), hitBox.rectangle.getY());
 
 		hitBox.rectangle.setPosition(temp.x + position.x, temp.y + position.y);
 		
-		if(hitBox.rectangle.contains(this.mouseCoords) && Gdx.input.isTouched()) {
-			MouseClickEventComponent clickEvent = new MouseClickEventComponent();
-			clickEvent.x = this.mouseCoords.x;
-			clickEvent.y = this.mouseCoords.y;
+		if(hitBox.rectangle.contains(this.mouseCoords) && Gdx.input.justTouched()) {
+			if(press == null) {
+				press = new MousePressEventComponent();
+				entity.add(press);
+			}
 
-			entity.add(clickEvent);
+			press.x = this.mouseCoords.x;
+			press.y = this.mouseCoords.y;
+			press.count += 1;
+			press.timer = 0.25f;
+		}
+		
+		if(hitBox.rectangle.contains(this.mouseCoords) && !Gdx.input.isTouched() && press != null) {
+			if(press.timer > 0) {
+				if(release == null) {
+					release = new MouseReleaseEventComponent();
+					entity.add(release);
+				}
+
+				release.count += 1;
+				release.x = this.mouseCoords.x;
+				release.y = this.mouseCoords.y;
+				release.timer = 0.25f;
+			}
+		}
+
+		if(press != null && release != null) {
+			if(click == null) {
+				click = new MouseClickEventComponent();
+				entity.add(click);
+			}
+
+			click.count = Math.min(press.count, release.count);
+
+			System.out.println("CLICK: " + click.count);
 		}
 
 		hitBox.rectangle.setPosition(temp);

@@ -1,5 +1,7 @@
 package os.systems;
 
+import com.janfic.useride.kernel.components.*;
+import com.janfic.useride.kernel.systems.*;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
 import com.badlogic.gdx.scenes.scene2d.actions.*;
@@ -179,8 +181,22 @@ public class BootSystem extends EntitySystem {
 		terminalShortcut.add(new TableComponent(table: shortcutTable));
 		terminalShortcut.add(new DragableComponent());
 		terminalShortcut.add(new ClickableComponent());
+		terminalShortcut.add(new ProgramStartOnMouseClickComponent(name: "test", path:"useragar"));
 
 		engine.addEntity(terminalShortcut);
+
+		Entity window = new Entity();
+		
+		window.add(new PositionComponent(x: 100, y: 100, z: 1));
+		window.add(new SizeComponent(width: 400, height: 400));
+		window.add(new GetNinePatchComponent(name: "window"));
+		window.add(new HitBoxComponent(rectangle: new Rectangle(0,374,400,26)));
+		window.add(new ColorComponent(color: Color.GRAY));
+		window.add(new ClickableComponent());
+		window.add(new DragableComponent());
+		window.add(new EngineComponent(engine: new Engine()));
+
+		engine.addEntity(window);
 
 		engine.addSystem(new RenderSystem());
 		engine.addSystem(new TableSystem());
@@ -191,5 +207,10 @@ public class BootSystem extends EntitySystem {
 		engine.addSystem(new TextToTimeSystem());
 		engine.addSystem(new MouseClickSystem());
 		engine.addSystem(new DragSystem());
+		engine.addSystem(new ProgramStartOnMouseClickSystem());
+		engine.addSystem(new ProgramStartSystem());
+		engine.addSystem(new ProgramManagerSystem());
+		engine.addSystem(new FileLoadSystem());
+
 	}
 }

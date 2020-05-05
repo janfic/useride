@@ -1,6 +1,6 @@
 
 userosgui.png
-size: 64,64
+size: 128,64
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -14,8 +14,16 @@ box
   index: -1
 menu
   rotate: false
-  xy: 2, 12
+  xy: 42, 18
   size: 32, 32
   orig: 32, 32
+  offset: 0, 0
+  index: -1
+window
+  rotate: false
+  xy: 2, 12
+  size: 38, 38
+  split: 19, 18, 32, 5
+  orig: 38, 38
   offset: 0, 0
   index: -1

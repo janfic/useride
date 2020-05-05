@@ -14,6 +14,7 @@ public class DragSystem extends EntitySystem {
 	private final ComponentMapper<DraggingComponent> draggingMapper;;
 	private final ComponentMapper<PositionComponent> positionMapper;;
 	private final ComponentMapper<ViewportComponent> viewportMapper;;
+	private final ComponentMapper<MousePressEventComponent> pressMapper;;
 
 	private ImmutableArray<Entity> entities, renderEntity, dragging;
 
@@ -21,6 +22,7 @@ public class DragSystem extends EntitySystem {
 		this.draggingMapper = ComponentMapper.getFor(DraggingComponent.class);
 		this.positionMapper = ComponentMapper.getFor(PositionComponent.class);
 		this.viewportMapper = ComponentMapper.getFor(ViewportComponent.class);
+		this.pressMapper = ComponentMapper.getFor(MousePressEventComponent.class);
 	}
 	
 	public void addedToEngine(Engine engine) {
@@ -31,11 +33,9 @@ public class DragSystem extends EntitySystem {
 		);
 		this.entities = engine.getEntitiesFor(
 			Family.all(
-				MouseClickEventComponent.class, 
+				MousePressEventComponent.class, 
 				DragableComponent.class,
 				PositionComponent.class
-			).exclude(
-				DraggingComponent.class
 			)
 			.get()
 		);
@@ -56,7 +56,10 @@ public class DragSystem extends EntitySystem {
 
 
 		for(Entity entity : entities) {
-			entity.add(new DraggingComponent(previousX: mouseCoords.x, previousY: mouseCoords.y));
+			MousePressEventComponent press = pressMapper.get(entity);
+			if(press.timer >= 0.25f) {
+				entity.add(new DraggingComponent(previousX: mouseCoords.x, previousY: mouseCoords.y));
+			}
 		}
 		
 		for(Entity entity : dragging) {
