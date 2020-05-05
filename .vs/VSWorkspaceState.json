@@ -6,8 +6,9 @@
     "\\core\\assets\\helloworld",
     "\\core\\assets\\helloworld\\systems",
     "\\core\\assets\\os",
+    "\\core\\assets\\os\\components",
     "\\core\\assets\\os\\systems"
   ],
-  "SelectedNode": "\\core\\assets\\helloworld\\systems\\PrintTextSystem.groovy",
+  "SelectedNode": "\\core\\assets\\os\\systems\\ChangeColorOnMouseHoverSystem.groovy",
   "PreviewInSolutionExplorer": false
 }

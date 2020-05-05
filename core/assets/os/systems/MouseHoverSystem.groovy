@@ -1,5 +1,7 @@
 package os.systems;
 
+import groovy.transform.CompileStatic;
+
 import os.components.*;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
@@ -10,6 +12,7 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
 import com.badlogic.ashley.systems.*;
 
+@CompileStatic
 public class MouseHoverSystem extends SortedIteratingSystem {
 	
 	private final ComponentMapper<HoverableComponent> hoverableMapper;
@@ -36,6 +39,7 @@ public class MouseHoverSystem extends SortedIteratingSystem {
 		this.renderEntity = engine.getEntitiesFor(
 			Family.all(ViewportComponent.class, SpriteBatchComponent.class).get()
 		);
+		super.addedToEngine(engine);
 	}
 
 	public void update(float delta) {
@@ -59,17 +63,16 @@ public class MouseHoverSystem extends SortedIteratingSystem {
 
 		Vector2 temp = new Vector2(hitBox.rectangle.getX(), hitBox.rectangle.getY());
 
-		hitBox.setPosition(temp.x + position.x, temp.y + position.y);
+		hitBox.rectangle.setPosition(temp.x + position.x, temp.y + position.y);
+		if(hitBox.rectangle.contains(this.mouseCoords)) {
+			MouseHoverEventComponent hoverEvent = new MouseHoverEventComponent();
+			hoverEvent.x = this.mouseCoords.x;
+			hoverEvent.y = this.mouseCoords.y;
 
-		if(hitBox.contains(this.mouseCoords)) {
-			MouseClickEventComponent clickEvent = new MouseClickEventComponent();
-			clickEvent.x = this.mouseCoords.x;
-			clickEvent.y = this.mouseCoords.y;
-
-			entity.add(clickEvent);
+			entity.add(hoverEvent);
 		}
 
-		hitBox.setPosition(temp);
+		hitBox.rectangle.setPosition(temp);
 	}
 
 	public Vector2 getViewportCoords(Viewport viewport, float mx, float my) {

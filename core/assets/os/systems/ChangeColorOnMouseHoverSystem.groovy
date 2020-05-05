@@ -10,7 +10,7 @@ public class ChangeColorOnMouseHoverSystem extends EntitySystem {
 	private final ComponentMapper<ColorComponent> colorMapper;
 	private final ComponentMapper<MouseHoverEventComponent> hoverMapper;
 
-	private ImmutableArray<Entity> entities;
+	private ImmutableArray<Entity> entities, offEntities;
 
 	public ChangeColorOnMouseHoverSystem() {
 		this.changeMapper = ComponentMapper.getFor(ChangeColorOnMouseHoverComponent.class);
@@ -26,6 +26,16 @@ public class ChangeColorOnMouseHoverSystem extends EntitySystem {
 				MouseHoverEventComponent.class
 			).get()
 		);
+		this.offEntities = engine.getEntitiesFor(
+			Family.all(
+				ColorComponent.class,
+				ChangeColorOnMouseHoverComponent.class,
+			).exclude(
+				MouseHoverEventComponent.class
+			)
+			.get()
+		);
+
 	}
 
 	public void update(float delta) {
@@ -34,7 +44,13 @@ public class ChangeColorOnMouseHoverSystem extends EntitySystem {
 			MouseHoverEventComponent hoverEvent = hoverMapper.get(entity);
 			ChangeColorOnMouseHoverComponent change = changeMapper.get(entity);
 
-			color.color = change.color.cpy();
+			color.color = change.hoverColor.cpy();
+		}
+		for(Entity entity : offEntities) {
+			ColorComponent color = colorMapper.get(entity);
+			ChangeColorOnMouseHoverComponent change = changeMapper.get(entity);
+
+			color.color = change.offColor.cpy();
 		}
 	}
 

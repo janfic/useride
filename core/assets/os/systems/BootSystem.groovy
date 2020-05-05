@@ -176,6 +176,20 @@ public class BootSystem extends EntitySystem {
 		shortcutTable.add(new PositionComponent(x: 25, y: 25));
 		engine.addEntity(shortcutTable);
 
+		Entity shortcut = new Entity();
+		shortcut.add(new TableSizeComponent(cellWidth: 65, cellHeight: 65));
+		shortcut.add(new TablePositionComponent(x: 0, y: 12));
+		shortcut.add(new PositionComponent(x: 10, y: 10, z: 1));
+		shortcut.add(new TableComponent(table: shortcutTable));
+		shortcut.add(new GetNinePatchComponent(name: "shortcut"));
+		shortcut.add(new SizeComponent());
+		shortcut.add(new ProgramStartOnMouseClickComponent(name: "Hello World!", path:"helloworld"));
+		shortcut.add(new DragableComponent());
+		shortcut.add(new ClickableComponent());
+		shortcut.add(new HoverableComponent());
+		shortcut.add(new HitBoxComponent(rectangle: new Rectangle(0,0,75,75)));
+		shortcut.add(new ColorComponent(color: Color.CLEAR));
+		shortcut.add(new ChangeColorOnMouseHoverComponent(hoverColor: Color.WHITE.cpy().sub(0,0,0,0.5f), offColor: Color.CLEAR));
 
 		Entity terminalShortcut = new Entity();
 
@@ -183,13 +197,12 @@ public class BootSystem extends EntitySystem {
 		terminalShortcut.add(new RegisterTextureAssetComponent(fileName: "os/assets/icons/terminal.png"));
 		terminalShortcut.add(new GetTextureAssetComponent(fileName: "os/assets/icons/terminal.png"));
 		terminalShortcut.add(new SizeComponent(width: 100, height: 100));
-		terminalShortcut.add(new HitBoxComponent(rectangle: new Rectangle(0,0,75,75)));
-		terminalShortcut.add(new TablePositionComponent(x: 0, y: 12));
-		terminalShortcut.add(new TableComponent(table: shortcutTable));
-		terminalShortcut.add(new DragableComponent());
-		terminalShortcut.add(new ClickableComponent());
-		terminalShortcut.add(new ProgramStartOnMouseClickComponent(name: "Hello World!", path:"helloworld"));
+		
+		terminalShortcut.add(new TablePositionComponent(x: 1/13f, y: 1/13f));
+		terminalShortcut.add(new TableComponent(table: shortcut));
+		
 
+		engine.addEntity(shortcut);
 		engine.addEntity(terminalShortcut);
 
 		engine.addSystem(new RenderSystem());
@@ -200,10 +213,12 @@ public class BootSystem extends EntitySystem {
 		engine.addSystem(new TextureAtlasGetSystem());
 		engine.addSystem(new TextToTimeSystem());
 		engine.addSystem(new MouseClickSystem());
+		engine.addSystem(new MouseHoverSystem());
 		engine.addSystem(new DragSystem());
 		engine.addSystem(new ProgramStartOnMouseClickSystem());
 		engine.addSystem(new ProgramStartSystem());
 		engine.addSystem(new ProgramManagerSystem());
+		engine.addSystem(new ChangeColorOnMouseHoverSystem());
 		engine.addSystem(new FileLoadSystem());
 		engine.addSystem(new ViewportSystem());
 
