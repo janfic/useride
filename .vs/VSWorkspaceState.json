@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\core",
+    "\\core\\assets",
+    "\\core\\src",
+    "\\core\\src\\com",
+    "\\core\\src\\com\\janfic",
+    "\\core\\src\\com\\janfic\\useride",
+    "\\core\\src\\com\\janfic\\useride\\kernel",
+    "\\core\\src\\com\\janfic\\useride\\kernel\\systems"
+  ],
+  "SelectedNode": "\\core\\src\\com\\janfic\\useride\\USERIDEGame.java",
+  "PreviewInSolutionExplorer": false
+}
