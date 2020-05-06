@@ -206,6 +206,7 @@ public class BootSystem extends EntitySystem {
 		engine.addEntity(terminalShortcut);
 
 		engine.addSystem(new RenderSystem());
+		engine.addSystem(new DragSystem());
 		engine.addSystem(new TableSystem());
 		engine.addSystem(new AssetLoadSystem());
 		engine.addSystem(new AssetGetSystem());
@@ -214,7 +215,6 @@ public class BootSystem extends EntitySystem {
 		engine.addSystem(new TextToTimeSystem());
 		engine.addSystem(new MouseClickSystem());
 		engine.addSystem(new MouseHoverSystem());
-		engine.addSystem(new DragSystem());
 		engine.addSystem(new ProgramStartOnMouseClickSystem());
 		engine.addSystem(new ProgramStartSystem());
 		engine.addSystem(new ProgramManagerSystem());

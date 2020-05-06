@@ -3,12 +3,8 @@
     "",
     "\\core",
     "\\core\\assets",
-    "\\core\\assets\\helloworld",
-    "\\core\\assets\\helloworld\\systems",
-    "\\core\\assets\\os",
-    "\\core\\assets\\os\\components",
-    "\\core\\assets\\os\\systems"
+    "\\core\\assets\\helloworld\\systems"
   ],
-  "SelectedNode": "\\core\\assets\\os\\systems\\ChangeColorOnMouseHoverSystem.groovy",
+  "SelectedNode": "\\core\\assets\\useragar",
   "PreviewInSolutionExplorer": false
 }
