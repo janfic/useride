@@ -45,10 +45,10 @@ public class BootSystem extends EntitySystem {
 
 		ViewportComponent viewportComponent = new ViewportComponent();
 		viewportComponent.viewport = new ScreenViewport();
-		viewportComponent.viewport.setWorldSize(1920, 1080);
+		viewportComponent.viewport.setWorldSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		assetManagerEntity.add(viewportComponent);
 
-		SizeComponent viewportSize = new SizeComponent(width: 1920, height: 1080);
+		SizeComponent viewportSize = new SizeComponent(width: Gdx.graphics.getWidth(), height:  Gdx.graphics.getHeight());
 		assetManagerEntity.add(viewportSize);
 
 		PositionComponent viewportPosition = new PositionComponent();
@@ -136,7 +136,7 @@ public class BootSystem extends EntitySystem {
 		PositionComponent textPosition = new PositionComponent(x: 100, y: 200, z:6);
 		RegisterBitmapFontAssetComponent registerFont = new RegisterBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt");
 		GetBitmapFontAssetComponent getFont = new GetBitmapFontAssetComponent(fileName: registerFont.fileName);
-		TextComponent textComponent = new TextComponent(text: "Hello World!");
+		TextComponent textComponent = new TextComponent(text: "time here");
 		ColorComponent textColor = new ColorComponent(color: Color.GRAY);
 		TablePositionComponent textTablePositionComponent = new TablePositionComponent(x: 32, y: 0.5);
 		TableComponent textTableComponent = new TableComponent(table: topbar);
@@ -179,7 +179,7 @@ public class BootSystem extends EntitySystem {
 		Entity shortcut = new Entity();
 		shortcut.add(new TableSizeComponent(cellWidth: 65, cellHeight: 65));
 		shortcut.add(new TablePositionComponent(x: 0, y: 12));
-		shortcut.add(new PositionComponent(x: 10, y: 10, z: 1));
+		shortcut.add(new PositionComponent(x: 10, y: 10, z: 0));
 		shortcut.add(new TableComponent(table: shortcutTable));
 		shortcut.add(new GetNinePatchComponent(name: "shortcut"));
 		shortcut.add(new SizeComponent());
@@ -193,9 +193,9 @@ public class BootSystem extends EntitySystem {
 
 		Entity terminalShortcut = new Entity();
 
-		terminalShortcut.add(new PositionComponent(z: 0));
-		terminalShortcut.add(new RegisterTextureAssetComponent(fileName: "os/assets/icons/terminal.png"));
-		terminalShortcut.add(new GetTextureAssetComponent(fileName: "os/assets/icons/terminal.png"));
+		terminalShortcut.add(new PositionComponent(z: 1));
+		terminalShortcut.add(new RegisterTextureAssetComponent(fileName: "os/assets/icons/hello.png"));
+		terminalShortcut.add(new GetTextureAssetComponent(fileName: "os/assets/icons/hello.png"));
 		terminalShortcut.add(new SizeComponent(width: 100, height: 100));
 		
 		terminalShortcut.add(new TablePositionComponent(x: 1/13f, y: 1/13f));

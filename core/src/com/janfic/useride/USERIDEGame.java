@@ -3,13 +3,14 @@ package com.janfic.useride;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.janfic.useride.kernel.systems.BootSystem;
 
 public class USERIDEGame extends Game {
 
     Engine engine;
-
+    
     @Override
     public void create() {
         engine = new Engine();

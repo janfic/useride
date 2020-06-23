@@ -3,8 +3,13 @@
     "",
     "\\core",
     "\\core\\assets",
-    "\\core\\assets\\helloworld\\systems"
+    "\\core\\assets\\helloworld",
+    "\\core\\assets\\helloworld\\systems",
+    "\\core\\assets\\os",
+    "\\core\\assets\\os\\components",
+    "\\core\\assets\\os\\systems",
+    "\\core\\assets\\useragar"
   ],
-  "SelectedNode": "\\core\\assets\\useragar",
+  "SelectedNode": "\\core\\assets\\os\\systems\\FocusSystem.groovy",
   "PreviewInSolutionExplorer": false
 }
