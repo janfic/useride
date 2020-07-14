@@ -22,205 +22,154 @@ import os.systems.*;
 
 public class BootSystem extends EntitySystem {	
 
-	public void addedToEngine(Engine engine) {
-		Entity assetManagerEntity = new Entity();
-		AssetManagerComponent amComp = new AssetManagerComponent();
-		amComp.manager = new AssetManager();
-		assetManagerEntity.add(amComp);
+    public void addedToEngine(Engine engine) {
+        Entity assetManagerEntity = new Entity();
+        AssetManagerComponent amComp = new AssetManagerComponent();
+        amComp.manager = new AssetManager();
+        assetManagerEntity.add(amComp);
 
-		RegisterTextureAssetComponent registerTexture = new RegisterTextureAssetComponent();
-		registerTexture.fileName = "os/assets/badlogic.jpg";
-		assetManagerEntity.add(registerTexture);
+        RegisterTextureAssetComponent registerTexture = new RegisterTextureAssetComponent();
+        registerTexture.fileName = "os/assets/badlogic.jpg";
+        assetManagerEntity.add(registerTexture);
 
-		RegisterTextureAtlasAssetComponent registerAtlas = new RegisterTextureAtlasAssetComponent();
-		registerAtlas.fileName = "os/assets/userosgui/userosgui.atlas";
-		assetManagerEntity.add(registerAtlas);
+        RegisterTextureAtlasAssetComponent registerAtlas = new RegisterTextureAtlasAssetComponent();
+        registerAtlas.fileName = "os/assets/userosgui/userosgui.atlas";
+        assetManagerEntity.add(registerAtlas);
 
-		GetTextureAtlasAssetComponent getAtlas = new GetTextureAtlasAssetComponent();
-		getAtlas.fileName = registerAtlas.fileName;
-		assetManagerEntity.add(getAtlas);
+        GetTextureAtlasAssetComponent getAtlas = new GetTextureAtlasAssetComponent();
+        getAtlas.fileName = registerAtlas.fileName;
+        assetManagerEntity.add(getAtlas);
 
-		LoadAssetsComponent loadAssetsComponent = new LoadAssetsComponent();
-		assetManagerEntity.add(loadAssetsComponent);
+        LoadAssetsComponent loadAssetsComponent = new LoadAssetsComponent();
+        assetManagerEntity.add(loadAssetsComponent);
 
-		ViewportComponent viewportComponent = new ViewportComponent();
-		viewportComponent.viewport = new ScreenViewport();
-		viewportComponent.viewport.setWorldSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		assetManagerEntity.add(viewportComponent);
+        ViewportComponent viewportComponent = new ViewportComponent();
+        viewportComponent.viewport = new ScreenViewport();
+        viewportComponent.viewport.setWorldSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        assetManagerEntity.add(viewportComponent);
 
-		SizeComponent viewportSize = new SizeComponent(width: Gdx.graphics.getWidth(), height:  Gdx.graphics.getHeight());
-		assetManagerEntity.add(viewportSize);
+        SizeComponent viewportSize = new SizeComponent(width: Gdx.graphics.getWidth(), height:  Gdx.graphics.getHeight());
+        assetManagerEntity.add(viewportSize);
 
-		PositionComponent viewportPosition = new PositionComponent();
-		assetManagerEntity.add(viewportPosition);
+        PositionComponent viewportPosition = new PositionComponent();
+        assetManagerEntity.add(viewportPosition);
 
-		SpriteBatchComponent sbComponent = new SpriteBatchComponent();
-		sbComponent.batch = new SpriteBatch();
-		assetManagerEntity.add(sbComponent);
+        SpriteBatchComponent sbComponent = new SpriteBatchComponent();
+        sbComponent.batch = new SpriteBatch();
+        assetManagerEntity.add(sbComponent);
 
-		this.engine.addEntity(assetManagerEntity);
+        this.engine.addEntity(assetManagerEntity);
 
-		Entity table = new Entity();
+        Entity table = new Entity();
 		
-		PositionComponent tablePosition = new PositionComponent();
-		tablePosition.x = 0
-		tablePosition.y = 0;
-		tablePosition.z = 0;
+        PositionComponent tablePosition = new PositionComponent();
 
-		TableSizeComponent tableSize = new TableSizeComponent();
-		tableSize.cellWidth = viewportComponent.viewport.getWorldWidth() / 20;
-		tableSize.cellHeight = viewportComponent.viewport.getWorldHeight() / 20;
-		tableSize.width = 20;
-		tableSize.height = 20;
+        SizeComponent tableSize = new SizeComponent();
+        tableSize.width = viewportComponent.viewport.getWorldWidth() / 20;
+        tableSize.height = viewportComponent.viewport.getWorldHeight() / 20;
 
-		table.add(tablePosition);
-		table.add(tableSize);
+        table.add(tablePosition);
+        table.add(tableSize);
 
-		Entity topbar = new Entity();
+        Entity topbar = new Entity();
+                
+        topbar.add(new ColorComponent(color: Color.LIGHT_GRAY));
+        topbar.add(new ParentComponent(parent: table));
+        topbar.add(new RelativePositionComponent(y: 1900, unit: "%"));
+        topbar.add(new RelativeSizeComponent(width: 2000, height: 100, unit: "%"));
+        topbar.add(new PositionComponent());
+        topbar.add(new GetNinePatchComponent(name: "box"));
+        topbar.add(new SizeComponent());
 
-		GetNinePatchComponent getNinePatch = new GetNinePatchComponent()
-		getNinePatch.name = "box";
+        Entity menuButton = new Entity();
 
-		PositionComponent topbarPosition = new PositionComponent();
-		topbarPosition.x = 0;
-		topbarPosition.y = 0;
+        menuButton.add(new PositionComponent(x: 100, y:100, z:2));
+        menuButton.add(new RelativePositionComponent(x: 5, y: 5));
+        menuButton.add(new ParentComponent(parent: topbar));
+        menuButton.add(new SizeComponent(width: 45, height: 45));
+        menuButton.add(new GetTextureRegionComponent(name: 'menu'));
+        menuButton.add(new ColorComponent(color: Color.GRAY));
 
-		SizeComponent size = new SizeComponent();
-		size.width = 100;
-		size.height = 200;
-
-		TableComponent tableComponent = new TableComponent();
-		tableComponent.table = table;
-
-		TablePositionComponent tablePositionComponent = new TablePositionComponent();
-		tablePositionComponent.x = 0;
-		tablePositionComponent.y = 19;
-
-		TableSpanComponent tableSpan = new TableSpanComponent();
-		tableSpan.height = 1;
-		tableSpan.width = 20;
-
-		TableSizeComponent topbarTableSize = new TableSizeComponent();
-		topbarTableSize.cellWidth = tableSize.cellHeight;
-		topbarTableSize.cellHeight = tableSize.cellHeight;
-
-		ColorComponent topbarColor = new ColorComponent(color: Color.LIGHT_GRAY);
-
-		topbar.add(size);
-		topbar.add(topbarColor);
-		topbar.add(tableComponent);
-		topbar.add(tablePositionComponent);
-		topbar.add(tableSpan);
-		topbar.add(topbarPosition);
-		topbar.add(getNinePatch);
-		topbar.add(topbarTableSize);
-
-		Entity menuButton = new Entity();
+        Entity textEntity = new Entity();
 		
-		PositionComponent menuPosition = new PositionComponent(x: 100, y:100, z:2);
-		TablePositionComponent menuTablePositionComponent = new TablePositionComponent(x: 0, y: 0);
-		TableComponent menuTableComponent = new TableComponent(table: topbar);
-		SizeComponent menuButtonSizeComponent = new SizeComponent(width: 52, height: 52);
-		GetTextureRegionComponent getMenuIcon = new GetTextureRegionComponent(name: 'menu');
-		ColorComponent menuButtonColor = new ColorComponent(color: Color.GRAY);
+        textEntity.add(new TextToTimeComponent());
+        textEntity.add(new PositionComponent(x: 100, y: 200, z:2));
+        textEntity.add(new RegisterBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
+        textEntity.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
+        textEntity.add(new ColorComponent(color: Color.GRAY));
+        textEntity.add(new RelativePositionComponent(x: 90, y: 50, unit: "%"));
+        textEntity.add(new RelativeSizeComponent(width: 10, height: 100, unit: "%"));
+        textEntity.add(new ParentComponent(parent: topbar));
+        textEntity.add(new TextComponent(text: "time here"));
+        textEntity.add(new SizeComponent(width: 200, height: 50));
 
-		menuButton.add(menuPosition);
-		menuButton.add(menuTableComponent);
-		menuButton.add(menuTablePositionComponent);
-		menuButton.add(menuButtonSizeComponent);
-		menuButton.add(getMenuIcon);
-		menuButton.add(menuButtonColor);
+        Entity background = new Entity();
 
-		Entity textEntity = new Entity();
+        background.add(new PositionComponent(x: 0, y: 0, z: -1));
+        background.add(new RegisterTextureAssetComponent(fileName: "os/assets/background.jpg"));
+        background.add(new GetTextureAssetComponent(fileName: "os/assets/background.jpg"));
+        background.add(new SizeComponent());
+        background.add(new RelativeSizeComponent(width: 2000, height: 2000, unit: "%"));
+        background.add(new ParentComponent(parent: table));
 
-		PositionComponent textPosition = new PositionComponent(x: 100, y: 200, z:6);
-		RegisterBitmapFontAssetComponent registerFont = new RegisterBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt");
-		GetBitmapFontAssetComponent getFont = new GetBitmapFontAssetComponent(fileName: registerFont.fileName);
-		TextComponent textComponent = new TextComponent(text: "time here");
-		ColorComponent textColor = new ColorComponent(color: Color.GRAY);
-		TablePositionComponent textTablePositionComponent = new TablePositionComponent(x: 32, y: 0.5);
-		TableComponent textTableComponent = new TableComponent(table: topbar);
-		TableSpanComponent textTableSpanComponent = new TableSpanComponent(height:1, width:3);
-		SizeComponent textSizeComponent = new SizeComponent();
-		TextToTimeComponent t2t = new TextToTimeComponent()
-		textEntity.add(t2t);
-
-		textEntity.add(textPosition);
-		textEntity.add(registerFont);
-		textEntity.add(getFont);
-		textEntity.add(textColor);
-		textEntity.add(textTablePositionComponent);
-		textEntity.add(textTableComponent);
-		textEntity.add(textComponent);
-		textEntity.add(textSizeComponent);
-		textEntity.add(textTableSpanComponent);
-
-		Entity background = new Entity();
-
-		background.add(new PositionComponent(x: 0, y: 0, z: -1));
-		background.add(new RegisterTextureAssetComponent(fileName: "os/assets/background.jpg"));
-		background.add(new GetTextureAssetComponent(fileName: "os/assets/background.jpg"));
-		background.add(new SizeComponent());
-		background.add(new TablePositionComponent(x: 0, y:0));
-		background.add(new TableComponent(table: table));
-		background.add(new TableSpanComponent(width: 20, height: 19));
-
-		engine.addEntity(background);
-		engine.addEntity(topbar);
-		engine.addEntity(menuButton);
-		engine.addEntity(table);
-		engine.addEntity(textEntity);
+        engine.addEntity(background);
+        engine.addEntity(topbar);
+        engine.addEntity(menuButton);
+        engine.addEntity(table);
+        engine.addEntity(textEntity);
 		
-		Entity shortcutTable = new Entity();
-		shortcutTable.add(new TableSizeComponent(cellWidth: 75, cellHeight: 75));
-		shortcutTable.add(new PositionComponent(x: 25, y: 25));
-		engine.addEntity(shortcutTable);
+        Entity shortcutTable = new Entity();
+        shortcutTable.add(new SizeComponent(width: 75, height: 75));
+        shortcutTable.add(new PositionComponent(x: 25, y: 25));
+        engine.addEntity(shortcutTable);
 
-		Entity shortcut = new Entity();
-		shortcut.add(new TableSizeComponent(cellWidth: 65, cellHeight: 65));
-		shortcut.add(new TablePositionComponent(x: 0, y: 12));
-		shortcut.add(new PositionComponent(x: 10, y: 10, z: 0));
-		shortcut.add(new TableComponent(table: shortcutTable));
-		shortcut.add(new GetNinePatchComponent(name: "shortcut"));
-		shortcut.add(new SizeComponent());
-		shortcut.add(new ProgramStartOnMouseClickComponent(name: "Hello World!", path:"helloworld"));
-		shortcut.add(new DragableComponent());
-		shortcut.add(new ClickableComponent());
-		shortcut.add(new HoverableComponent());
-		shortcut.add(new HitBoxComponent(rectangle: new Rectangle(0,0,75,75)));
-		shortcut.add(new ColorComponent(color: Color.CLEAR));
-		shortcut.add(new ChangeColorOnMouseHoverComponent(hoverColor: Color.WHITE.cpy().sub(0,0,0,0.5f), offColor: Color.CLEAR));
+        Entity shortcut = new Entity();
 
-		Entity terminalShortcut = new Entity();
+        shortcut.add(new ParentComponent(parent: shortcutTable));
+        shortcut.add(new RelativePositionComponent(x: 0, y: 1200, unit: "%"));
+        shortcut.add(new PositionComponent());
+        shortcut.add(new RelativeSizeComponent(width: 100, height: 100, unit: "%"));
+        shortcut.add(new SizeComponent(width: 75, height: 75));
+        shortcut.add(new GetNinePatchComponent(name: "shortcut"));
+        shortcut.add(new ProgramStartOnMouseClickComponent(name: "Hello World!", path:"helloworld"));
+        shortcut.add(new DragableComponent());
+        shortcut.add(new ClickableComponent());
+        shortcut.add(new HoverableComponent());
+        shortcut.add(new HitBoxComponent(rectangle: new Rectangle(0,0,75,75)));
+        shortcut.add(new ColorComponent(color: Color.CLEAR));
+        shortcut.add(new ChangeColorOnMouseHoverComponent(hoverColor: Color.WHITE.cpy().sub(0,0,0,0.5f), offColor: Color.CLEAR));
 
-		terminalShortcut.add(new PositionComponent(z: 1));
-		terminalShortcut.add(new RegisterTextureAssetComponent(fileName: "os/assets/icons/hello.png"));
-		terminalShortcut.add(new GetTextureAssetComponent(fileName: "os/assets/icons/hello.png"));
-		terminalShortcut.add(new SizeComponent(width: 100, height: 100));
-		
-		terminalShortcut.add(new TablePositionComponent(x: 1/13f, y: 1/13f));
-		terminalShortcut.add(new TableComponent(table: shortcut));
+        Entity terminalShortcut = new Entity();
+
+        terminalShortcut.add(new PositionComponent(z: 1));
+        terminalShortcut.add(new ParentComponent(parent: shortcut));
+        terminalShortcut.add(new RelativePositionComponent(x: 5, y: 5, unit: "%"));
+        terminalShortcut.add(new RelativeSizeComponent(width: 90, height: 90, unit: "%"));
+        terminalShortcut.add(new RegisterTextureAssetComponent(fileName: "os/assets/icons/hello.png"));
+        terminalShortcut.add(new GetTextureAssetComponent(fileName: "os/assets/icons/hello.png"));
+        terminalShortcut.add(new SizeComponent(width: 100, height: 100));
 		
 
-		engine.addEntity(shortcut);
-		engine.addEntity(terminalShortcut);
+        engine.addEntity(shortcut);
+        engine.addEntity(terminalShortcut);
 
-		engine.addSystem(new RenderSystem());
-		engine.addSystem(new DragSystem());
-		engine.addSystem(new TableSystem());
-		engine.addSystem(new AssetLoadSystem());
-		engine.addSystem(new AssetGetSystem());
-		engine.addSystem(new AssetRegisterSystem());
-		engine.addSystem(new TextureAtlasGetSystem());
-		engine.addSystem(new TextToTimeSystem());
-		engine.addSystem(new MouseClickSystem());
-		engine.addSystem(new MouseHoverSystem());
-		engine.addSystem(new ProgramStartOnMouseClickSystem());
-		engine.addSystem(new ProgramStartSystem());
-		engine.addSystem(new ProgramManagerSystem());
-		engine.addSystem(new ChangeColorOnMouseHoverSystem());
-		engine.addSystem(new FileLoadSystem());
-		engine.addSystem(new ViewportSystem());
-
-	}
+        engine.addSystem(new RenderSystem());
+        engine.addSystem(new DragSystem());
+        engine.addSystem(new RelativeSizeSystem());
+        engine.addSystem(new RelativePositionSystem());
+        engine.addSystem(new AssetLoadSystem());
+        engine.addSystem(new AssetGetSystem());
+        engine.addSystem(new AssetRegisterSystem());
+        engine.addSystem(new TextureAtlasGetSystem());
+        engine.addSystem(new TextToTimeSystem());
+        engine.addSystem(new MouseClickSystem());
+        engine.addSystem(new MouseHoverSystem());
+        engine.addSystem(new ProgramStartOnMouseClickSystem());
+        engine.addSystem(new ProgramStartSystem());
+        engine.addSystem(new ProgramManagerSystem());
+        engine.addSystem(new ChangeColorOnMouseHoverSystem());
+        engine.addSystem(new FileLoadSystem());
+        engine.addSystem(new ViewportSystem());
+        engine.addSystem(new FocusSystem());
+    }
 }
