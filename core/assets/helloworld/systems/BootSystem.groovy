@@ -17,7 +17,7 @@ public class BootSystem extends EntitySystem {
 
         for(Entity e : injection.entities) {
             engine.addEntity(e);  
-		}
+        }
 
         Entity helloworld = new Entity();
         helloworld.add(new PositionComponent(x: 215, y: 200));
