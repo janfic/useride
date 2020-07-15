@@ -59,7 +59,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
 
                 Entity topbar = new Entity();
                 
-                topbar.add(new PositionComponent(x: 100 , y: 100, z: 3));
+                topbar.add(new PositionComponent(x: 100 , y: 100, z: 2));
                 topbar.add(new RelativePositionComponent(y: 100, unit: "%"));
                 topbar.add(new GetNinePatchComponent(name: "topbar"));
                 topbar.add(new SizeComponent(width: 100, height: 35));
@@ -68,7 +68,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 
                 Entity titleText = new Entity();
 
-                titleText.add(new PositionComponent(z: 4));
+                titleText.add(new PositionComponent(z: 2));
                 titleText.add(new SizeComponent());
                 titleText.add(new RelativePositionComponent(x: 2, y: 50, unit: "%"));
                 titleText.add(new ParentComponent(parent: topbar));
@@ -100,8 +100,8 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
 
                 start.started = true;
                 this.getEngine().addEntity(program);
-                this.getEngine().addEntity(titleText);
                 this.getEngine().addEntity(topbar);
+                this.getEngine().addEntity(titleText);
             }
         }
     }

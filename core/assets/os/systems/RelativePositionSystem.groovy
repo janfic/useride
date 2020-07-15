@@ -12,7 +12,7 @@ public class RelativePositionSystem extends EntitySystem {
     private final ComponentMapper<ParentComponent> parentMapper;;
 
     private ImmutableArray<Entity> entities;
-
+    
     public RelativePositionSystem() {
         this.positionMapper = ComponentMapper.getFor(PositionComponent.class);
         this.sizeMapper = ComponentMapper.getFor(SizeComponent.class);
@@ -28,38 +28,43 @@ public class RelativePositionSystem extends EntitySystem {
 
     public void update(float delta) {
         for(Entity entity : entities) {
-            PositionComponent childPosition = positionMapper.get(entity);
-            RelativePositionComponent relativePosition = relativePositionMapper.get(entity);
-            ParentComponent parentComponent = parentMapper.get(entity);
+            processEntity(entity);
+        } 
+    }   
+    
+    public void processEntity(Entity entity) {
+        PositionComponent childPosition = positionMapper.get(entity);
+        RelativePositionComponent relativePosition = relativePositionMapper.get(entity);
+        ParentComponent parentComponent = parentMapper.get(entity);
             
-            Entity parent = parentComponent.parent;
-            PositionComponent parentPosition = positionMapper.get(parent);
-            SizeComponent parentSize = sizeMapper.get(parent);
+        Entity parent = parentComponent.parent;
+        PositionComponent parentPosition = positionMapper.get(parent);
+        SizeComponent parentSize = sizeMapper.get(parent);
             
-            if(parentPosition == null) continue;
-            
-            if(relativePosition.unit.equals("p")) {
+        if(Family.all(PositionComponent.class, RelativePositionComponent.class, ParentComponent.class).exclude(DraggingComponent.class).get().matches(parent)) processEntity(parent);
+        if(parentPosition == null) return;    
+        
+        if(relativePosition.unit.equals("p")) {
+            childPosition.x = parentPosition.x + relativePosition.x;
+            childPosition.y = parentPosition.y + relativePosition.y;
+        }
+        else if(relativePosition.unit.equals("%")) {
+            childPosition.x = parentPosition.x + (relativePosition.x * parentSize.width * 0.01);
+            childPosition.y = parentPosition.y + (relativePosition.y * parentSize.height * 0.01);
+        }
+        else if(relativePosition.unit.length() > 1) {
+            if(relativePosition.unit.charAt(0) == 'p') {
                 childPosition.x = parentPosition.x + relativePosition.x;
+            }
+            else if (relativePosition.unit.charAt(0) == '%') {
+                childPosition.x = parentPosition.x + (relativePosition.x * parentSize.width * 0.01);
+            }
+            if(relativePosition.unit.charAt(1) == 'p') {
                 childPosition.y = parentPosition.y + relativePosition.y;
             }
-            else if(relativePosition.unit.equals("%")) {
-                childPosition.x = parentPosition.x + (relativePosition.x * parentSize.width * 0.01);
+            else if (relativePosition.unit.charAt(1) == '%') {
                 childPosition.y = parentPosition.y + (relativePosition.y * parentSize.height * 0.01);
             }
-            else if(relativePosition.unit.length() > 1) {
-                if(relativePosition.unit.charAt(0) == 'p') {
-                    childPosition.x = parentPosition.x + relativePosition.x;
-                }
-                else if (relativePosition.unit.charAt(0) == '%') {
-                    childPosition.x = parentPosition.x + (relativePosition.x * parentSize.width * 0.01);
-                }
-                if(relativePosition.unit.charAt(1) == 'p') {
-                    childPosition.y = parentPosition.y + relativePosition.y;
-                }
-                else if (relativePosition.unit.charAt(1) == '%') {
-                    childPosition.y = parentPosition.y + (relativePosition.y * parentSize.height * 0.01);
-                }
-            }
         }
-    }   
+    } 
 }

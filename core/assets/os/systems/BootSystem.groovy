@@ -73,7 +73,6 @@ public class BootSystem extends EntitySystem {
 
         Entity topbar = new Entity();
                 
-        topbar.add(new ColorComponent(color: Color.LIGHT_GRAY));
         topbar.add(new ParentComponent(parent: table));
         topbar.add(new RelativePositionComponent(y: 1900, unit: "%"));
         topbar.add(new RelativeSizeComponent(width: 2000, height: 100, unit: "%"));
