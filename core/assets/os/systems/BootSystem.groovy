@@ -117,41 +117,6 @@ public class BootSystem extends EntitySystem {
         engine.addEntity(menuButton);
         engine.addEntity(table);
         engine.addEntity(textEntity);
-		
-        Entity shortcutTable = new Entity();
-        shortcutTable.add(new SizeComponent(width: 75, height: 75));
-        shortcutTable.add(new PositionComponent(x: 25, y: 25));
-        engine.addEntity(shortcutTable);
-
-        Entity shortcut = new Entity();
-
-        shortcut.add(new ParentComponent(parent: shortcutTable));
-        shortcut.add(new RelativePositionComponent(x: 0, y: 1200, unit: "%"));
-        shortcut.add(new PositionComponent());
-        shortcut.add(new RelativeSizeComponent(width: 100, height: 100, unit: "%"));
-        shortcut.add(new SizeComponent(width: 75, height: 75));
-        shortcut.add(new GetNinePatchComponent(name: "shortcut"));
-        shortcut.add(new ProgramStartOnMouseClickComponent(name: "Hello World!", path:"helloworld"));
-        shortcut.add(new DragableComponent());
-        shortcut.add(new ClickableComponent());
-        shortcut.add(new HoverableComponent());
-        shortcut.add(new HitBoxComponent(rectangle: new Rectangle(0,0,75,75)));
-        shortcut.add(new ColorComponent(color: Color.CLEAR));
-        shortcut.add(new ChangeColorOnMouseHoverComponent(hoverColor: Color.WHITE.cpy().sub(0,0,0,0.5f), offColor: Color.CLEAR));
-
-        Entity terminalShortcut = new Entity();
-
-        terminalShortcut.add(new PositionComponent(z: 1));
-        terminalShortcut.add(new ParentComponent(parent: shortcut));
-        terminalShortcut.add(new RelativePositionComponent(x: 5, y: 5, unit: "%"));
-        terminalShortcut.add(new RelativeSizeComponent(width: 90, height: 90, unit: "%"));
-        terminalShortcut.add(new RegisterTextureAssetComponent(fileName: "os/assets/icons/hello.png"));
-        terminalShortcut.add(new GetTextureAssetComponent(fileName: "os/assets/icons/hello.png"));
-        terminalShortcut.add(new SizeComponent(width: 100, height: 100));
-		
-
-        engine.addEntity(shortcut);
-        engine.addEntity(terminalShortcut);
 
         engine.addSystem(new RenderSystem());
         engine.addSystem(new DragSystem());
@@ -171,5 +136,6 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new FileLoadSystem());
         engine.addSystem(new ViewportSystem());
         engine.addSystem(new FocusSystem());
+        engine.addSystem(new ProgramShortcutSystem());
     }
 }
