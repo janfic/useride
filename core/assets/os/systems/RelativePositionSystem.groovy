@@ -65,6 +65,14 @@ public class RelativePositionSystem extends EntitySystem {
             else if (relativePosition.unit.charAt(1) == '%') {
                 childPosition.y = parentPosition.y + (relativePosition.y * parentSize.height * 0.01);
             }
+            if(relativePosition.unit.length() > 2) {
+                if(relativePosition.unit.charAt(2) == 'p') {
+                    childPosition.z = parentPosition.z + relativePosition.z;
+                }
+                else if (relativePosition.unit.charAt(2) == '%') {
+                    childPosition.z = parentPosition.z + (relativePosition.z * parentSize.height * 0.01);
+                } 
+            }
         }
     } 
 }

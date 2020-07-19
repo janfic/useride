@@ -56,11 +56,14 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 program.add(new HitBoxComponent(rectangle: new Rectangle(0, 400, 500, 35)));
                 program.add(new DragableComponent());
                 program.add(new ClickableComponent());
+                program.add(new FocusableComponent());
+                program.add(new FocusBringToFrontComponent());
+                program.add(new FocusOnMouseClickComponent());
 
                 Entity topbar = new Entity();
                 
                 topbar.add(new PositionComponent(x: 100 , y: 100, z: 2));
-                topbar.add(new RelativePositionComponent(y: 100, unit: "%"));
+                topbar.add(new RelativePositionComponent(x: 0, y: 100, z:0, unit: "p%p"));
                 topbar.add(new GetNinePatchComponent(name: "topbar"));
                 topbar.add(new SizeComponent(width: 100, height: 35));
                 topbar.add(new ParentComponent(parent: program));
@@ -70,7 +73,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
 
                 titleText.add(new PositionComponent(z: 2));
                 titleText.add(new SizeComponent());
-                titleText.add(new RelativePositionComponent(x: 2, y: 50, unit: "%"));
+                titleText.add(new RelativePositionComponent(x: 2, y: 50, z:1, unit: "%%p"));
                 titleText.add(new ParentComponent(parent: topbar));
                 titleText.add(new TextComponent(text: start.name));
                 titleText.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
@@ -90,7 +93,6 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 AssetManagerComponent assetManagerComponent = new AssetManagerComponent();
                 assetManagerComponent.manager = new AssetManager();
                 assetManager.add(assetManagerComponent);
-
 
                 inject.entities.add(assetManager);
                 inject.entities.add(graphicsEntity);

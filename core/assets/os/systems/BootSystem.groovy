@@ -135,6 +135,8 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new FileLoadSystem());
         engine.addSystem(new ViewportSystem());
         engine.addSystem(new FocusSystem());
+        engine.addSystem(new FocusOnMouseClickSystem());
+        engine.addSystem(new FocusBringToFrontSystem());
         engine.addSystem(new ProgramShortcutSystem());
     }
 }

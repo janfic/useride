@@ -28,7 +28,7 @@ public class BootSystem extends EntitySystem {
         groovyShellCore.add(new LoadAssetsComponent());
         
         Entity input = new Entity();
-        input.add(new TextComponent());
+        input.add(new TextComponent(text: ""));
         input.add(new FocusableComponent());
         input.add(new KeyInputComponent());
         input.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
@@ -41,7 +41,6 @@ public class BootSystem extends EntitySystem {
         
         
         engine.addSystem(new RenderSystem());
-        //engine.addSystem(new FocusSystem());
         engine.addSystem(new MouseClickSystem());
         engine.addSystem(new TableSystem());
         engine.addSystem(new AssetGetSystem());
