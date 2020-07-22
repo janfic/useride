@@ -129,7 +129,10 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new MouseClickSystem());
         engine.addSystem(new MouseHoverSystem());
         engine.addSystem(new ProgramStartOnMouseClickSystem());
+        engine.addSystem(new ProgramEndOnMouseClickSystem());
         engine.addSystem(new ProgramStartSystem());
+        engine.addSystem(new ProgramEndSystem());
+        engine.addSystem(new GetProgramIDSystem());
         engine.addSystem(new ProgramManagerSystem());
         engine.addSystem(new ChangeColorOnMouseHoverSystem());
         engine.addSystem(new FileLoadSystem());
@@ -138,5 +141,6 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new FocusOnMouseClickSystem());
         engine.addSystem(new FocusBringToFrontSystem());
         engine.addSystem(new ProgramShortcutSystem());
+        engine.addSystem(new RemoveEntitiesOnMouseClickSystem());
     }
 }

@@ -5,6 +5,8 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.files.FileHandle;
 import com.janfic.useride.kernel.components.*;
 import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyCodeSource;
+import java.net.URL;
 import java.util.Arrays;
 
 /**
@@ -64,9 +66,10 @@ public class ProgramStartSystem extends EntitySystem {
             }
 
             ClassLoaderComponent classLoaderComponent = new ClassLoaderComponent();
-            classLoaderComponent.classLoader = parent;
+            classLoaderComponent.classLoader = new GroovyClassLoader(parent);
 
-            classLoaderComponent.classLoader.setShouldRecompile(Boolean.FALSE);
+            classLoaderComponent.classLoader.setShouldRecompile(Boolean.TRUE);
+
             System.out.println("Recompile: " + Arrays.toString(classLoaderComponent.classLoader.getLoadedClasses()));
             classLoaderComponent.classLoader.addClasspath(rootProgramDirectory.parent().path());
 
@@ -93,24 +96,35 @@ public class ProgramStartSystem extends EntitySystem {
 
             try {
                 for (FileHandle component : components.list(".groovy")) {
-                    Class c = classLoaderComponent.classLoader.loadClass(
-                            rootProgramDirectory.nameWithoutExtension() + ".components." + component.nameWithoutExtension());
+                    GroovyCodeSource source = new GroovyCodeSource(component.file());
+                    source.setCachable(true);
+                    System.out.println(source.getName());
+                    System.out.println(source.getScriptText());
+                    System.out.println(source.getURL());
+                    System.out.println(source.isCachable());
+
+                    Class c = classLoaderComponent.classLoader.parseClass(source, true);
                 }
 
                 for (FileHandle system : systems.list(".groovy")) {
-                    Class c = classLoaderComponent.classLoader.loadClass(
-                            rootProgramDirectory.nameWithoutExtension() + ".systems." + system.nameWithoutExtension());
+                    GroovyCodeSource source = new GroovyCodeSource(system.file());
+                    
+                    Class c = classLoaderComponent.classLoader.parseClass(source, true);
+                            //rootProgramDirectory.nameWithoutExtension() + ".systems." + system.nameWithoutExtension(), true, true);
                     if (system.nameWithoutExtension().equals("BootSystem")) {
-                        EntitySystem bootSystem = (EntitySystem) c.newInstance();
+                        EntitySystem bootSystem = (EntitySystem) c.getConstructors()[0].newInstance();
                         engineComponent.engine.addSystem(bootSystem);
                     }
+                    System.out.println(c);
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            System.out.println("Recompile: " + Arrays.toString(classLoaderComponent.classLoader.getLoadedClasses()));
+            System.out.println("Recompile: " + Arrays.toString(classLoaderComponent.classLoader.getDefinedPackages()));
+            System.out.println("Recompile: " + Arrays.toString(classLoaderComponent.classLoader.getDefinedPackages()));
+            System.out.println("name: " + classLoaderComponent.classLoader.getName());
 
             entity.add(engineComponent);
             entity.add(idComponent);

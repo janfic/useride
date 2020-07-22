@@ -6,6 +6,7 @@ import os.systems.*;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.gdx.*;
 import helloworld.components.*;
 
 public class BootSystem extends EntitySystem {
@@ -25,6 +26,7 @@ public class BootSystem extends EntitySystem {
         RegisterBitmapFontAssetComponent registerFont = new RegisterBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt");
         helloworld.add(registerFont);
         helloworld.add(new LoadAssetsComponent())
+        helloworld.add(new ColorComponent(color: Color.GREEN));
         helloworld.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
 
         engine.addEntity(helloworld);

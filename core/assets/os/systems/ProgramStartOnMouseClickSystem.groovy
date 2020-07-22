@@ -41,8 +41,9 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
         for(Entity entity : entities) {
             ProgramStartOnMouseClickComponent start = programStartMapper.get(entity);
             MouseClickEventComponent click = clickMapper.get(entity);
-
-            if(click.count >= 2 && start.started == false) {
+            
+            if(click.count >= 2 ) {
+            
                 ProgramStartRequestComponent startRequest = new ProgramStartRequestComponent(name: start.name);
                 FileLoadRequestComponent fileRequest = new FileLoadRequestComponent(fileName: start.path);
 
@@ -65,7 +66,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 topbar.add(new PositionComponent(x: 100 , y: 100, z: 2));
                 topbar.add(new RelativePositionComponent(x: 0, y: 100, z:0, unit: "p%p"));
                 topbar.add(new GetNinePatchComponent(name: "topbar"));
-                topbar.add(new SizeComponent(width: 100, height: 35));
+                topbar.add(new SizeComponent(width: 100, height: 25));
                 topbar.add(new ParentComponent(parent: program));
                 topbar.add(new RelativeSizeComponent(width: 100, unit: "% "));
                 
@@ -73,12 +74,27 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
 
                 titleText.add(new PositionComponent(z: 2));
                 titleText.add(new SizeComponent());
-                titleText.add(new RelativePositionComponent(x: 2, y: 50, z:1, unit: "%%p"));
+                titleText.add(new RelativePositionComponent(x: 2, y: 40, z:1, unit: "%%p"));
                 titleText.add(new ParentComponent(parent: topbar));
                 titleText.add(new TextComponent(text: start.name));
                 titleText.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
                 titleText.add(new ColorComponent(color: Color.BLACK))
 
+                Entity xButton = new Entity();
+                xButton.add(new PositionComponent(z: 100,  y: 100));
+                xButton.add(new RelativePositionComponent(x: 95, y: 15, z: 1, unit: "%%p"));
+                xButton.add(new ParentComponent(parent: topbar));
+                xButton.add(new GetTextureRegionComponent(name: "x"));
+                xButton.add(new SizeComponent(width: 15, height: 15));
+                xButton.add(new ColorComponent(color: Color.WHITE));
+                xButton.add(new HitBoxComponent(rectangle: new Rectangle(0,0,13,13)));
+                xButton.add(new ClickableComponent());
+                xButton.add(new HoverableComponent());
+                xButton.add(new ChangeColorOnMouseHoverComponent(hoverColor: Color.LIGHT_GRAY, offColor: Color.WHITE));
+                xButton.add(new ProgramEndOnMouseClickComponent(name: start.name));
+                xButton.add(new RequestProgramIDComponent(program: program));
+                xButton.add(new RemoveEntitiesOnMouseClickComponent(entities: [program, titleText, topbar, xButton]));
+                
                 ProgramEntityInjectionComponent inject = new ProgramEntityInjectionComponent();
                 inject.entities = new ArrayList<Entity>();
 				
@@ -100,10 +116,14 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 program.add(inject);
                 program.add(viewportComponent);
 
-                start.started = true;
                 this.getEngine().addEntity(program);
                 this.getEngine().addEntity(topbar);
                 this.getEngine().addEntity(titleText);
+                this.getEngine().addEntity(xButton);
+                
+                entity.remove(MouseClickEventComponent.class);
+                entity.remove(MousePressEventComponent.class);
+                entity.remove(MouseReleaseEventComponent.class);
             }
         }
     }
