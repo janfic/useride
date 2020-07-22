@@ -5,6 +5,9 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.files.FileHandle;
 import com.janfic.useride.kernel.components.*;
 import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyCodeSource;
+import java.net.URL;
+import java.util.Arrays;
 
 /**
  *
@@ -18,6 +21,8 @@ public class ProgramStartSystem extends EntitySystem {
     private final ComponentMapper<IDComponent> idMapper;
     private final ComponentMapper<FileComponent> fileMapper;
 
+    private static GroovyClassLoader parent = ProgramStartSystem.parent == null ? new GroovyClassLoader() : ProgramStartSystem.parent;
+
     private ImmutableArray<Entity> entities;
 
     private int idCount;
@@ -28,7 +33,6 @@ public class ProgramStartSystem extends EntitySystem {
         this.fileMapper = ComponentMapper.getFor(FileComponent.class);
         this.injectionMapper = ComponentMapper.getFor(ProgramEntityInjectionComponent.class);
         this.argumentMapper = ComponentMapper.getFor(ProgramArgumentsComponent.class);
-
         this.idCount = 0;
     }
 
@@ -62,8 +66,11 @@ public class ProgramStartSystem extends EntitySystem {
             }
 
             ClassLoaderComponent classLoaderComponent = new ClassLoaderComponent();
-            classLoaderComponent.classLoader = new GroovyClassLoader();
+            classLoaderComponent.classLoader = new GroovyClassLoader(parent);
 
+            classLoaderComponent.classLoader.setShouldRecompile(Boolean.TRUE);
+
+            System.out.println("Recompile: " + Arrays.toString(classLoaderComponent.classLoader.getLoadedClasses()));
             classLoaderComponent.classLoader.addClasspath(rootProgramDirectory.parent().path());
 
             IDComponent idComponent = new IDComponent();
@@ -74,24 +81,6 @@ public class ProgramStartSystem extends EntitySystem {
 
             EngineComponent engineComponent = new EngineComponent();
             engineComponent.engine = new Engine();
-            try {
-                for (FileHandle component : components.list(".groovy")) {
-                    Class c = classLoaderComponent.classLoader.loadClass(
-                            rootProgramDirectory.nameWithoutExtension() + ".components." + component.nameWithoutExtension());
-                }
-
-                for (FileHandle system : systems.list(".groovy")) {
-                    Class c = classLoaderComponent.classLoader.loadClass(
-                            rootProgramDirectory.nameWithoutExtension() + ".systems." + system.nameWithoutExtension());
-                    if (system.nameWithoutExtension().equals("BootSystem")) {
-                        EntitySystem bootSystem = (EntitySystem) c.newInstance();
-                        engineComponent.engine.addSystem(bootSystem);
-                    }
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
             if (entityInjection != null) {
                 Entity e = new Entity();
@@ -104,6 +93,38 @@ public class ProgramStartSystem extends EntitySystem {
                 Entity e = new Entity();
                 e.add(arguments);
             }
+
+            try {
+                for (FileHandle component : components.list(".groovy")) {
+                    GroovyCodeSource source = new GroovyCodeSource(component.file());
+                    source.setCachable(true);
+                    System.out.println(source.getName());
+                    System.out.println(source.getScriptText());
+                    System.out.println(source.getURL());
+                    System.out.println(source.isCachable());
+
+                    Class c = classLoaderComponent.classLoader.parseClass(source, true);
+                }
+
+                for (FileHandle system : systems.list(".groovy")) {
+                    GroovyCodeSource source = new GroovyCodeSource(system.file());
+                    
+                    Class c = classLoaderComponent.classLoader.parseClass(source, true);
+                            //rootProgramDirectory.nameWithoutExtension() + ".systems." + system.nameWithoutExtension(), true, true);
+                    if (system.nameWithoutExtension().equals("BootSystem")) {
+                        EntitySystem bootSystem = (EntitySystem) c.getConstructors()[0].newInstance();
+                        engineComponent.engine.addSystem(bootSystem);
+                    }
+                    System.out.println(c);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            System.out.println("Recompile: " + Arrays.toString(classLoaderComponent.classLoader.getDefinedPackages()));
+            System.out.println("Recompile: " + Arrays.toString(classLoaderComponent.classLoader.getDefinedPackages()));
+            System.out.println("name: " + classLoaderComponent.classLoader.getName());
 
             entity.add(engineComponent);
             entity.add(idComponent);
