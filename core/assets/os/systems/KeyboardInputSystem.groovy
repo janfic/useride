@@ -3,6 +3,7 @@ package os.systems;
 import os.components.*;
 import com.badlogic.gdx.input.*;
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
 
@@ -16,18 +17,20 @@ public class KeyboardInputSystem extends EntitySystem {
 
     int keyDown;
     int keyUp;
+    IntSet pressed;
 
     public KeyboardInputSystem() {
         this.keyListenerMapper = ComponentMapper.getFor(KeyInputComponent.class);
         this.inputProcessor = new InputProcessor() {
             @Override
             public boolean keyDown(int keyCode) {
+                pressed.add(keyCode);
                 keyDown = keyCode;
             }
 
             @Override
             public boolean keyUp(int keyCode) {
-                keyUp = keyCode;
+                pressed.remove(keyCode);
             }
 
             public boolean keyTyped(char key) {}
@@ -38,6 +41,7 @@ public class KeyboardInputSystem extends EntitySystem {
             public boolean touchDragged(int dx, int dy, int button){}
         };
         ((InputMultiplexer)(Gdx.input.getInputProcessor())).addProcessor(this.inputProcessor);
+        pressed = new IntSet();
     }
 	
     public void addedToEngine(Engine engine) {
@@ -49,9 +53,8 @@ public class KeyboardInputSystem extends EntitySystem {
     public void update(float delta) {
         for(Entity entity : entities) {
             KeyInputComponent keyInput = keyListenerMapper.get(entity);
-
-            keyInput.keyUp = this.keyUp;
-            keyInput.keyDown = this.keyDown;
+            keyInput.pressed = pressed;
+            keyInput.keyDown = keyDown;
         }
     }
 

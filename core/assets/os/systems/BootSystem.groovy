@@ -35,6 +35,20 @@ public class BootSystem extends EntitySystem {
         RegisterTextureAtlasAssetComponent registerAtlas = new RegisterTextureAtlasAssetComponent();
         registerAtlas.fileName = "os/assets/userosgui/userosgui.atlas";
         assetManagerEntity.add(registerAtlas);
+        
+        RegisterTextureAtlasAssetComponent registerPizzaAtlas = new RegisterTextureAtlasAssetComponent();
+        registerPizzaAtlas.fileName = "os/assets/pizza/pizza.atlas";
+        GetTextureAtlasAssetComponent getPizzaAtlas = new GetTextureAtlasAssetComponent(fileName: registerPizzaAtlas.fileName);
+        Entity pizza = new Entity();
+        pizza.add(registerPizzaAtlas);
+        pizza.add(getPizzaAtlas);
+        pizza.add(new PositionComponent(x: 100, y: 100, z: 1));
+        pizza.add(new SizeComponent(width: 32, height: 32));
+        pizza.add(new GetSpriteStackComponent(name:"pizza"));
+        pizza.add(new RotationComponent(rotation: 0));
+        pizza.add(new ScaleComponent(scaleX: 2, scaleY: 2));
+        //pizza.add(new SpinComponent(spin: 0.5));
+        pizza.add(new CameraComponent(zScale: 1, angle: 0));
 
         GetTextureAtlasAssetComponent getAtlas = new GetTextureAtlasAssetComponent();
         getAtlas.fileName = registerAtlas.fileName;
@@ -116,6 +130,7 @@ public class BootSystem extends EntitySystem {
         engine.addEntity(menuButton);
         engine.addEntity(table);
         engine.addEntity(textEntity);
+        engine.addEntity(pizza);
 
         engine.addSystem(new RenderSystem());
         engine.addSystem(new DragSystem());
@@ -142,5 +157,7 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new FocusBringToFrontSystem());
         engine.addSystem(new ProgramShortcutSystem());
         engine.addSystem(new RemoveEntitiesOnMouseClickSystem());
+        engine.addSystem(new SpinSystem());
+        engine.addSystem(new CameraSystem());
     }
 }

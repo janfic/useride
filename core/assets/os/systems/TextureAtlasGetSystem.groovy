@@ -11,6 +11,7 @@ public class TextureAtlasGetSystem extends EntitySystem {
     private final ComponentMapper<GetTextureRegionComponent> getRegionMapper;
     private final ComponentMapper<GetAnimationComponent> getAnimationMapper;
     private final ComponentMapper<GetNinePatchComponent> getNinePatchMapper;
+    private final ComponentMapper<GetSpriteStackComponent> getSpriteStack;
 	
     private final ComponentMapper<TextureAtlasComponent> textureAtlasMapper;
 
@@ -18,6 +19,7 @@ public class TextureAtlasGetSystem extends EntitySystem {
 
     public TextureAtlasGetSystem() {
         this.getRegionMapper = ComponentMapper.getFor(GetTextureRegionComponent.class);
+        this.getSpriteStack = ComponentMapper.getFor(GetSpriteStackComponent.class);
         this.getAnimationMapper = ComponentMapper.getFor(GetAnimationComponent.class);
         this.getNinePatchMapper = ComponentMapper.getFor(GetNinePatchComponent.class);
         this.textureAtlasMapper = ComponentMapper.getFor(TextureAtlasComponent.class);
@@ -28,7 +30,7 @@ public class TextureAtlasGetSystem extends EntitySystem {
             Family.all(TextureAtlasComponent.class).get()
         );
         this.entities = engine.getEntitiesFor(
-            Family.one(GetTextureRegionComponent.class, GetAnimationComponent.class, GetNinePatchComponent.class).get()
+            Family.one(GetTextureRegionComponent.class, GetAnimationComponent.class, GetNinePatchComponent.class, GetSpriteStackComponent.class).get()
         );
     }
 
@@ -37,6 +39,7 @@ public class TextureAtlasGetSystem extends EntitySystem {
             GetAnimationComponent getAnimation = getAnimationMapper.get(entity);
             GetTextureRegionComponent getRegion = getRegionMapper.get(entity);
             GetNinePatchComponent getPatch = getNinePatchMapper.get(entity);
+            GetSpriteStackComponent getStack = getSpriteStack.get(entity);
 
             if(getAnimation != null) {
                 for(Entity textureAtlasEntity : textureAtlasEntities) {
@@ -76,6 +79,18 @@ public class TextureAtlasGetSystem extends EntitySystem {
                         entity.add(ninePatchComponent);
                         entity.remove(GetNinePatchComponent.class);
                         break;
+                    }
+                }
+            }
+            if(getStack != null) {
+                for(Entity textureAtlasEntity : textureAtlasEntities) {
+                    TextureAtlasComponent textureAtlas = textureAtlasMapper.get(textureAtlasEntity);
+                    Array<TextureRegion> spriteStack = textureAtlas.atlas.findRegions(getStack.name);
+                    if(spriteStack != null && spriteStack.size > 0) {
+                        SpriteStackComponent spriteStackComponent = new SpriteStackComponent();
+                        spriteStackComponent.stack = spriteStack;
+                        entity.add(spriteStackComponent);
+                        entity.remove(GetSpriteStackComponent.class);
                     }
                 }
             }

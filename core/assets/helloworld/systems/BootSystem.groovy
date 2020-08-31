@@ -21,14 +21,16 @@ public class BootSystem extends EntitySystem {
         }
 
         Entity helloworld = new Entity();
-        helloworld.add(new PositionComponent(x: 215, y: 200));
+        helloworld.add(new PositionComponent(x: 100, y: 200));
         helloworld.add(new TextComponent(text: "Hello World!"));
         RegisterBitmapFontAssetComponent registerFont = new RegisterBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt");
         helloworld.add(registerFont);
         helloworld.add(new LoadAssetsComponent())
-        helloworld.add(new ColorComponent(color: Color.GREEN));
+        helloworld.add(new ColorComponent(color: Color.RED));
         helloworld.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
-
+        helloworld.add(new KeyInputComponent())
+        helloworld.add(new FocusedComponent())
+        
         engine.addEntity(helloworld);
 
         engine.addSystem(new RenderSystem());
@@ -36,6 +38,8 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new AssetLoadSystem());
         engine.addSystem(new AssetRegisterSystem());
         engine.addSystem(new PrintTextSystem());
+        engine.addSystem(new TextInputSystem());
+        engine.addSystem(new KeyboardInputSystem());
 
         super.addedToEngine(engine);
         

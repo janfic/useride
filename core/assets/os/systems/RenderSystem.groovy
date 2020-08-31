@@ -10,9 +10,10 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.utils.viewport.*;
 import com.badlogic.gdx.utils.*;
 
-
 import com.janfic.useride.kernel.components.*;
+import groovy.transform.CompileStatic;
 
+@CompileStatic
 public class RenderSystem extends SortedIteratingSystem {
 	
     private final ComponentMapper<PositionComponent> positionMapper;
@@ -25,13 +26,18 @@ public class RenderSystem extends SortedIteratingSystem {
     private final ComponentMapper<RotationComponent> rotationMapper;
     private final ComponentMapper<BitmapFontComponent> fontMapper;
     private final ComponentMapper<TextComponent> textMapper;
+    private final ComponentMapper<SpriteStackComponent> stackMapper;
+    private final ComponentMapper<CameraComponent> cameraMapper;
 	
     private final ComponentMapper<EngineComponent> engineMapper;
 	
-    private ImmutableArray<Entity> renderEntities;
+    private ImmutableArray<Entity> renderEntities, cameraEntity;
 	
     private Batch batch;
     private Viewport viewport;
+    private CameraComponent camera;
+    
+    float ss_zStretch, angle;
 	
     public RenderSystem() {
         super(
@@ -40,7 +46,8 @@ public class RenderSystem extends SortedIteratingSystem {
                 NinePatchComponent.class, 
                 EngineComponent.class, 
                 TextureRegionComponent.class,
-                TextComponent.class
+                TextComponent.class,
+                SpriteStackComponent.class
             ).get(), 
             new ZComparator()
         );
@@ -55,6 +62,8 @@ public class RenderSystem extends SortedIteratingSystem {
         this.regionMapper = ComponentMapper.getFor(TextureRegionComponent.class);
         this.textMapper = ComponentMapper.getFor(TextComponent.class);
         this.fontMapper = ComponentMapper.getFor(BitmapFontComponent.class);
+        this.stackMapper = ComponentMapper.getFor(SpriteStackComponent.class);
+        this.cameraMapper = ComponentMapper.getFor(CameraComponent.class);
     }
 	
     public void addedToEngine(Engine engine) {
@@ -65,10 +74,16 @@ public class RenderSystem extends SortedIteratingSystem {
                 ViewportComponent.class
             ).get()
         );
+        this.cameraEntity = engine.getEntitiesFor(
+            Family.all(
+                CameraComponent.class
+            ).get()
+        );
     }
 	
     public void update(float delta) {
         if(renderEntities.size() == 0) return;
+        if(cameraEntity.size() > 0) camera = cameraMapper.get(cameraEntity.first());
         forceSort();
         this.batch = renderEntities.first().getComponent(SpriteBatchComponent.class).batch;
         this.viewport = renderEntities.first().getComponent(ViewportComponent.class).viewport;
@@ -91,6 +106,7 @@ public class RenderSystem extends SortedIteratingSystem {
         EngineComponent engineComponent = engineMapper.get(entity);
         TextComponent textComponent = textMapper.get(entity);
         BitmapFontComponent fontComponent = fontMapper.get(entity);
+        SpriteStackComponent stackComponent = stackMapper.get(entity);
 		
         SizeComponent size = sizeMapper.get(entity);
         ScaleComponent scale = scaleMapper.get(entity);
@@ -104,8 +120,8 @@ public class RenderSystem extends SortedIteratingSystem {
         float scaleX = scale == null ? 1f : scale.scaleX;
         float scaleY = scale == null ? 1f : scale.scaleY;
         float rotation = rot == null ? 0f : rot.rotation;
-        float originX = position.x + width / 2;
-        float originY = position.y + height / 2;
+        float originX = 0;//position.x + width / 2;
+        float originY = 0;//position.y + height / 2;
 		
         if(color != null) {
             batch.setColor(color.color);
@@ -115,6 +131,17 @@ public class RenderSystem extends SortedIteratingSystem {
         }
         if(ninePatch != null) {
             ninePatch.ninePatch.draw(batch, position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation); 
+        }
+        if(stackComponent != null && stackComponent.stack != null && camera != null) {
+            float zScale = camera.zScale;
+            float angle = camera.angle;
+            
+            float xStep = (float)(zScale * Math.cos(90 + angle));
+            float yStep = (float)(zScale * Math.sin(90 + angle));
+            
+            for(int i = 0; i < stackComponent.stack.size; i++) {
+                batch.draw(stackComponent.stack.get(i), position.x - (i * xStep * scaleX), position.y - (i * scaleY * yStep) - position.z, (float)(width / 2),(float)( height / 2), width, height, scaleX, scaleY, rotation);
+            }
         }
         if(engineComponent != null) {
             RenderSystem renderSystem = engineComponent.engine.getSystem(RenderSystem.class);
@@ -140,6 +167,7 @@ public class RenderSystem extends SortedIteratingSystem {
             batch.flush();
             if(color != null) fontComponent.font.setColor(Color.WHITE); 
         }
+        
         batch.setColor(Color.WHITE);
     }
 	
