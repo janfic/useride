@@ -130,7 +130,7 @@ public class BootSystem extends EntitySystem {
         engine.addEntity(menuButton);
         engine.addEntity(table);
         engine.addEntity(textEntity);
-        engine.addEntity(pizza);
+        //engine.addEntity(pizza);
 
         engine.addSystem(new RenderSystem());
         engine.addSystem(new DragSystem());

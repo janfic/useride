@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
 import java.util.Map;
 import java.util.HashMap;
+import com.badlogic.gdx.Input;
 
 public class TextInputSystem extends EntitySystem {
     
@@ -43,7 +44,7 @@ public class TextInputSystem extends EntitySystem {
             if(!keyInputComponent.pressed.isEmpty()) {
                 if(wait < 0.5f && wait > 0) {wait -= delta; continue;}
                 
-                String input = "sdsdsds";
+                String input = Input.Keys.toString(keyInputComponent.pressed.first());
                 
                 if(input.length() == 1 && Character.isLetter(input.charAt(0)) ) {
                     textComponent.text = textComponent.text + input;

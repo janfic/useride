@@ -160,6 +160,7 @@ public class RenderSystem extends SortedIteratingSystem {
         }
         if(textComponent != null && fontComponent != null) {
             if(color != null) fontComponent.font.setColor(color.color);
+            if(scale != null) fontComponent.font.getData().setScale(scale.scaleX,scale.scaleY); else fontComponent.font.getData().setScale(1 , 1);
             if(size != null)
             fontComponent.font.draw( batch, textComponent.text, position.x , (float) (position.y + fontComponent.font.getCapHeight() / 2), width, Align.left, true);
             else
