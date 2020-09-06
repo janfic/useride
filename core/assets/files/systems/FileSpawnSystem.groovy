@@ -34,7 +34,7 @@ public class FileSpawnSystem extends EntitySystem {
     
     public void addedToEngine(Engine engine) {
         this.grid = new Entity();
-        grid.add(new PositionComponent(x:10,y: 0));
+        grid.add(new PositionComponent(x: 10, y: -10));
         grid.add(new SizeComponent(width: 90, height: 80));
         engine.addEntity(grid);
         this.pathEntity = engine.getEntitiesFor(

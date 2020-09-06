@@ -1,12 +1,12 @@
 
-userosgui.png
+useridegui.png
 size: 64,32
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 box
   rotate: false
-  xy: 19, 9
+  xy: 52, 20
   size: 9, 8
   split: 4, 4, 3, 4
   orig: 9, 8
@@ -14,7 +14,7 @@ box
   index: -1
 button_down
   rotate: false
-  xy: 41, 19
+  xy: 30, 19
   size: 9, 9
   split: 4, 4, 4, 4
   orig: 9, 9
@@ -22,15 +22,7 @@ button_down
   index: -1
 button_up
   rotate: false
-  xy: 30, 19
-  size: 9, 9
-  split: 4, 4, 4, 4
-  orig: 9, 9
-  offset: 0, 0
-  index: -1
-container
-  rotate: false
-  xy: 2, 2
+  xy: 19, 19
   size: 9, 9
   split: 4, 4, 4, 4
   orig: 9, 9
@@ -46,7 +38,7 @@ content
   index: -1
 shortcut
   rotate: false
-  xy: 19, 19
+  xy: 2, 2
   size: 9, 9
   split: 4, 4, 4, 4
   orig: 9, 9
@@ -54,7 +46,7 @@ shortcut
   index: -1
 topbar
   rotate: false
-  xy: 30, 9
+  xy: 19, 9
   size: 9, 8
   split: 4, 4, 4, 3
   orig: 9, 8
@@ -62,7 +54,7 @@ topbar
   index: -1
 window
   rotate: false
-  xy: 52, 19
+  xy: 41, 19
   size: 9, 9
   split: 4, 4, 4, 4
   orig: 9, 9

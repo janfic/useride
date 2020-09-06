@@ -32,6 +32,8 @@ public class BootSystem extends EntitySystem {
         assetManagerEntity.add(amComp);
         assetManagerEntity.add(new LoadAssetsComponent());
         assetManagerEntity.add(new RegisterTextureAssetComponent(fileName: "files/assets/folder.png"));
+        assetManagerEntity.add(new RegisterTextureAtlasAssetComponent(fileName: "os/assets/userosgui/userosgui.atlas"));
+        assetManagerEntity.add(new GetTextureAtlasAssetComponent(fileName: "os/assets/userosgui/userosgui.atlas"));
         
         Entity background = new Entity();
         background.add(new PositionComponent(x:2, y:1, z:-1));
@@ -45,27 +47,53 @@ public class BootSystem extends EntitySystem {
         grid.add(new SizeComponent(width: 75, height: 75));
         
         Entity path = new Entity();
-        path.add(new TextComponent(text: "os"));
-        path.add(new FileSearchComponent());
         path.add(new PositionComponent());
-        path.add(new RelativePositionComponent(x: 0, y: 500, unit: "%"));
+        path.add(new SizeComponent(width: 400, height: 20));
+        path.add(new RelativePositionComponent(x: 0, y: 485, unit: "%"));
+        path.add(new GetNinePatchComponent(name: "container"));
         path.add(new ParentComponent(parent: grid));
-        path.add(new KeyInputComponent());
-        path.add(new ClickableComponent());
-        path.add(new FocusableComponent());
-        path.add(new FocusedComponent());
-        path.add(new FocusOnMouseClickComponent());
-        path.add(new SizeComponent(width: 10, height: 30));
-        path.add(new HitBoxComponent(rectangle: new Rectangle(0,0,300,50)));
-        path.add(new RegisterBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
-        path.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
-        path.add(new RegisterTextureAssetComponent(fileName: "files/assets/file.png"));
-        path.add(new ColorComponent(color: Color.BLACK));
+        
+        Entity pathText = new Entity();
+        pathText.add(new TextComponent(text: "/"));
+        pathText.add(new FileSearchComponent());
+        pathText.add(new PositionComponent(z: 1));
+        pathText.add(new RelativePositionComponent(x: 10, y: 10));
+        pathText.add(new KeyInputComponent());
+        pathText.add(new ClickableComponent());
+        pathText.add(new FocusableComponent());
+        pathText.add(new FocusedComponent());
+        pathText.add(new ParentComponent(parent: path));
+        pathText.add(new FocusOnMouseClickComponent());
+        pathText.add(new SizeComponent(width: 400, height: 40));
+        pathText.add(new HitBoxComponent(rectangle: new Rectangle(0,0,300,50)));
+        pathText.add(new RegisterBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
+        pathText.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
+        pathText.add(new RegisterTextureAssetComponent(fileName: "files/assets/file.png"));
+        pathText.add(new ColorComponent(color: Color.BLACK));
+        pathText.add(new ScaleComponent(scaleX: 0.75, scaleY: 0.75));
+
+        Entity search = new Entity();
+        search.add(new PositionComponent())
+        search.add(new RelativePositionComponent(x: 400, y: 0));
+        search.add(new ParentComponent(parent: path));
+        search.add(new SizeComponent(width: 80, height: 20));
+        search.add(new GetNinePatchComponent(name: "button_up"));
+        
+        Entity searchText = new Entity();
+        searchText.add(new PositionComponent(z: 1))
+        searchText.add(new RelativePositionComponent(x: 25, y: 10));
+        searchText.add(new ParentComponent(parent: search));
+        searchText.add(new ColorComponent(color: Color.BLACK));
+        searchText.add(new TextComponent(text: "Go"));
+        searchText.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
         
         
         engine.addEntity(assetManagerEntity);
         engine.addEntity(path);
+        engine.addEntity(pathText);
         engine.addEntity(grid);
+        engine.addEntity(search);
+        engine.addEntity(searchText);
         engine.addEntity(background);
         
         engine.addSystem(new RenderSystem());
