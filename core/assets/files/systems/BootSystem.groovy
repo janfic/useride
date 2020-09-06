@@ -78,6 +78,9 @@ public class BootSystem extends EntitySystem {
         search.add(new ParentComponent(parent: path));
         search.add(new SizeComponent(width: 80, height: 20));
         search.add(new GetNinePatchComponent(name: "button_up"));
+        search.add(new ClickableComponent());
+        search.add(new HitBoxComponent(rectangle: new Rectangle(0,0,80,20)));
+        search.add(new FileSearchOnMouseClickComponent(entity: pathText));
         
         Entity searchText = new Entity();
         searchText.add(new PositionComponent(z: 1))
@@ -111,6 +114,7 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new FocusOnMouseClickSystem());
         engine.addSystem(new TextInputSystem());
         engine.addSystem(new FileSpawnSystem());
+        engine.addSystem(new FileSearchOnMouseClickSystem());
     }
     
     public void update(float delta) {

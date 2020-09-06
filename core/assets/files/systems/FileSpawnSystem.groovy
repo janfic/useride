@@ -52,6 +52,11 @@ public class FileSpawnSystem extends EntitySystem {
         FileHandle root = Gdx.files.local(path.text);
         
         if(root.exists() && root.isDirectory()) {
+            
+            for(Entity entity : fileEntities) {
+                this.getEngine().removeEntity(entity);
+            }
+            
             FileHandle[] children = root.list();
             for(int i = 0; i < root.list().length; i++) {
                 FileHandle child = children[i];
@@ -64,6 +69,7 @@ public class FileSpawnSystem extends EntitySystem {
                 file.add(new RelativePositionComponent(x: fx, y: fy, unit: "%"));
                 file.add(new ParentComponent(parent: grid));
                 file.add(new GetTextureAssetComponent(fileName: child.isDirectory() ? "files/assets/folder.png" : "files/assets/file.png"));
+                file.add(new FileLoadRequestComponent(fileName: child.path()));
                 
                 Entity fileName = new Entity();
                 
@@ -77,6 +83,7 @@ public class FileSpawnSystem extends EntitySystem {
                 fileName.add(new ScaleComponent(scaleX: 0.5f, scaleY: 0.5f));
                 fileName.add(new ParentComponent(parent: file));
                 fileName.add(new ColorComponent(color: Color.BLACK));
+                fileName.add(new FileLoadRequestComponent(fileName: child.path()));
                 
                 engine.addEntity(file);
                 engine.addEntity(fileName);
