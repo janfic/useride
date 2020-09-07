@@ -49,7 +49,7 @@ public class FileSpawnSystem extends EntitySystem {
         if(pathEntity.size() < 1) return;
         TextComponent path = textMapper.get(pathEntity.first());
         
-        FileHandle root = Gdx.files.local(path.text);
+        FileHandle root = Gdx.files.local(path.text.trim());
         
         if(root.exists() && root.isDirectory()) {
             
@@ -75,12 +75,12 @@ public class FileSpawnSystem extends EntitySystem {
                 
                 String name = child.name().length() > 12 ? child.name().substring(0, 5) + ".." + child.name().substring(child.name().length()  - 5) : child.name();
                 
-                fileName.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
+                fileName.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console 12px.fnt"));
                 fileName.add(new PositionComponent());
                 fileName.add(new RelativePositionComponent(x: 0, y: -10));
                 fileName.add(new TextComponent(text: name));
                 fileName.add(new SizeComponent(width: 90, height: 20));
-                fileName.add(new ScaleComponent(scaleX: 0.5f, scaleY: 0.5f));
+                fileName.add(new ScaleComponent(scaleX: 0.85f, scaleY: 0.85f));
                 fileName.add(new ParentComponent(parent: file));
                 fileName.add(new ColorComponent(color: Color.BLACK));
                 fileName.add(new FileLoadRequestComponent(fileName: child.path()));
@@ -88,9 +88,9 @@ public class FileSpawnSystem extends EntitySystem {
                 engine.addEntity(file);
                 engine.addEntity(fileName);
             }
-            pathEntity.first().remove(FileSearchComponent.class);
+            //pathEntity.first().remove(FileSearchComponent.class);
         }
-        
+        pathEntity.first().remove(FileSearchComponent.class);
     }
     
     public void removedFromEngine(Engine engine) {

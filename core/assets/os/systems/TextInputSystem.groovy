@@ -5,8 +5,9 @@ import com.badlogic.gdx.input.*;
 import com.badlogic.gdx.*;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import com.badlogic.gdx.Input;
 
 public class TextInputSystem extends EntitySystem {
@@ -36,23 +37,19 @@ public class TextInputSystem extends EntitySystem {
     
     public void update(float delta) {
         this.keyCursorTimer += delta;
-
+        
         for(Entity entity : entities) {
             TextComponent textComponent = textMapper.get(entity);
             KeyInputComponent keyInputComponent = keyboardMapper.get(entity);
 
-            if(!keyInputComponent.pressed.isEmpty()) {
-                if(wait < 0.5f && wait > 0) {wait -= delta; continue;}
+            if(keyInputComponent.keyTyped != 0 && keyInputComponent.keyTyped != 8 && keyInputComponent.keyTyped != keyInputComponent.keyUp && !keyInputComponent.pressed.isEmpty()) {
+                String input = "" + (char)keyInputComponent.keyTyped;
+                textComponent.text = textComponent.text + input;
                 
-                String input = Input.Keys.toString(keyInputComponent.pressed.first());
-                
-                if(input.length() == 1 && Character.isLetter(input.charAt(0)) ) {
-                    textComponent.text = textComponent.text + input;
-                }
-                wait -= delta;
             }
-            else {
-                wait = 0.5f;
+            
+            if(keyInputComponent.keyTyped == 8 && textComponent.text.length() >= 1) {
+                textComponent.text = textComponent.text.substring(0, textComponent.text.length() - 1);
             }
         }
     }

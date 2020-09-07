@@ -66,11 +66,11 @@ public class BootSystem extends EntitySystem {
         pathText.add(new FocusOnMouseClickComponent());
         pathText.add(new SizeComponent(width: 400, height: 40));
         pathText.add(new HitBoxComponent(rectangle: new Rectangle(0,0,300,50)));
-        pathText.add(new RegisterBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
-        pathText.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
+        pathText.add(new RegisterBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console 12px.fnt"));
+        pathText.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console 12px.fnt"));
         pathText.add(new RegisterTextureAssetComponent(fileName: "files/assets/file.png"));
         pathText.add(new ColorComponent(color: Color.BLACK));
-        pathText.add(new ScaleComponent(scaleX: 0.75, scaleY: 0.75));
+        //pathText.add(new ScaleComponent(scaleX: 0.75, scaleY: 0.75));
 
         Entity search = new Entity();
         search.add(new PositionComponent())
@@ -88,7 +88,7 @@ public class BootSystem extends EntitySystem {
         searchText.add(new ParentComponent(parent: search));
         searchText.add(new ColorComponent(color: Color.BLACK));
         searchText.add(new TextComponent(text: "Go"));
-        searchText.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
+        searchText.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console 12px.fnt"));
         
         
         engine.addEntity(assetManagerEntity);

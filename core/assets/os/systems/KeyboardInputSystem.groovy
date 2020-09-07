@@ -6,6 +6,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
+import java.util.*;
 
 public class KeyboardInputSystem extends EntitySystem {
 
@@ -17,7 +18,8 @@ public class KeyboardInputSystem extends EntitySystem {
 
     int keyDown;
     int keyUp;
-    IntSet pressed;
+    int keyTyped;
+    Set<Integer> pressed;
 
     public KeyboardInputSystem() {
         this.keyListenerMapper = ComponentMapper.getFor(KeyInputComponent.class);
@@ -26,22 +28,28 @@ public class KeyboardInputSystem extends EntitySystem {
             public boolean keyDown(int keyCode) {
                 pressed.add(keyCode);
                 keyDown = keyCode;
+                return false;
             }
 
             @Override
             public boolean keyUp(int keyCode) {
                 pressed.remove(keyCode);
+                keyUp = keyCode;
+                return false;
             }
 
-            public boolean keyTyped(char key) {}
-            public boolean mouseMoved(int x, int y) {}
-            public boolean touchDown(int x, int y, int pointer, int button) {}
-            public boolean touchUp(int x, int y, int pointer, int button) {}
-            public boolean scrolled(int scroll){}
-            public boolean touchDragged(int dx, int dy, int button){}
+            public boolean keyTyped(char key) {
+                keyTyped = key;
+                return false;
+            }
+            public boolean mouseMoved(int x, int y) {return false;}
+            public boolean touchDown(int x, int y, int pointer, int button) {return false;}
+            public boolean touchUp(int x, int y, int pointer, int button) {return false;}
+            public boolean scrolled(int scroll){return false;}
+            public boolean touchDragged(int dx, int dy, int button){return false;}
         };
         ((InputMultiplexer)(Gdx.input.getInputProcessor())).addProcessor(this.inputProcessor);
-        pressed = new IntSet();
+        pressed = new HashSet<Integer>();
     }
 	
     public void addedToEngine(Engine engine) {
@@ -55,7 +63,12 @@ public class KeyboardInputSystem extends EntitySystem {
             KeyInputComponent keyInput = keyListenerMapper.get(entity);
             keyInput.pressed = pressed;
             keyInput.keyDown = keyDown;
+            keyInput.keyUp = keyUp;
+            keyInput.keyTyped = keyTyped;
         }
+        keyDown = 0;
+        keyUp = 0;
+        keyTyped = 0;
     }
 
     public void removedFromEngine(Engine engine) {
