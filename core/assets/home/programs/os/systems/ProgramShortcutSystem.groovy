@@ -29,7 +29,7 @@ public class ProgramShortcutSystem extends EntitySystem {
             Family.all(ProgramStartOnMouseClickComponent.class).get()
         );
         this.programs.clear();
-        FileHandle programsDir = Gdx.files.local("");
+        FileHandle programsDir = Gdx.files.local("home/programs/");
         for(FileHandle file : programsDir.list()) {
             if(file.isDirectory() && file.child("components").exists() && file.child("systems").exists() && file.child("assets/icon.png").exists()) {
                 this.programs.add(file);

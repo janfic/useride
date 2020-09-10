@@ -23,21 +23,22 @@ import os.systems.*;
 public class BootSystem extends EntitySystem {	
 
     public void addedToEngine(Engine engine) {
+        
         Entity assetManagerEntity = new Entity();
         AssetManagerComponent amComp = new AssetManagerComponent();
         amComp.manager = new AssetManager();
         assetManagerEntity.add(amComp);
 
         RegisterTextureAssetComponent registerTexture = new RegisterTextureAssetComponent();
-        registerTexture.fileName = "os/assets/badlogic.jpg";
+        registerTexture.fileName = "home/programs/os/assets/badlogic.jpg";
         assetManagerEntity.add(registerTexture);
 
         RegisterTextureAtlasAssetComponent registerAtlas = new RegisterTextureAtlasAssetComponent();
-        registerAtlas.fileName = "os/assets/userosgui/userosgui.atlas";
+        registerAtlas.fileName = "home/programs/os/assets/userosgui/userosgui.atlas";
         assetManagerEntity.add(registerAtlas);
         
         RegisterTextureAtlasAssetComponent registerPizzaAtlas = new RegisterTextureAtlasAssetComponent();
-        registerPizzaAtlas.fileName = "os/assets/pizza/pizza.atlas";
+        registerPizzaAtlas.fileName = "home/programs/os/assets/pizza/pizza.atlas";
         GetTextureAtlasAssetComponent getPizzaAtlas = new GetTextureAtlasAssetComponent(fileName: registerPizzaAtlas.fileName);
         Entity pizza = new Entity();
         pizza.add(registerPizzaAtlas);
@@ -107,8 +108,8 @@ public class BootSystem extends EntitySystem {
 		
         textEntity.add(new TextToTimeComponent());
         textEntity.add(new PositionComponent(x: 100, y: 200, z:2));
-        textEntity.add(new RegisterBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
-        textEntity.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
+        textEntity.add(new RegisterBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console.fnt"));
+        textEntity.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console.fnt"));
         textEntity.add(new ColorComponent(color: Color.GRAY));
         textEntity.add(new RelativePositionComponent(x: 90, y: 50, unit: "%"));
         textEntity.add(new RelativeSizeComponent(width: 10, height: 100, unit: "%"));
@@ -119,8 +120,8 @@ public class BootSystem extends EntitySystem {
         Entity background = new Entity();
 
         background.add(new PositionComponent(x: 0, y: 0, z: -1));
-        background.add(new RegisterTextureAssetComponent(fileName: "os/assets/background.jpg"));
-        background.add(new GetTextureAssetComponent(fileName: "os/assets/background.jpg"));
+        background.add(new RegisterTextureAssetComponent(fileName: "home/programs/os/assets/background.jpg"));
+        background.add(new GetTextureAssetComponent(fileName: "home/programs/os/assets/background.jpg"));
         background.add(new SizeComponent());
         background.add(new RelativeSizeComponent(width: 2000, height: 2000, unit: "%"));
         background.add(new ParentComponent(parent: table));

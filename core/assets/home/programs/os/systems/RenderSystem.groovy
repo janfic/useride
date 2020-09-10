@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.viewport.*;
 import com.badlogic.gdx.utils.*;
 
 import com.janfic.useride.kernel.components.*;
+
 import groovy.transform.CompileStatic;
 
 @CompileStatic
@@ -82,6 +83,7 @@ public class RenderSystem extends SortedIteratingSystem {
     }
 	
     public void update(float delta) {
+        
         if(renderEntities.size() == 0) return;
         if(cameraEntity.size() > 0) camera = cameraMapper.get(cameraEntity.first());
         forceSort();
@@ -145,6 +147,11 @@ public class RenderSystem extends SortedIteratingSystem {
         }
         if(engineComponent != null) {
             RenderSystem renderSystem = engineComponent.engine.getSystem(RenderSystem.class);
+            KeyboardInputSystem ks = engineComponent.engine.getSystem(KeyboardInputSystem.class);
+            System.out.println(ks);
+            
+            //System.out.println(engineComponent.engine.getEntitiesFor(Family.all(FocusedComponent.class).get()).first().getComponent(FocusedComponent.class).getClass() == FocusedComponent.class);
+            System.out.println("renderSystem: " + renderSystem);
             if(renderSystem != null) {
                 batch.end();
                 renderSystem.update(delta); 

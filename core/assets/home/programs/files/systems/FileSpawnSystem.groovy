@@ -68,14 +68,14 @@ public class FileSpawnSystem extends EntitySystem {
                 file.add(new PositionComponent());
                 file.add(new RelativePositionComponent(x: fx, y: fy, unit: "%"));
                 file.add(new ParentComponent(parent: grid));
-                file.add(new GetTextureAssetComponent(fileName: child.isDirectory() ? "files/assets/folder.png" : "files/assets/file.png"));
+                file.add(new GetTextureAssetComponent(fileName: child.isDirectory() ? "home/programs/files/assets/folder.png" : "home/programs/files/assets/file.png"));
                 file.add(new FileLoadRequestComponent(fileName: child.path()));
                 
                 Entity fileName = new Entity();
                 
                 String name = child.name().length() > 11 ? child.name().substring(0, 5) + ".." + child.name().substring(child.name().length()  - 4) : child.name();
                 
-                fileName.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console 12px.fnt"));
+                fileName.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
                 fileName.add(new PositionComponent());
                 fileName.add(new RelativePositionComponent(x: 0, y: -10));
                 fileName.add(new TextComponent(text: name));
