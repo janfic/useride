@@ -21,11 +21,11 @@ public class BootSystem extends EntitySystem {
         
         ImmutableArray<Entity> inject = engine.getEntitiesFor(Family.all(ProgramEntityInjectionComponent.class).get());
         ProgramEntityInjectionComponent injection = inject.first().getComponent(ProgramEntityInjectionComponent.class);
-
-        for(Entity e : injection.entities) {
-            engine.addEntity(e);  
-        }
         
+        for(Entity e : injection.entities) {
+            engine.addEntity(e);
+        }
+               
         Entity assetManagerEntity = new Entity();
         AssetManagerComponent amComp = new AssetManagerComponent();
         amComp.manager = new AssetManager();
@@ -54,7 +54,7 @@ public class BootSystem extends EntitySystem {
         path.add(new ParentComponent(parent: grid));
         
         Entity pathText = new Entity();
-        pathText.add(new TextComponent(text: "/"));
+        pathText.add(new TextComponent(text: "/home"));
         pathText.add(new FileSearchComponent());
         pathText.add(new PositionComponent(z: 1));
         pathText.add(new RelativePositionComponent(x: 10, y: 10));
@@ -84,7 +84,7 @@ public class BootSystem extends EntitySystem {
         
         Entity searchText = new Entity();
         searchText.add(new PositionComponent(z: 1))
-        searchText.add(new RelativePositionComponent(x: 25, y: 10));
+        searchText.add(new RelativePositionComponent(x: 30, y: 10));
         searchText.add(new ParentComponent(parent: search));
         searchText.add(new ColorComponent(color: Color.BLACK));
         searchText.add(new TextComponent(text: "Go"));

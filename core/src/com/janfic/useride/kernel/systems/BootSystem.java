@@ -9,7 +9,7 @@ import com.janfic.useride.kernel.components.*;
  * This System starts the program by adding all the required systems and
  * entities to the engine.
  *
- * @author janfc
+ * @author janfic
  */
 public class BootSystem extends EntitySystem {
 

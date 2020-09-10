@@ -44,7 +44,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
             
             if(click.count >= 2 ) {
             
-                ProgramStartRequestComponent startRequest = new ProgramStartRequestComponent(name: start.name);
+                ProgramStartRequestComponent startRequest = new ProgramStartRequestComponent(name: start.path);
                 FileLoadRequestComponent fileRequest = new FileLoadRequestComponent(fileName: start.path);
 
                 Entity program = new Entity();

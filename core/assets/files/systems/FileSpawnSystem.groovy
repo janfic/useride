@@ -35,7 +35,7 @@ public class FileSpawnSystem extends EntitySystem {
     public void addedToEngine(Engine engine) {
         this.grid = new Entity();
         grid.add(new PositionComponent(x: 10, y: -10));
-        grid.add(new SizeComponent(width: 90, height: 80));
+        grid.add(new SizeComponent(width: 95, height: 80));
         engine.addEntity(grid);
         this.pathEntity = engine.getEntitiesFor(
             Family.all(FileSearchComponent.class, TextComponent.class).get()
@@ -73,14 +73,13 @@ public class FileSpawnSystem extends EntitySystem {
                 
                 Entity fileName = new Entity();
                 
-                String name = child.name().length() > 12 ? child.name().substring(0, 5) + ".." + child.name().substring(child.name().length()  - 5) : child.name();
+                String name = child.name().length() > 11 ? child.name().substring(0, 5) + ".." + child.name().substring(child.name().length()  - 4) : child.name();
                 
                 fileName.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console 12px.fnt"));
                 fileName.add(new PositionComponent());
                 fileName.add(new RelativePositionComponent(x: 0, y: -10));
                 fileName.add(new TextComponent(text: name));
                 fileName.add(new SizeComponent(width: 90, height: 20));
-                fileName.add(new ScaleComponent(scaleX: 0.85f, scaleY: 0.85f));
                 fileName.add(new ParentComponent(parent: file));
                 fileName.add(new ColorComponent(color: Color.BLACK));
                 fileName.add(new FileLoadRequestComponent(fileName: child.path()));

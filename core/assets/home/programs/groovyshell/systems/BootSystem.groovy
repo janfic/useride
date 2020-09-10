@@ -14,6 +14,9 @@ public class BootSystem extends EntitySystem {
     
     @Override
     public void addedToEngine(Engine engine) {
+        
+        System.out.println("This is inside groovyshell bootsystem");
+        
         ImmutableArray<Entity> inject = engine.getEntitiesFor(Family.all(ProgramEntityInjectionComponent.class).get());
         ProgramEntityInjectionComponent injection = inject.first().getComponent(ProgramEntityInjectionComponent.class);
 
@@ -23,7 +26,7 @@ public class BootSystem extends EntitySystem {
         
         Entity groovyShellCore = new Entity();
         
-        RegisterBitmapFontAssetComponent registerFont = new RegisterBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt");
+        RegisterBitmapFontAssetComponent registerFont = new RegisterBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console.fnt");
         groovyShellCore.add(registerFont);
         groovyShellCore.add(new LoadAssetsComponent());
         
@@ -31,7 +34,7 @@ public class BootSystem extends EntitySystem {
         input.add(new TextComponent(text: ""));
         input.add(new FocusableComponent());
         input.add(new KeyInputComponent());
-        input.add(new GetBitmapFontAssetComponent(fileName: "os/assets/userosgui/Lucida Console.fnt"));
+        input.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console.fnt"));
         
         
         Entity output = new Entity();

@@ -46,6 +46,7 @@ public class ProgramShortcutSystem extends EntitySystem {
             shortcut.add(new PositionComponent());
             shortcut.add(new SizeComponent());
             shortcut.add(new ProgramStartOnMouseClickComponent(name: program.name(), path: program.path()));
+            System.out.println(program.path());
             shortcut.add(new ParentComponent(parent: shortcuts));
             shortcut.add(new RelativeSizeComponent(width: 100, height: 100, unit: "%"));
             shortcut.add(new RelativePositionComponent(x: ((int) (i / 12)) * 100, y: 1200 - (i * 100), unit: "%"));

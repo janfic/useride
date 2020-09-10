@@ -87,7 +87,7 @@ public class RenderSystem extends SortedIteratingSystem {
         forceSort();
         this.batch = renderEntities.first().getComponent(SpriteBatchComponent.class).batch;
         this.viewport = renderEntities.first().getComponent(ViewportComponent.class).viewport;
-		
+        
         //viewport.update(viewport.getScreenWidth(), viewport.getScreenHeight(), true);
         viewport.apply(true);
 		
