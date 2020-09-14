@@ -48,8 +48,8 @@ public class BootSystem extends EntitySystem {
         
         Entity path = new Entity();
         path.add(new PositionComponent());
-        path.add(new SizeComponent(width: 400, height: 20));
-        path.add(new RelativePositionComponent(x: 0, y: 485, unit: "%"));
+        path.add(new SizeComponent(width: 360, height: 20));
+        path.add(new RelativePositionComponent(x: 50, y: 485, unit: "%"));
         path.add(new GetNinePatchComponent(name: "container"));
         path.add(new ParentComponent(parent: grid));
         
@@ -74,7 +74,7 @@ public class BootSystem extends EntitySystem {
 
         Entity search = new Entity();
         search.add(new PositionComponent())
-        search.add(new RelativePositionComponent(x: 400, y: 0));
+        search.add(new RelativePositionComponent(x: 100, y: 0, unit: "%"));
         search.add(new ParentComponent(parent: path));
         search.add(new SizeComponent(width: 80, height: 20));
         search.add(new GetNinePatchComponent(name: "button_up"));
@@ -115,6 +115,7 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new TextInputSystem());
         engine.addSystem(new FileSpawnSystem());
         engine.addSystem(new FileSearchOnMouseClickSystem());
+        engine.addSystem(new FileSearchOnMouseDoubleClickSystem());
     }
     
     public void update(float delta) {

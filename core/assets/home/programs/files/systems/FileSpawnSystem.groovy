@@ -35,7 +35,7 @@ public class FileSpawnSystem extends EntitySystem {
     public void addedToEngine(Engine engine) {
         this.grid = new Entity();
         grid.add(new PositionComponent(x: 10, y: -10));
-        grid.add(new SizeComponent(width: 95, height: 80));
+        grid.add(new SizeComponent(width: 75, height: 75));
         engine.addEntity(grid);
         this.pathEntity = engine.getEntitiesFor(
             Family.all(FileSearchComponent.class, TextComponent.class).get()
@@ -57,6 +57,25 @@ public class FileSpawnSystem extends EntitySystem {
                 this.getEngine().removeEntity(entity);
             }
             
+            Entity parent = new Entity();
+            parent.add(new PositionComponent())
+            parent.add(new RelativePositionComponent(x: 0, y: 512, unit: "%"));
+            parent.add(new ParentComponent(parent: grid));
+            parent.add(new SizeComponent(width: 35, height: 20));
+            parent.add(new GetNinePatchComponent(name: "button_up"));
+            parent.add(new ClickableComponent());
+            parent.add(new HitBoxComponent(rectangle: new Rectangle(0,0,80,20)));
+            parent.add(new FileSearchOnMouseDoubleClickComponent());
+            parent.add(new FileLoadRequestComponent(fileName: root.parent().path()));
+            
+            Entity parentSymbol = new Entity();
+            parentSymbol.add(new PositionComponent(z: 1));
+            parentSymbol.add(new RelativePositionComponent(x: 10, y: 2));
+            parentSymbol.add(new ParentComponent(parent: parent));
+            parentSymbol.add(new GetTextureRegionComponent(name: "up_arrow"));
+            parentSymbol.add(new ColorComponent(color: Color.BLACK));
+            
+            
             FileHandle[] children = root.list();
             for(int i = 0; i < root.list().length; i++) {
                 FileHandle child = children[i];
@@ -70,6 +89,10 @@ public class FileSpawnSystem extends EntitySystem {
                 file.add(new ParentComponent(parent: grid));
                 file.add(new GetTextureAssetComponent(fileName: child.isDirectory() ? "home/programs/files/assets/folder.png" : "home/programs/files/assets/file.png"));
                 file.add(new FileLoadRequestComponent(fileName: child.path()));
+                file.add(new HitBoxComponent(rectangle: new Rectangle(0,0, 64, 64)));
+                file.add(new ClickableComponent());
+                file.add(new FileLoadRequestComponent(fileName: child.path()));
+                file.add(new FileSearchOnMouseDoubleClickComponent());
                 
                 Entity fileName = new Entity();
                 
@@ -88,6 +111,8 @@ public class FileSpawnSystem extends EntitySystem {
                 engine.addEntity(fileName);
             }
             //pathEntity.first().remove(FileSearchComponent.class);
+            engine.addEntity(parent);
+            engine.addEntity(parentSymbol);
         }
         pathEntity.first().remove(FileSearchComponent.class);
     }

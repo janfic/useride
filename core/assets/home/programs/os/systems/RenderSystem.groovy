@@ -146,12 +146,7 @@ public class RenderSystem extends SortedIteratingSystem {
             }
         }
         if(engineComponent != null) {
-            RenderSystem renderSystem = engineComponent.engine.getSystem(RenderSystem.class);
-            KeyboardInputSystem ks = engineComponent.engine.getSystem(KeyboardInputSystem.class);
-            System.out.println(ks);
-            
-            //System.out.println(engineComponent.engine.getEntitiesFor(Family.all(FocusedComponent.class).get()).first().getComponent(FocusedComponent.class).getClass() == FocusedComponent.class);
-            System.out.println("renderSystem: " + renderSystem);
+            RenderSystem renderSystem = engineComponent.engine.getSystem(RenderSystem.class);      
             if(renderSystem != null) {
                 batch.end();
                 renderSystem.update(delta); 

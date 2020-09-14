@@ -62,7 +62,6 @@ public class TextureAtlasGetSystem extends EntitySystem {
                     if(region != null) {
                         TextureRegionComponent textureRegionComponent = new TextureRegionComponent();
                         textureRegionComponent.textureRegion = region;
-                        System.out.println("REGION");
                         entity.add(textureRegionComponent);
                         entity.remove(GetTextureRegionComponent.class);
                         break;
