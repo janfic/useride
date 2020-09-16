@@ -49,7 +49,7 @@ public class OptionMenuSystem extends EntitySystem {
             MouseClickEventComponent click = clickMapper.get(entity);
             entity.remove(MouseClickEventComponent.class);
             System.out.println(Input.Buttons.RIGHT + " "  + click.button);
-            //if(click.button != Input.Buttons.RIGHT) continue;
+            if(click.button != Input.Buttons.RIGHT) continue;
             
             Entity optionMenu = new Entity();
             optionMenu.add(new PositionComponent(x: 100, y: 100, z: 2));

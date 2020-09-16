@@ -29,8 +29,41 @@ public class MouseClickSystem extends SortedIteratingSystem {
     private Vector2 mouseCoords;
     private boolean pressed;
     
+    private InputProcessor inputProcessor; 
+    
+    int mx, my, button;
+    boolean down;
+    
     public MouseClickSystem() {
         super(Family.all(PositionComponent.class, HitBoxComponent.class, ClickableComponent.class).get(), new ZComparator());
+        this.inputProcessor = new InputProcessor() {
+            @Override
+            public boolean keyDown(int keyCode) {return false;}
+            public boolean keyUp(int keyCode) {return false;}
+            public boolean keyTyped(char key) {return false;}
+            public boolean mouseMoved(int x, int y) {
+                mx = x;
+                my = y;
+                return false;
+            }
+            public boolean touchDown(int x, int y, int pointer, int button) {
+                mx = x;
+                my = y;
+                down = true;
+                MouseClickSystem.this.button = button;
+                return false;
+            }
+            public boolean touchUp(int x, int y, int pointer, int button) {
+                mx = x;
+                my = y;
+                down = false;
+                MouseClickSystem.this.button = button;
+                return false;
+            }
+            public boolean scrolled(int scroll){return false;}
+            public boolean touchDragged(int dx, int dy, int button){return false;}
+        };
+        ((InputMultiplexer)(Gdx.input.getInputProcessor())).addProcessor(this.inputProcessor);
         this.clickableMapper = ComponentMapper.getFor(ClickableComponent.class);
         this.hitboxMapper = ComponentMapper.getFor(HitBoxComponent.class);
         this.positionMapper = ComponentMapper.getFor(PositionComponent.class);
@@ -86,7 +119,7 @@ public class MouseClickSystem extends SortedIteratingSystem {
         if(renderEntity.size() < 1) return;
         ViewportComponent viewportComponent = viewportMapper.get(renderEntity.first());
 		
-        this.mouseCoords = getViewportCoords(viewportComponent.viewport, Gdx.input.getX(), Gdx.input.getY());
+        this.mouseCoords = getViewportCoords(viewportComponent.viewport, mx, my);
         forceSort()
         pressed = false;
         for(Entity entity : entities) {
@@ -116,6 +149,7 @@ public class MouseClickSystem extends SortedIteratingSystem {
 
             press.x = this.mouseCoords.x;
             press.y = this.mouseCoords.y;
+            press.button = this.button;
             press.count += 1;
             press.timer = 0.25f;
             pressed = true;
@@ -131,6 +165,7 @@ public class MouseClickSystem extends SortedIteratingSystem {
                 release.count += 1;
                 release.x = this.mouseCoords.x;
                 release.y = this.mouseCoords.y;
+                release.button = this.button;
                 release.timer = 0.25f;
                 pressed = true;
             }
@@ -143,15 +178,7 @@ public class MouseClickSystem extends SortedIteratingSystem {
             }
 
             click.count = Math.min(press.count, release.count);
-            if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-                click.button = Input.Buttons.LEFT;
-            }
-            else if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-                click.button = Input.Buttons.RIGHT;
-            }
-            else if(Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
-                click.button = Input.Buttons.MIDDLE;
-            }
+            click.button = this.button;
         }
 
         hitBox.rectangle.setPosition(temp);
