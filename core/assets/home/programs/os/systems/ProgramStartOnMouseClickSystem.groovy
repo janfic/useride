@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.utils.viewport.*;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
 public class ProgramStartOnMouseClickSystem extends EntitySystem {
 	
@@ -102,8 +103,12 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 ViewportComponent viewportComponent = new ViewportComponent();
                 viewportComponent.viewport = new FitViewport(500, 400);
                 SpriteBatchComponent spriteBatchComponent = renderEntities.first().getComponent(SpriteBatchComponent.class);
+                FrameBufferComponent frameBuffer = new FrameBufferComponent(frameBuffer: new FrameBuffer(Pixmap.Format.RGBA8888, 500, 400, true));
                 graphicsEntity.add(spriteBatchComponent);
+                graphicsEntity.add(frameBuffer);
                 graphicsEntity.add(viewportComponent);
+                
+                program.add(frameBuffer);
 				
                 Entity assetManager = new Entity();
                 AssetManagerComponent assetManagerComponent = new AssetManagerComponent();

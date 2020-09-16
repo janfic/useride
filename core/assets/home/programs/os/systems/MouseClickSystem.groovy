@@ -62,7 +62,7 @@ public class MouseClickSystem extends SortedIteratingSystem {
             MousePressEventComponent press = pressMapper.get(entity);
             MouseReleaseEventComponent release = releaseMapper.get(entity);
 
-            entity.remove(MouseClickEventComponent.class);
+            //entity.remove(MouseClickEventComponent.class);
 
             if(press != null) {
                 press.timer -= delta;
@@ -143,6 +143,15 @@ public class MouseClickSystem extends SortedIteratingSystem {
             }
 
             click.count = Math.min(press.count, release.count);
+            if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+                click.button = Input.Buttons.LEFT;
+            }
+            else if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+                click.button = Input.Buttons.RIGHT;
+            }
+            else if(Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
+                click.button = Input.Buttons.MIDDLE;
+            }
         }
 
         hitBox.rectangle.setPosition(temp);

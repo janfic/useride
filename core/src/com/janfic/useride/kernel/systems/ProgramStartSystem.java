@@ -3,18 +3,12 @@ package com.janfic.useride.kernel.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.janfic.useride.kernel.components.*;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
-import java.util.ArrayList;
-import java.util.*;
-import org.codehaus.groovy.ast.ClassNode;
-import org.codehaus.groovy.classgen.GeneratorContext;
-import org.codehaus.groovy.control.CompilationFailedException;
-import org.codehaus.groovy.control.CompilePhase;
 import org.codehaus.groovy.control.CompilerConfiguration;
-import org.codehaus.groovy.control.SourceUnit;
-import org.codehaus.groovy.control.customizers.CompilationCustomizer;
 
 /**
  *
@@ -86,7 +80,8 @@ public class ProgramStartSystem extends EntitySystem {
 
             System.out.println("[ ProgramStartSystem ]: Creating Program Entity Components.. ");
             ClassLoaderComponent classLoaderComponent = new ClassLoaderComponent();
-            classLoaderComponent.classLoader = new GroovyClassLoader(loaderComponent.classLoader);
+            CompilerConfiguration config = new CompilerConfiguration();
+            classLoaderComponent.classLoader = loaderComponent.classLoader;
             classLoaderComponent.classLoader.addClasspath(rootProgramDirectory.parent().path());
 
             IDComponent idComponent = new IDComponent();
@@ -121,14 +116,18 @@ public class ProgramStartSystem extends EntitySystem {
             try {
                 System.out.println("[ ProgramStartSystem ]: Compiling Components: " + components.list(".groovy").length + " Component files found");
                 for (FileHandle component : components.list(".groovy")) {
-                    Class c = loaderComponent.classLoader.loadClass(rootProgramDirectory.name() + ".components." + component.nameWithoutExtension());
-                    System.out.println(c == loaderComponent.classLoader.parseClass(component.file()));
+                    GroovyCodeSource source = new GroovyCodeSource(component.file());
+                    Class c = loaderComponent.classLoader.parseClass(source, false);
+                    //Class c2 = loaderComponent.classLoader.loadClass(rootProgramDirectory.name() + ".components." + component.nameWithoutExtension());
+                    //System.out.println("Class: " + c + "\t" + (c == c2));
                 }
 
                 System.out.println("[ ProgramStartSystem ]: Compiling Systems: " + systems.list(".groovy").length + " Systems files found");
                 for (FileHandle system : systems.list(".groovy")) {
-                    Class c = loaderComponent.classLoader.loadClass(rootProgramDirectory.name() + ".systems." + system.nameWithoutExtension());
-                    System.out.println("Class: " + c + "\t" + (c == loaderComponent.classLoader.parseClass(system.file())));
+                    GroovyCodeSource source = new GroovyCodeSource(system.file());
+                    Class c = loaderComponent.classLoader.parseClass(source, false);
+                   // Class c2 = loaderComponent.classLoader.loadClass(rootProgramDirectory.name() + ".systems." + system.nameWithoutExtension());
+                    //System.out.println("Class: " + c + "\t" + (c == c2));
                     if (system.nameWithoutExtension().equals("BootSystem")) {
                         EntitySystem bootSystem = (EntitySystem) c.getConstructors()[0].newInstance();
                         engineComponent.engine.addSystem(bootSystem);

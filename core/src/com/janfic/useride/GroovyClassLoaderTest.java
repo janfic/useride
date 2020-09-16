@@ -15,12 +15,13 @@ public class GroovyClassLoaderTest {
         File file = new File("assets/home/programs/os/systems/RenderSystem.groovy");
         File pack = new File("assets/home/programs");
 
-        GroovyCodeSource source1 = new GroovyCodeSource(file);
+        GroovyCodeSource source = new GroovyCodeSource(file);
 
         loader.addClasspath(pack.getPath());
 
-        System.out.println(loader.loadClass("os.systems.RenderSystem") == loader.parseClass(source1));
-        System.out.println();
-
+        Class c2 = loader.parseClass(source);
+        Class c1 = loader.loadClass("os.systems.RenderSystem");
+        System.out.println(c1 == c2);
+        System.out.println(c1.equals(c2));
     }
 }

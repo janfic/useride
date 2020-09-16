@@ -7,6 +7,7 @@ import com.badlogic.ashley.systems.*;
 import com.badlogic.ashley.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.viewport.*;
 import com.badlogic.gdx.utils.*;
 
@@ -29,13 +30,13 @@ public class RenderSystem extends SortedIteratingSystem {
     private final ComponentMapper<TextComponent> textMapper;
     private final ComponentMapper<SpriteStackComponent> stackMapper;
     private final ComponentMapper<CameraComponent> cameraMapper;
-	
-    private final ComponentMapper<EngineComponent> engineMapper;
-	
+    private final ComponentMapper<FrameBufferComponent> frameBufferMapper;
+		
     private ImmutableArray<Entity> renderEntities, cameraEntity;
 	
     private Batch batch;
     private Viewport viewport;
+    private FrameBuffer frameBuffer;
     private CameraComponent camera;
     
     float ss_zStretch, angle;
@@ -45,10 +46,10 @@ public class RenderSystem extends SortedIteratingSystem {
             Family.all(PositionComponent.class).one(
                 TextureComponent.class, 
                 NinePatchComponent.class, 
-                EngineComponent.class, 
                 TextureRegionComponent.class,
                 TextComponent.class,
-                SpriteStackComponent.class
+                SpriteStackComponent.class,
+                FrameBufferComponent.class
             ).get(), 
             new ZComparator()
         );
@@ -59,12 +60,12 @@ public class RenderSystem extends SortedIteratingSystem {
         this.textureMapper = ComponentMapper.getFor(TextureComponent.class);
         this.ninePatchMapper = ComponentMapper.getFor(NinePatchComponent.class);
         this.rotationMapper = ComponentMapper.getFor(RotationComponent.class);
-        this.engineMapper = ComponentMapper.getFor(EngineComponent.class);
         this.regionMapper = ComponentMapper.getFor(TextureRegionComponent.class);
         this.textMapper = ComponentMapper.getFor(TextComponent.class);
         this.fontMapper = ComponentMapper.getFor(BitmapFontComponent.class);
         this.stackMapper = ComponentMapper.getFor(SpriteStackComponent.class);
         this.cameraMapper = ComponentMapper.getFor(CameraComponent.class);
+        this.frameBufferMapper = ComponentMapper.getFor(FrameBufferComponent.class);
     }
 	
     public void addedToEngine(Engine engine) {
@@ -89,15 +90,16 @@ public class RenderSystem extends SortedIteratingSystem {
         forceSort();
         this.batch = renderEntities.first().getComponent(SpriteBatchComponent.class).batch;
         this.viewport = renderEntities.first().getComponent(ViewportComponent.class).viewport;
-        
-        //viewport.update(viewport.getScreenWidth(), viewport.getScreenHeight(), true);
+        this.frameBuffer = renderEntities.first().getComponent(FrameBufferComponent.class) == null ? null : renderEntities.first().getComponent(FrameBufferComponent.class).frameBuffer;        
         viewport.apply(true);
 		
         batch.setProjectionMatrix(viewport.getCamera().combined);
+        if(frameBuffer != null) frameBuffer.begin();
         batch.begin();
         super.update(delta);
         
         batch.end();
+        if(frameBuffer != null) frameBuffer.end();
     }
 	
     public void processEntity(Entity entity, float delta) {	
@@ -105,10 +107,10 @@ public class RenderSystem extends SortedIteratingSystem {
         TextureRegionComponent region = regionMapper.get(entity);
         TextureComponent texture = textureMapper.get(entity);
         NinePatchComponent ninePatch = ninePatchMapper.get(entity);
-        EngineComponent engineComponent = engineMapper.get(entity);
         TextComponent textComponent = textMapper.get(entity);
         BitmapFontComponent fontComponent = fontMapper.get(entity);
         SpriteStackComponent stackComponent = stackMapper.get(entity);
+        FrameBufferComponent frameBufferComponent = frameBufferMapper.get(entity);
 		
         SizeComponent size = sizeMapper.get(entity);
         ScaleComponent scale = scaleMapper.get(entity);
@@ -145,17 +147,9 @@ public class RenderSystem extends SortedIteratingSystem {
                 batch.draw(stackComponent.stack.get(i), position.x - (i * xStep * scaleX), position.y - (i * scaleY * yStep) - position.z, (float)(width / 2),(float)( height / 2), width, height, scaleX, scaleY, rotation);
             }
         }
-        if(engineComponent != null) {
-            RenderSystem renderSystem = engineComponent.engine.getSystem(RenderSystem.class);      
-            if(renderSystem != null) {
-                batch.end();
-                renderSystem.update(delta); 
-                renderSystem.setProcessing(false);
-                viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-                viewport.apply();
-                batch.setProjectionMatrix(viewport.getCamera().combined);
-                batch.begin();
-            }
+        if(frameBufferComponent != null) {
+            if(size == null) {width = frameBufferComponent.frameBuffer.getWidth(); height = frameBufferComponent.frameBuffer.getHeight();}
+            batch.draw(frameBufferComponent.frameBuffer.getColorBufferTexture(), position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation, 0, 0, (int) width, (int)height, false, true);
         }
         if(region != null) {
             batch.draw(region.textureRegion, position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation);

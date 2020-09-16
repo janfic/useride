@@ -116,6 +116,7 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new FileSpawnSystem());
         engine.addSystem(new FileSearchOnMouseClickSystem());
         engine.addSystem(new FileSearchOnMouseDoubleClickSystem());
+        engine.addSystem(new OptionMenuSystem());
     }
     
     public void update(float delta) {
