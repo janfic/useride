@@ -18,11 +18,13 @@ import files.components.*;
 public class OptionMenuSystem extends EntitySystem {
         
     private final ComponentMapper<MouseClickEventComponent> clickMapper;
+    private final ComponentMapper<FileComponent> fileMapper;
     
-    private ImmutableArray<Entity> entities, optionMenu, clickedEntities;
+    private ImmutableArray<Entity> entities, optionMenu, clickedEntities, pathEntity;
    
     public OptionMenuSystem() {
         this.clickMapper = ComponentMapper.getFor(MouseClickEventComponent.class);
+        this.fileMapper = ComponentMapper.getFor(FileComponent.class);
     }
     
     public void addedToEngine(Engine engine) {
@@ -33,11 +35,20 @@ public class OptionMenuSystem extends EntitySystem {
             Family.all(OptionMenuComponent.class).get()
         );
         this.clickedEntities = engine.getEntitiesFor(
-            Family.all(MouseClickEventComponent.class).get()
+            Family.one(MouseClickEventComponent.class, MousePressEventComponent.class, MouseReleaseEventComponent.class).exclude(OptionMenuComponent.class).get()
+        );
+        this.pathEntity = engine.getEntitiesFor(
+            Family.all(TextComponent.class, KeyInputComponent.class).get()
         );
     }
     
     public void update(float delta) {
+        
+        if(Gdx.input.isTouched() && optionMenu.size() > 0 && clickedEntities.size() < 1) {
+            for(Entity entity : optionMenu) {
+                this.engine.removeEntity(entity);
+            }
+        }
         
         if(entities.size() < 1) return;
         
@@ -47,8 +58,8 @@ public class OptionMenuSystem extends EntitySystem {
                 
         for(Entity entity : entities) {
             MouseClickEventComponent click = clickMapper.get(entity);
+            FileComponent fileComponent = fileMapper.get(entity);
             entity.remove(MouseClickEventComponent.class);
-            System.out.println(Input.Buttons.RIGHT + " "  + click.button);
             if(click.button != Input.Buttons.RIGHT) continue;
             
             Entity optionMenu = new Entity();
@@ -58,6 +69,8 @@ public class OptionMenuSystem extends EntitySystem {
             optionMenu.add(new GetNinePatchComponent(name: "container"));
             optionMenu.add(new SizeComponent(width: 100, height: 150));
             optionMenu.add(new OptionMenuComponent());
+            optionMenu.add(new ClickableComponent());
+            optionMenu.add(new HitBoxComponent(rectangle: new Rectangle(0,0,100,150)));
             
             Entity open = new Entity();
             open.add(new PositionComponent(z: 3));
@@ -67,6 +80,10 @@ public class OptionMenuSystem extends EntitySystem {
             open.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
             open.add(new OptionMenuComponent());
             open.add(new ColorComponent(color: Color.BLACK));
+            open.add(new HitBoxComponent(rectangle: new Rectangle(0,-10, 80, 20)));
+            open.add(new ClickableComponent());
+            open.add(new CloseOptionMenuOnMouseClickComponent());
+            if(pathEntity.size() > 0) open.add(new OpenFileOnMouseClickComponent(path: fileComponent.file.path()));
             
             Entity rename = new Entity();
             rename.add(new PositionComponent(z: 3));

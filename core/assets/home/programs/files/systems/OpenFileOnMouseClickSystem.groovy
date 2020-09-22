@@ -15,17 +15,17 @@ import com.janfic.useride.kernel.systems.*;
 import os.components.*;
 import files.components.*;
 
-public class FileSearchOnMouseDoubleClickSystem extends EntitySystem {
+public class OpenFileOnMouseClickSystem extends EntitySystem {
         
-    private final ComponentMapper<FileSearchOnMouseDoubleClickComponent> searchMapper;
+    private final ComponentMapper<OpenFileOnMouseClickComponent> searchMapper;
     private final ComponentMapper<MouseClickEventComponent> clickMapper;
     private final ComponentMapper<FileComponent> fileMapper;
     private final ComponentMapper<TextComponent> textMapper;
     
     private ImmutableArray<Entity> entities, pathEntity;
    
-    public FileSearchOnMouseDoubleClickSystem() {
-        this.searchMapper = ComponentMapper.getFor(FileSearchOnMouseClickComponent.class);
+    public OpenFileOnMouseClickSystem() {
+        this.searchMapper = ComponentMapper.getFor(OpenFileOnMouseClickComponent.class);
         this.clickMapper = ComponentMapper.getFor(MouseClickEventComponent.class);
         this.fileMapper = ComponentMapper.getFor(FileComponent.class);
         this.textMapper = ComponentMapper.getFor(TextComponent.class);
@@ -33,7 +33,7 @@ public class FileSearchOnMouseDoubleClickSystem extends EntitySystem {
     
     public void addedToEngine(Engine engine) {
         this.entities = engine.getEntitiesFor(
-            Family.all(FileSearchOnMouseDoubleClickComponent.class, MouseClickEventComponent.class, FileComponent.class).get()
+            Family.all(OpenFileOnMouseClickComponent.class, MouseClickEventComponent.class).get()
         );
         this.pathEntity = engine.getEntitiesFor(
             Family.all(TextComponent.class, KeyInputComponent.class).get()
@@ -44,15 +44,9 @@ public class FileSearchOnMouseDoubleClickSystem extends EntitySystem {
         if(pathEntity.size() < 1) return;
         TextComponent text = textMapper.get(pathEntity.first());
         for(Entity entity : entities) {
-            
-            MouseClickEventComponent clickEvent = clickMapper.get(entity);
-            FileComponent file = fileMapper.get(entity);
-            if(clickEvent.count == 2 ) {
-                String path = file.file.path();
-                text.text = path;
-                pathEntity.first().add(new FileSearchComponent());
-                entity.remove(MouseClickEventComponent.class);
-            }
+            OpenFileOnMouseClickComponent openFile = searchMapper.get(entity);
+            text.text = openFile.path;
+            pathEntity.first().add(new FileSearchComponent());
         }
     }
     
@@ -60,4 +54,5 @@ public class FileSearchOnMouseDoubleClickSystem extends EntitySystem {
         
     }
 }
+
 

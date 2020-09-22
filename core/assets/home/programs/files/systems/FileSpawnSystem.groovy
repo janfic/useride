@@ -65,7 +65,7 @@ public class FileSpawnSystem extends EntitySystem {
             parent.add(new GetNinePatchComponent(name: "button_up"));
             parent.add(new ClickableComponent());
             parent.add(new HitBoxComponent(rectangle: new Rectangle(0,0,80,20)));
-            parent.add(new FileSearchOnMouseDoubleClickComponent());
+            parent.add(new OpenFileOnMouseDoubleClickComponent(path: root.parent().path()));
 
             parent.add(new FileLoadRequestComponent(fileName: root.parent().path()));
             
@@ -93,7 +93,7 @@ public class FileSpawnSystem extends EntitySystem {
                 file.add(new HitBoxComponent(rectangle: new Rectangle(0,0, 64, 64)));
                 file.add(new ClickableComponent());
                 file.add(new FileLoadRequestComponent(fileName: child.path()));
-                file.add(new FileSearchOnMouseDoubleClickComponent());
+                file.add(new OpenFileOnMouseDoubleClickComponent(path: child.path()));
                 file.add(new OpenOptionMenuOnRightClickComponent());                
                 
                 Entity fileName = new Entity();
