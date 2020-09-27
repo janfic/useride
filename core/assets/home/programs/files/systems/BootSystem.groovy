@@ -118,6 +118,7 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new OpenFileOnMouseDoubleClickSystem());
         engine.addSystem(new OpenFileOnMouseClickSystem());
         engine.addSystem(new FileCopyOnMouseClickSystem());
+        engine.addSystem(new FileCutOnMouseClickSystem());
         engine.addSystem(new FilePasteOnMouseClickSystem());
         engine.addSystem(new FilePasteSystem());
         engine.addSystem(new FileDeleteSystem());

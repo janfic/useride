@@ -102,6 +102,10 @@ public class OptionMenuSystem extends EntitySystem {
             cut.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
             cut.add(new OptionMenuComponent());
             cut.add(new ColorComponent(color: Color.BLACK));
+            cut.add(new HitBoxComponent(rectangle: new Rectangle(0,-10, 80, 20)));
+            cut.add(new ClickableComponent());
+            cut.add(new CloseOptionMenuOnMouseClickComponent());
+            cut.add(new FileCutOnMouseClickComponent(entity: entity));
             
             Entity copy = new Entity();
             copy.add(new PositionComponent(z: 3));
