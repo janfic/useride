@@ -111,6 +111,10 @@ public class OptionMenuSystem extends EntitySystem {
             copy.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
             copy.add(new OptionMenuComponent());
             copy.add(new ColorComponent(color: Color.BLACK));
+            copy.add(new HitBoxComponent(rectangle: new Rectangle(0,-10, 80, 20)));
+            copy.add(new ClickableComponent());
+            copy.add(new CloseOptionMenuOnMouseClickComponent());
+            copy.add(new FileCopyOnMouseClickComponent(entity: entity));
             
             Entity paste = new Entity();
             paste.add(new PositionComponent(z: 3));
@@ -120,6 +124,10 @@ public class OptionMenuSystem extends EntitySystem {
             paste.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
             paste.add(new OptionMenuComponent());
             paste.add(new ColorComponent(color: Color.BLACK));
+            paste.add(new HitBoxComponent(rectangle: new Rectangle(0,-10, 80, 20)));
+            paste.add(new ClickableComponent());
+            paste.add(new CloseOptionMenuOnMouseClickComponent());
+            paste.add(new FilePasteOnMouseClickComponent(entity: entity));
             
             Entity delete = new Entity();
             delete.add(new PositionComponent(z: 3));
@@ -129,6 +137,11 @@ public class OptionMenuSystem extends EntitySystem {
             delete.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
             delete.add(new OptionMenuComponent());
             delete.add(new ColorComponent(color: Color.BLACK));
+            delete.add(new HitBoxComponent(rectangle: new Rectangle(0,-10, 80, 20)));
+            delete.add(new ClickableComponent());
+            delete.add(new CloseOptionMenuOnMouseClickComponent());
+            delete.add(new FileDeleteOnMouseClickComponent(entity: entity));
+            //delete.add(new FileSearchOnMouseClickComponent(entity: pathEntity.first()));
             
             this.engine.addEntity(optionMenu);
             this.engine.addEntity(open);
