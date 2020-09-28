@@ -10,7 +10,9 @@ public class DesktopLauncher {
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         DisplayMode displayMode = LwjglApplicationConfiguration.getDesktopDisplayMode();
-        config.setFromDisplayMode(displayMode);
+        //config.setFromDisplayMode(displayMode);
+        config.width = 1920;
+        config.height = 1080;
         new LwjglApplication(new USERIDEGame(), config);
     }
 }

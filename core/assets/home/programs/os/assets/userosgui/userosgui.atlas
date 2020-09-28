@@ -1,0 +1,91 @@
+
+userosgui.png
+size: 64,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+box
+  rotate: false
+  xy: 2, 2
+  size: 9, 8
+  split: 4, 4, 3, 4
+  orig: 9, 8
+  offset: 0, 0
+  index: -1
+button_down
+  rotate: false
+  xy: 20, 19
+  size: 9, 9
+  split: 4, 4, 4, 4
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
+button_up
+  rotate: false
+  xy: 36, 36
+  size: 9, 9
+  split: 4, 4, 4, 4
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
+container
+  rotate: false
+  xy: 53, 53
+  size: 9, 9
+  split: 4, 4, 4, 4
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
+content
+  rotate: false
+  xy: 47, 44
+  size: 1, 1
+  split: 0, 0, 0, 0
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+menu
+  rotate: false
+  xy: 2, 30
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+shortcut
+  rotate: false
+  xy: 53, 42
+  size: 9, 9
+  split: 4, 4, 4, 4
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
+topbar
+  rotate: false
+  xy: 13, 2
+  size: 9, 8
+  split: 4, 4, 4, 3
+  orig: 9, 8
+  offset: 0, 0
+  index: -1
+up_arrow
+  rotate: false
+  xy: 2, 12
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+window
+  rotate: false
+  xy: 36, 25
+  size: 9, 9
+  split: 4, 4, 4, 4
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
+x
+  rotate: false
+  xy: 36, 47
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
