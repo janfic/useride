@@ -45,7 +45,6 @@ public class TextInputSystem extends EntitySystem {
             if(keyInputComponent.keyTyped != 0 && keyInputComponent.keyTyped != 8 && keyInputComponent.keyTyped != keyInputComponent.keyUp && !keyInputComponent.pressed.isEmpty()) {
                 String input = "" + (char)keyInputComponent.keyTyped;
                 textComponent.text = textComponent.text + input;
-                
             }
             
             if(keyInputComponent.keyTyped == 8 && textComponent.text.length() >= 1) {

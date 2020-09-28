@@ -65,11 +65,12 @@ public class BootSystem extends EntitySystem {
         pathText.add(new ParentComponent(parent: path));
         pathText.add(new FocusOnMouseClickComponent());
         pathText.add(new SizeComponent(width: 400, height: 40));
-        pathText.add(new HitBoxComponent(rectangle: new Rectangle(0,0,300,50)));
+        pathText.add(new HitBoxComponent(rectangle: new Rectangle(0,-10,350,20)));
         pathText.add(new RegisterBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
         pathText.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
         pathText.add(new RegisterTextureAssetComponent(fileName: "home/programs/files/assets/file.png"));
         pathText.add(new ColorComponent(color: Color.BLACK));
+        pathText.add(new ChangeColorOnFocusedComponent(focusedColor: Color.BLUE, unfocusedColor: Color.BLACK));
         //pathText.add(new ScaleComponent(scaleX: 0.75, scaleY: 0.75));
 
         Entity search = new Entity();
@@ -112,6 +113,7 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new FocusSystem());
         engine.addSystem(new KeyboardInputSystem());
         engine.addSystem(new FocusOnMouseClickSystem());
+        engine.addSystem(new ChangeColorOnFocusedSystem());
         engine.addSystem(new TextInputSystem());
         engine.addSystem(new FileSpawnSystem());
         engine.addSystem(new FileSearchOnMouseClickSystem());
@@ -122,6 +124,9 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new FilePasteOnMouseClickSystem());
         engine.addSystem(new FilePasteSystem());
         engine.addSystem(new FileDeleteSystem());
+        engine.addSystem(new FileRenameSystem());
+        engine.addSystem(new FileRenameOnKeyEnterSystem());
+        engine.addSystem(new FileRenameOnMouseClickSystem());
         engine.addSystem(new FileDeleteOnMouseClickSystem());
         engine.addSystem(new CloseOptionMenuOnMouseClickSystem());
         engine.addSystem(new OptionMenuSystem());

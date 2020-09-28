@@ -19,11 +19,13 @@ public class OptionMenuSystem extends EntitySystem {
         
     private final ComponentMapper<MouseClickEventComponent> clickMapper;
     private final ComponentMapper<FileComponent> fileMapper;
+    private final ComponentMapper<ParentComponent> parentMapper;
     
-    private ImmutableArray<Entity> entities, optionMenu, clickedEntities, pathEntity;
+    private ImmutableArray<Entity> entities, optionMenu, clickedEntities, pathEntity, fileNames;
    
     public OptionMenuSystem() {
         this.clickMapper = ComponentMapper.getFor(MouseClickEventComponent.class);
+        this.parentMapper = ComponentMapper.getFor(ParentComponent.class);
         this.fileMapper = ComponentMapper.getFor(FileComponent.class);
     }
     
@@ -39,6 +41,9 @@ public class OptionMenuSystem extends EntitySystem {
         );
         this.pathEntity = engine.getEntitiesFor(
             Family.all(TextComponent.class, KeyInputComponent.class).get()
+        );
+        this.fileNames = engine.getEntitiesFor(
+            Family.all(TextComponent.class, ParentComponent.class, FileComponent.class).get()
         );
     }
     
@@ -93,6 +98,19 @@ public class OptionMenuSystem extends EntitySystem {
             rename.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
             rename.add(new OptionMenuComponent());
             rename.add(new ColorComponent(color: Color.BLACK));
+            rename.add(new HitBoxComponent(rectangle: new Rectangle(0,-10, 80, 20)));
+            rename.add(new ClickableComponent());
+            rename.add(new CloseOptionMenuOnMouseClickComponent());
+            Entity name = null;
+            for(Entity fileName : fileNames) {
+                ParentComponent parentComponent = parentMapper.get(fileName);
+                FileComponent nameFileComponent = fileMapper.get(fileName);
+                
+                if(parentComponent.parent == entity && nameFileComponent.file.equals(fileComponent.file)) {
+                    name = fileName;
+                }
+            }
+            if(name != null) rename.add(new FileRenameOnMouseClickComponent(entity: name));
             
             Entity cut = new Entity();
             cut.add(new PositionComponent(z: 3));

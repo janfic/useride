@@ -35,7 +35,7 @@ public class FocusOnMouseClickSystem extends EntitySystem {
 
     public void update(float delta) {
         
-        if(entities.size() > 0) {
+        if(Gdx.input.justTouched()) {
             for(Entity entity : focused) {
                 entity.remove(FocusedComponent.class);
             }

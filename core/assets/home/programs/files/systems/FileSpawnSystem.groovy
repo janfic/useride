@@ -98,16 +98,23 @@ public class FileSpawnSystem extends EntitySystem {
                 
                 Entity fileName = new Entity();
                 
-                String name = child.name().length() > 11 ? child.name().substring(0, 5) + ".." + child.name().substring(child.name().length()  - 4) : child.name();
+                //String name = child.name().length() > 11 ? child.name().substring(0, 5) + ".." + child.name().substring(child.name().length()  - 4) : child.name();
                 
                 fileName.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
                 fileName.add(new PositionComponent());
                 fileName.add(new RelativePositionComponent(x: 0, y: -10));
-                fileName.add(new TextComponent(text: name));
+                fileName.add(new TextComponent(text: child.name()));
                 fileName.add(new SizeComponent(width: 90, height: 20));
                 fileName.add(new ParentComponent(parent: file));
                 fileName.add(new ColorComponent(color: Color.BLACK));
                 fileName.add(new FileLoadRequestComponent(fileName: child.path()));
+                fileName.add(new FocusableComponent());
+                fileName.add(new FocusOnMouseClickComponent());
+                fileName.add(new HitBoxComponent(rectangle: new Rectangle(0,-10, 70, 20)));
+                fileName.add(new FileRenameOnKeyEnterComponent());
+                fileName.add(new ClickableComponent());
+                fileName.add(new KeyInputComponent());
+                fileName.add(new ChangeColorOnFocusedComponent(focusedColor: Color.BLUE, unfocusedColor: Color.BLACK))
                 
                 engine.addEntity(file);
                 engine.addEntity(fileName);
