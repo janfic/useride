@@ -14,6 +14,7 @@ public class USERIDEGame extends Game {
     @Override
     public void create() {
         engine = new Engine();
+        Gdx.input.setInputProcessor(new InputMultiplexer());
         engine.addSystem(new BootSystem());
     }
 
