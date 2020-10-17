@@ -45,32 +45,32 @@ public class RelativePositionSystem extends EntitySystem {
         if(parentPosition == null) return;    
         
         if(relativePosition.unit.equals("p")) {
-            childPosition.x = parentPosition.x + relativePosition.x;
-            childPosition.y = parentPosition.y + relativePosition.y;
+            childPosition.x = parentPosition.x * relativePosition.parentMultiplier + relativePosition.x;
+            childPosition.y = parentPosition.y * relativePosition.parentMultiplier + relativePosition.y;
         }
         else if(relativePosition.unit.equals("%")) {
-            childPosition.x = parentPosition.x + (relativePosition.x * parentSize.width * 0.01);
-            childPosition.y = parentPosition.y + (relativePosition.y * parentSize.height * 0.01);
+            childPosition.x = parentPosition.x * relativePosition.parentMultiplier + (relativePosition.x * parentSize.width * 0.01);
+            childPosition.y = parentPosition.y * relativePosition.parentMultiplier + (relativePosition.y * parentSize.height * 0.01);
         }
         else if(relativePosition.unit.length() > 1) {
             if(relativePosition.unit.charAt(0) == 'p') {
-                childPosition.x = parentPosition.x + relativePosition.x;
+                childPosition.x = parentPosition.x * relativePosition.parentMultiplier + relativePosition.x;
             }
             else if (relativePosition.unit.charAt(0) == '%') {
-                childPosition.x = parentPosition.x + (relativePosition.x * parentSize.width * 0.01);
+                childPosition.x = parentPosition.x * relativePosition.parentMultiplier + (relativePosition.x * parentSize.width * 0.01);
             }
             if(relativePosition.unit.charAt(1) == 'p') {
-                childPosition.y = parentPosition.y + relativePosition.y;
+                childPosition.y = parentPosition.y * relativePosition.parentMultiplier + relativePosition.y;
             }
             else if (relativePosition.unit.charAt(1) == '%') {
-                childPosition.y = parentPosition.y + (relativePosition.y * parentSize.height * 0.01);
+                childPosition.y = parentPosition.y * relativePosition.parentMultiplier + (relativePosition.y * parentSize.height * 0.01);
             }
             if(relativePosition.unit.length() > 2) {
                 if(relativePosition.unit.charAt(2) == 'p') {
-                    childPosition.z = parentPosition.z + relativePosition.z;
+                    childPosition.z = parentPosition.z * relativePosition.parentMultiplier + relativePosition.z;
                 }
                 else if (relativePosition.unit.charAt(2) == '%') {
-                    childPosition.z = parentPosition.z + (relativePosition.z * parentSize.height * 0.01);
+                    childPosition.z = parentPosition.z * relativePosition.parentMultiplier + (relativePosition.z * parentSize.height * 0.01);
                 } 
             }
         }
