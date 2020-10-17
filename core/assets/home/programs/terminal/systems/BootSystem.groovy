@@ -34,6 +34,38 @@ public class BootSystem extends EntitySystem {
         AssetManagerComponent amComp = new AssetManagerComponent();
         amComp.manager = new AssetManager();
         assetManagerEntity.add(amComp);
+        assetManagerEntity.add(new LoadAssetsComponent());
+        assetManagerEntity.add(new RegisterTextureAtlasAssetComponent(fileName: "home/programs/os/assets/userosgui/userosgui.atlas"));
+        assetManagerEntity.add(new RegisterBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
+        
+        
+        Entity textEntry = new Entity();
+        textEntry.add(new PositionComponent(x: 10, y: 20));
+        textEntry.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
+        textEntry.add(new TextComponent(text: "[U]:"));
+        textEntry.add(new ColorComponent(color: Color.WHITE));
+        textEntry.add(new SizeComponent(width: 400, height: 20));
+        textEntry.add(new HitBoxComponent(rectangle: new Rectangle(0,0,100, 20)));
+        textEntry.add(new ClickableComponent());
+        textEntry.add(new FocusableComponent());
+        textEntry.add(new FocusOnMouseClickComponent());
+        textEntry.add(new KeyInputComponent());
+        
+        
+        engine.addEntity(textEntry);
+        engine.addEntity(assetManagerEntity);
+        
+        engine.addSystem(new TextInputSystem());
+        engine.addSystem(new RenderSystem());
+        engine.addSystem(new KeyboardInputSystem());
+        engine.addSystem(new AssetLoadSystem());
+        engine.addSystem(new AssetGetSystem());
+        engine.addSystem(new AssetRegisterSystem());
+        engine.addSystem(new MouseClickSystem());
+        engine.addSystem(new MouseHoverSystem());
+        engine.addSystem(new FocusSystem());
+        engine.addSystem(new KeyboardInputSystem());
+        engine.addSystem(new FocusOnMouseClickSystem());
         
         engine.removeSystem(this);
     }
