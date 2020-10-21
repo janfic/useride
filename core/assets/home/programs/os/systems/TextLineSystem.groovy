@@ -12,8 +12,6 @@ public class TextLineSystem extends SortedIteratingSystem {
     private final ComponentMapper<TextLineComponent> textLineMapper;
     private final ComponentMapper<SizeComponent> sizeMapper;
     private final ComponentMapper<ParentComponent> parentMapper;
-    
-    private ImmutableArray<Entity> entities;
 
     private Map<Entity, Float> currentHeights;
     private Map<Entity, Integer> maxLines;
@@ -85,6 +83,11 @@ public class TextLineSystem extends SortedIteratingSystem {
     
     public void processEntity(Entity entity, float delta) {
         
+    }
+    
+    public void removedFromEngine(Engine engine) {
+        this.currentHeights = null;
+        this.maxLines = null;
     }
     
     private static class LineComparator implements Comparator<Entity> {

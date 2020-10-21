@@ -46,7 +46,7 @@ public class BootSystem extends EntitySystem {
         text.add(new RelativePositionComponent(x: 0, y: 100));
         text.add(new ParentComponent(parent: scrollAnchor))
         text.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
-        text.add(new TextComponent(text: "[USER]@[~/home]: This is the first line of text"));
+        text.add(new TextComponent(text: "[USER]@[~/home]: This is the first line of text. "));
         text.add(new TextLineComponent(lineNumber: 0));
         text.add(new SizeComponent(width: 450, height: 20));
         text.add(new ColorComponent(color: Color.WHITE));
