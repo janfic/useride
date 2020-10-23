@@ -51,13 +51,14 @@ public class BootSystem extends EntitySystem {
         textEntry.add(new TextComponent());
         textEntry.add(new NewTextLineComponent());
         textEntry.add(new NewTextLineOnKeyEnterComponent());
-        textEntry.add(new ColorComponent(color: Color.GRAY));
+        textEntry.add(new ColorComponent(color: Color.WHITE));
         textEntry.add(new SizeComponent(width: 450, height: 20));
         textEntry.add(new HitBoxComponent(rectangle: new Rectangle(0,0,450, 13)));
         textEntry.add(new ClickableComponent());
         textEntry.add(new FocusableComponent());
         textEntry.add(new FocusOnMouseClickComponent());
         textEntry.add(new KeyInputComponent());
+        textEntry.add(new RunCommandOnKeyEnterComponent());
         
         scrollAnchor.add(new PositionComponent(x: 10, y: 20));
         scrollAnchor.add(new SizeComponent(width: 450));
@@ -98,6 +99,9 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new FocusSystem());
         engine.addSystem(new KeyboardInputSystem());
         engine.addSystem(new FocusOnMouseClickSystem());
+        engine.addSystem(new RunCommandOnKeyEnterSystem());
+        engine.addSystem(new ProgramOutputToTerminalSystem());
+        engine.addSystem(new ProgramStartSystem());
         
         engine.removeSystem(this);
     }
