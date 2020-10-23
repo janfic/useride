@@ -16,6 +16,7 @@ import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.input.*;
 import com.badlogic.gdx.math.*;
+import terminal.components.*;
 import os.components.*;
 import os.systems.*;
 
@@ -41,24 +42,16 @@ public class BootSystem extends EntitySystem {
         Entity scrollAnchor = new Entity();
         Entity scrollBar = new Entity();
         
-        Entity text = new Entity();
-        text.add(new PositionComponent(x: 0, y: 0));
-        text.add(new RelativePositionComponent(x: 0, y: 100));
-        text.add(new ParentComponent(parent: scrollAnchor))
-        text.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
-        text.add(new TextComponent(text: "[USER]@[~/home]: This is the first line of text. "));
-        text.add(new TextLineComponent(lineNumber: 0));
-        text.add(new SizeComponent(width: 450, height: 20));
-        text.add(new ColorComponent(color: Color.WHITE));
-        
         Entity textEntry = new Entity();
         textEntry.add(new PositionComponent(x: 0, y: 0));
         textEntry.add(new RelativePositionComponent(x: 0, y: 100));
         textEntry.add(new ParentComponent(parent: scrollAnchor))
         textEntry.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
-        textEntry.add(new TextComponent(text: "[USER]@[~/home]: This is a line of text"));
-        textEntry.add(new TextLineComponent(lineNumber: 1));
-        textEntry.add(new ColorComponent(color: Color.WHITE));
+        textEntry.add(new CommandComponent(location: "[USER]@[~/home]: ", text: ""))
+        textEntry.add(new TextComponent());
+        textEntry.add(new NewTextLineComponent());
+        textEntry.add(new NewTextLineOnKeyEnterComponent());
+        textEntry.add(new ColorComponent(color: Color.GRAY));
         textEntry.add(new SizeComponent(width: 450, height: 20));
         textEntry.add(new HitBoxComponent(rectangle: new Rectangle(0,0,450, 13)));
         textEntry.add(new ClickableComponent());
@@ -80,7 +73,6 @@ public class BootSystem extends EntitySystem {
         scrollBar.add(new DragableComponent());
         scrollBar.add(new PositionBoundsComponent(minX: 485, maxX: 485, minY: 5, maxY: 355));
         
-        engine.addEntity(text);
         engine.addEntity(textEntry);
         engine.addEntity(scrollAnchor);
         engine.addEntity(scrollBar);
@@ -90,6 +82,9 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new RenderSystem());
         engine.addSystem(new MouseClickSystem());
         engine.addSystem(new MouseHoverSystem());
+        engine.addSystem(new NewTextLineOnKeyEnterSystem());
+        engine.addSystem(new CommandPrefixSystem());
+        engine.addSystem(new NewTextLineSystem());
         engine.addSystem(new TextSizeSystem());
         engine.addSystem(new TextLineSystem());
         engine.addSystem(new RelativePositionSystem());
