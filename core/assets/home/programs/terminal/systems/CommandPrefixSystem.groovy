@@ -24,19 +24,22 @@ public class CommandPrefixSystem extends EntitySystem {
 
     private final ComponentMapper<CommandComponent> commandMapper;
     private final ComponentMapper<TextComponent> textMapper;
+    private final ComponentMapper<FileComponent> fileMapper;
     
     private ImmutableArray<Entity> entities;
     
     public CommandPrefixSystem() {
         this.commandMapper = ComponentMapper.getFor(CommandComponent.class);
         this.textMapper = ComponentMapper.getFor(TextComponent.class);
+        this.fileMapper = ComponentMapper.getFor(FileComponent.class);
     }    
     
     public void addedToEngine(Engine engine) {
         this.entities = engine.getEntitiesFor(
             Family.all(
                 CommandComponent.class,
-                TextComponent.class
+                TextComponent.class,
+                FileComponent.class
             ).get()
         );
     }
@@ -45,6 +48,9 @@ public class CommandPrefixSystem extends EntitySystem {
         for(Entity entity : entities) {
             TextComponent textComponent = textMapper.get(entity);
             CommandComponent command = commandMapper.get(entity);
+            FileComponent dir = fileMapper.get(entity);
+            
+            command.location = "[USER] @ [" + dir.file.path() + "]: ";
             
             if(textComponent.text != null && textComponent.text.contains(command.location)) {
                 command.text = textComponent.text.substring(textComponent.text.indexOf(command.location) + command.location.length());

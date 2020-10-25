@@ -65,17 +65,15 @@ public class ProgramOutputToTerminalSystem extends EntitySystem {
         for(Entity entity : entities) {
             ProgramOutputComponent output = outputMapper.get(entity);
             
-            if(output.lines.size() > 0) {
-                
-                System.out.println(output.lines);
+            if(output.output.size() > 0) {
                 
                 Entity e = new Entity();
                 e.add(new PositionComponent());
                 e.add(new RelativePositionComponent());
                 e.add(new ParentComponent(parent: parentComponent.parent))
                 e.add(new BitmapFontComponent(font: fontComponent.font));
-                String t = output.lines.get(0);
-                if(t == null || t.length() == 0) t = " ";
+                Object t = output.output.poll();
+                if(t == null || t.toString().length() == 0) t = " ";
                 e.add(new TextComponent(text: t));
                 e.add(new ColorComponent(color: colorComponent.color));
                 e.add(new SizeComponent(width: sizeComponent.width, height: sizeComponent.height));
@@ -83,7 +81,6 @@ public class ProgramOutputToTerminalSystem extends EntitySystem {
                 
                 this.getEngine().addEntity(e);
                 
-                output.lines.remove(0);
                 textLineComponent.lineNumber += 1
             }
         }

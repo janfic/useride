@@ -17,18 +17,19 @@ import terminal.components.*;
 import os.components.*;
 import os.systems.*;
 
-
 @groovy.transform.CompileStatic
 public class RunCommandOnKeyEnterSystem extends EntitySystem {	
 
     private final ComponentMapper<CommandComponent> commandMapper;
     private final ComponentMapper<KeyInputComponent> keyMapper;
+    private final ComponentMapper<FileComponent> fileMapper;
     
     private ImmutableArray<Entity> entities;
     
     public RunCommandOnKeyEnterSystem() {
         this.commandMapper = ComponentMapper.getFor(CommandComponent.class);
         this.keyMapper = ComponentMapper.getFor(KeyInputComponent.class);
+        this.fileMapper = ComponentMapper.getFor(FileComponent.class);
     }    
     
     public void addedToEngine(Engine engine) {
@@ -36,7 +37,8 @@ public class RunCommandOnKeyEnterSystem extends EntitySystem {
             Family.all(
                 CommandComponent.class,
                 KeyInputComponent.class,
-                RunCommandOnKeyEnterComponent.class
+                RunCommandOnKeyEnterComponent.class,
+                FileComponent.class
             ).get()
         );
     }
@@ -45,6 +47,7 @@ public class RunCommandOnKeyEnterSystem extends EntitySystem {
         for(Entity entity : entities) {
             CommandComponent command = commandMapper.get(entity);
             KeyInputComponent keyInput = keyMapper.get(entity);
+            FileComponent dir = fileMapper.get(entity);
             
             if(keyInput.keyTyped == 13 && command.text.length() > 0) {
                 String[] text = command.text.split(" ");
@@ -55,14 +58,14 @@ public class RunCommandOnKeyEnterSystem extends EntitySystem {
                         input = command.text.substring(command.text.indexOf(program) + program.length() + 1);
                     }
                     
-                    
                     FileHandle programFolder = Gdx.files.local("home/programs/" + program);
                     
                     if(programFolder.exists()) {
                         Entity injectionEntity = new Entity();
                         
                         ProgramInputComponent programInput = new ProgramInputComponent();
-                        if(input != null) programInput.lines.add(input);
+                        programInput.input.add(dir);
+                        if(input != null) programInput.input.add(input);
                         ProgramOutputComponent programOutput = new ProgramOutputComponent();
                     
                         injectionEntity.add(programInput);

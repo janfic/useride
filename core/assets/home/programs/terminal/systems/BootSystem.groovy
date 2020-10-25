@@ -48,12 +48,13 @@ public class BootSystem extends EntitySystem {
         textEntry.add(new ParentComponent(parent: scrollAnchor))
         textEntry.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
         textEntry.add(new CommandComponent(location: "[USER]@[~/home]: ", text: ""))
+        textEntry.add(new FileLoadRequestComponent(fileName: "/home"));
         textEntry.add(new TextComponent());
         textEntry.add(new NewTextLineComponent());
         textEntry.add(new NewTextLineOnKeyEnterComponent());
         textEntry.add(new ColorComponent(color: Color.WHITE));
         textEntry.add(new SizeComponent(width: 450, height: 20));
-        textEntry.add(new HitBoxComponent(rectangle: new Rectangle(0,0,450, 13)));
+        textEntry.add(new HitBoxComponent(rectangle: new Rectangle(0,-4,450, 13)));
         textEntry.add(new ClickableComponent());
         textEntry.add(new FocusableComponent());
         textEntry.add(new FocusOnMouseClickComponent());
@@ -101,6 +102,7 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new FocusOnMouseClickSystem());
         engine.addSystem(new RunCommandOnKeyEnterSystem());
         engine.addSystem(new ProgramOutputToTerminalSystem());
+        engine.addSystem(new FileLoadSystem());
         engine.addSystem(new ProgramStartSystem());
         
         engine.removeSystem(this);

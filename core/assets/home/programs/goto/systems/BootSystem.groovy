@@ -4,6 +4,7 @@ import com.janfic.useride.kernel.components.*;
 import com.janfic.useride.kernel.systems.*;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
+import com.badlogic.gdx.*;
 import terminal.components.*;
 import os.components.*;
 import os.systems.*;
@@ -27,10 +28,38 @@ public class BootSystem extends EntitySystem {
             }
         }
         
-        if(outputComponent != null && inputComponent != null && inputComponent.input.size() > 0) {
-            inputComponent.input.poll();
-            outputComponent.output.add(inputComponent.input.poll());
+        FileComponent dir = inputComponent.input.poll();
+        FileComponent copy = new FileComponent();
+        copy.file = Gdx.files.local(dir.file.path());
+        String inputPath = inputComponent.input.poll();
+        
+        String[] path = inputPath.split("/");
+        for(int i = 0; i < path.length; i++) {
+            path[i] = path[i].trim();
+            if(path[i].equals("..")) {
+                copy.file = copy.file.parent();
+            }
+            else if(path[i].equals(".")) {
+                copy.file = copy.file;
+            }
+            else {
+                copy.file = copy.file.child(path[i]);
+            }
         }
+        
+        if(copy.file.exists()) {
+            if(copy.file.isDirectory()) {
+                dir.file = copy.file;
+            }
+            else {
+                outputComponent.output.add("[ " + copy.file.path() + " ] is not a directory.");
+            }
+        }
+        else {
+            outputComponent.output.add("Directory [ " + copy.file.path() + " ] does not exist.");
+        }
+        
+        engine.removeSystem(this);
     }
     
     public void update(float delta) {
@@ -40,5 +69,4 @@ public class BootSystem extends EntitySystem {
     public void removedFromEngine(Engine engine) {
         
     }
-    
 }
