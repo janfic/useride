@@ -35,7 +35,10 @@ public class ProgramOutputToTerminalSystem extends EntitySystem {
         this.entities = engine.getEntitiesFor(
             Family.all(
                 ProgramOutputComponent.class
-            ).get()
+            ).exclude(
+                PipedCommandComponent.class
+            )
+            .get()
         );
         this.textInput = engine.getEntitiesFor(
             Family.all(

@@ -104,6 +104,7 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new ProgramOutputToTerminalSystem());
         engine.addSystem(new FileLoadSystem());
         engine.addSystem(new ProgramStartSystem());
+        engine.addSystem(new ProgramManagerSystem());
         
         engine.removeSystem(this);
     }
