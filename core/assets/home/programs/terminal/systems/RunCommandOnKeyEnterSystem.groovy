@@ -1,7 +1,5 @@
 package terminal.systems;
 
-import java.util.Arrays;
-
 import com.janfic.useride.kernel.components.*;
 import com.janfic.useride.kernel.systems.*;
 import com.badlogic.ashley.core.*;
@@ -54,7 +52,6 @@ public class RunCommandOnKeyEnterSystem extends EntitySystem {
                 ProgramOutputComponent previousOutput = null;
                 for(int i = 0; i < commands.length; i++) {
                     String[] text = commands[i].split(" ");
-                    System.out.println(Arrays.toString(text));
                     if(text.length > 0) {
                         String program = text[0].trim();
                         String input = null;
@@ -63,8 +60,8 @@ public class RunCommandOnKeyEnterSystem extends EntitySystem {
                         }
                     
                         FileHandle programFolder = Gdx.files.local("home/programs/" + program);
-                    
-                        if(programFolder.exists()) {
+                        
+                        if(!program.equals("os") && programFolder.exists()) {
                             Entity injectionEntity = new Entity();
                         
                             ProgramInputComponent programInput = new ProgramInputComponent();
