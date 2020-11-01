@@ -1,4 +1,4 @@
-package copy.systems;
+package move.systems;
 
 import com.janfic.useride.kernel.components.*;
 import com.janfic.useride.kernel.systems.*;
@@ -36,11 +36,11 @@ public class BootSystem extends EntitySystem {
             String input = inputComponent.input.poll();
             String[] files = input.trim().split("\\s");
             if(files.length < 2) {
-                outputComponent.output.add("missing argument: copy [fromFile] [toFile or Directory]")
+                outputComponent.output.add("missing argument: move [fromFile] [toFile or Directory]")
             }
             else {
                 Entity copy = new Entity();
-                copy.add(new FileCopyComponent());
+                copy.add(new FileCutComponent());
                 copy.add(new FileLoadRequestComponent(fileName: dir.file.child(files[0])));
                 
                 Entity paste = new Entity();
