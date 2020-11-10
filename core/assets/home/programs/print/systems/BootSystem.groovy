@@ -33,6 +33,7 @@ public class BootSystem extends EntitySystem {
     public void update(float delta) {
         if(outputComponent != null && inputComponent != null && inputComponent.input.size() > 0) {
             outputComponent.output.add(inputComponent.input.poll());
+            outputComponent.output.add(new ProgramEndRequestComponent(programName: "print"));
         }
     }
     

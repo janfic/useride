@@ -8,6 +8,7 @@ import com.badlogic.gdx.*;
 import terminal.components.*;
 import os.components.*;
 import os.systems.*;
+import com.janfic.useride.kernel.components.*;
 
 public class ProgramOutputToTerminalSystem extends EntitySystem {	
 
@@ -69,22 +70,28 @@ public class ProgramOutputToTerminalSystem extends EntitySystem {
             ProgramOutputComponent output = outputMapper.get(entity);
             
             if(output.output.size() > 0) {
-                
-                Entity e = new Entity();
-                e.add(new PositionComponent());
-                e.add(new RelativePositionComponent());
-                e.add(new ParentComponent(parent: parentComponent.parent))
-                e.add(new BitmapFontComponent(font: fontComponent.font));
                 Object t = output.output.poll();
-                if(t == null || t.toString().length() == 0) t = " ";
-                e.add(new TextComponent(text: t));
-                e.add(new ColorComponent(color: colorComponent.color));
-                e.add(new SizeComponent(width: sizeComponent.width, height: sizeComponent.height));
-                e.add(new TextLineComponent(lineNumber: textLineComponent.lineNumber))
+                if(t!= null && t instanceof ProgramEndRequestComponent) {
+                    ProgramEndRequestComponent pe = (ProgramEndRequestComponent) t;
+                    pe.id = entity.getComponent(IDComponent.class).id;
+                    entity.add(pe);
+                }            
+                else {
+                    Entity e = new Entity();
+                    e.add(new PositionComponent());
+                    e.add(new RelativePositionComponent());
+                    e.add(new ParentComponent(parent: parentComponent.parent))
+                    e.add(new BitmapFontComponent(font: fontComponent.font));
+                    if(t == null || t.toString().length() == 0) t = " ";
+                    e.add(new TextComponent(text: t));
+                    e.add(new ColorComponent(color: colorComponent.color));
+                    e.add(new SizeComponent(width: sizeComponent.width, height: sizeComponent.height));
+                    e.add(new TextLineComponent(lineNumber: textLineComponent.lineNumber))
                 
-                this.getEngine().addEntity(e);
+                    this.getEngine().addEntity(e);
                 
-                textLineComponent.lineNumber += 1
+                    textLineComponent.lineNumber += 1
+                }
             }
         }
     }

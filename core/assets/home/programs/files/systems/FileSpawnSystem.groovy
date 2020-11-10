@@ -69,6 +69,15 @@ public class FileSpawnSystem extends EntitySystem {
 
             parent.add(new FileLoadRequestComponent(fileName: root.parent().path()));
             
+            Entity background = new Entity();
+            background.add(new PositionComponent(x: 0, y: 0, z: -1))
+            background.add(new SizeComponent(width: 500, height: 400));
+            background.add(new ClickableComponent());
+            background.add(new HitBoxComponent(rectangle: new Rectangle(0,0,500,400)));
+            background.add(new OpenFileOnMouseDoubleClickComponent(path: root.parent().path()));
+            background.add(new OpenOptionMenuOnRightClickComponent());      
+            background.add(new FileLoadRequestComponent(fileName: root.path()));
+            
             Entity parentSymbol = new Entity();
             parentSymbol.add(new PositionComponent(z: 1));
             parentSymbol.add(new RelativePositionComponent(x: 10, y: 2));
@@ -122,6 +131,7 @@ public class FileSpawnSystem extends EntitySystem {
             //pathEntity.first().remove(FileSearchComponent.class);
             engine.addEntity(parent);
             engine.addEntity(parentSymbol);
+            engine.addEntity(background);
         }
         pathEntity.first().remove(FileSearchComponent.class);
     }

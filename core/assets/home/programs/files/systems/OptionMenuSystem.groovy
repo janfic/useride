@@ -68,9 +68,9 @@ public class OptionMenuSystem extends EntitySystem {
             if(click.button != Input.Buttons.RIGHT) continue;
             
             Entity optionMenu = new Entity();
-            optionMenu.add(new PositionComponent(x: 100, y: 100, z: 2));
-            optionMenu.add(new RelativePositionComponent(x: 64, y: -100));
-            optionMenu.add(new ParentComponent(parent: entity));
+            optionMenu.add(new PositionComponent(x: click.x, y: click.y, z: 2));
+            //optionMenu.add(new RelativePositionComponent(x: 64, y: -100));
+            //optionMenu.add(new ParentComponent(parent: entity));
             optionMenu.add(new GetNinePatchComponent(name: "container"));
             optionMenu.add(new SizeComponent(width: 100, height: 150));
             optionMenu.add(new OptionMenuComponent());

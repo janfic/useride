@@ -141,6 +141,7 @@ public class ProgramStartSystem extends EntitySystem {
             entity.add(engineComponent);
             entity.add(idComponent);
             entity.add(nameComponent);
+            entity.add(loaderComponent);
 
             entity.remove(ProgramStartRequestComponent.class);
         }
