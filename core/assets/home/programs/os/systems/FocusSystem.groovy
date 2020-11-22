@@ -54,6 +54,12 @@ public class FocusSystem extends SortedIteratingSystem {
 
     private static class FocusComparator implements Comparator<Entity> {
         
+        private final ComponentMapper<PositionComponent> positionMapper;
+        
+        public FocusComparator() {
+            this.positionMapper = ComponentMapper.getFor(PositionComponent.class);
+        }
+        
         public int compare(Entity a, Entity b) {
             PositionComponent pa = positionMapper.get(a);
             PositionComponent pb = positionMapper.get(b);

@@ -68,9 +68,11 @@ public class OptionMenuSystem extends EntitySystem {
             if(click.button != Input.Buttons.RIGHT) continue;
             
             Entity optionMenu = new Entity();
-            optionMenu.add(new PositionComponent(x: 100, y: 100, z: 2));
-            optionMenu.add(new RelativePositionComponent(x: 64, y: -100));
-            optionMenu.add(new ParentComponent(parent: entity));
+            int offsetY = click.y > 250 ? -150 : 0;
+            int offsetX = click.x > 400 ? -100 : 0;
+            optionMenu.add(new PositionComponent(x: click.x + offsetX, y: click.y + offsetY, z: 2));
+            //optionMenu.add(new RelativePositionComponent(x: 64, y: -100));
+            //optionMenu.add(new ParentComponent(parent: entity));
             optionMenu.add(new GetNinePatchComponent(name: "container"));
             optionMenu.add(new SizeComponent(width: 100, height: 150));
             optionMenu.add(new OptionMenuComponent());
@@ -101,16 +103,7 @@ public class OptionMenuSystem extends EntitySystem {
             rename.add(new HitBoxComponent(rectangle: new Rectangle(0,-10, 80, 20)));
             rename.add(new ClickableComponent());
             rename.add(new CloseOptionMenuOnMouseClickComponent());
-            Entity name = null;
-            for(Entity fileName : fileNames) {
-                ParentComponent parentComponent = parentMapper.get(fileName);
-                FileComponent nameFileComponent = fileMapper.get(fileName);
-                
-                if(parentComponent.parent == entity && nameFileComponent.file.equals(fileComponent.file)) {
-                    name = fileName;
-                }
-            }
-            if(name != null) rename.add(new FileRenameOnMouseClickComponent(entity: name));
+            rename.add(new FileRenameOnMouseClickComponent(entity: entity));
             
             Entity cut = new Entity();
             cut.add(new PositionComponent(z: 3));

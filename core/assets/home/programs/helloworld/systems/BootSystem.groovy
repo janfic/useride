@@ -16,9 +16,16 @@ public class BootSystem extends EntitySystem {
         ImmutableArray<Entity> inject = engine.getEntitiesFor(Family.all(ProgramEntityInjectionComponent.class).get());
         ProgramEntityInjectionComponent injection = inject.first().getComponent(ProgramEntityInjectionComponent.class);
 
+        ProgramOutputComponent outputComponent = null;
+        
         for(Entity e : injection.entities) {
             engine.addEntity(e);  
+            if(e.getComponent(ProgramOutputComponent.class) != null) {
+                outputComponent = e.getComponent(ProgramOutputComponent.class);
+                outputComponent.lines.add("Hello World!");
+            }
         }
+        
 
         Entity helloworld = new Entity();
         helloworld.add(new PositionComponent(x: 100, y: 200));

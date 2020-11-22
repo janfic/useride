@@ -41,13 +41,17 @@ public class BootSystem extends EntitySystem {
         background.add(new RegisterTextureAssetComponent(fileName: "home/programs/files/assets/background.png"));
         background.add(new GetTextureAssetComponent(fileName: "home/programs/files/assets/background.png"));
         
-        
+        Entity topBackground = new Entity();
+        topBackground.add(new PositionComponent(x:2, y: 360, z: 1));
+        topBackground.add(new SizeComponent(width: 497, height: 50));
+        topBackground.add(new GetTextureAssetComponent(fileName: "home/programs/files/assets/background.png"));
+
         Entity grid = new Entity();
         grid.add(new PositionComponent(x: 10, y: 10));
         grid.add(new SizeComponent(width: 75, height: 75));
         
         Entity path = new Entity();
-        path.add(new PositionComponent());
+        path.add(new PositionComponent(z: 2));
         path.add(new SizeComponent(width: 360, height: 20));
         path.add(new RelativePositionComponent(x: 50, y: 485, unit: "%"));
         path.add(new GetNinePatchComponent(name: "container"));
@@ -56,7 +60,7 @@ public class BootSystem extends EntitySystem {
         Entity pathText = new Entity();
         pathText.add(new TextComponent(text: "/home"));
         pathText.add(new FileSearchComponent());
-        pathText.add(new PositionComponent(z: 1));
+        pathText.add(new PositionComponent(z: 3));
         pathText.add(new RelativePositionComponent(x: 10, y: 10));
         pathText.add(new KeyInputComponent());
         pathText.add(new ClickableComponent());
@@ -74,7 +78,7 @@ public class BootSystem extends EntitySystem {
         //pathText.add(new ScaleComponent(scaleX: 0.75, scaleY: 0.75));
 
         Entity search = new Entity();
-        search.add(new PositionComponent())
+        search.add(new PositionComponent(z: 2))
         search.add(new RelativePositionComponent(x: 100, y: 0, unit: "%"));
         search.add(new ParentComponent(parent: path));
         search.add(new SizeComponent(width: 80, height: 20));
@@ -82,14 +86,16 @@ public class BootSystem extends EntitySystem {
         search.add(new ClickableComponent());
         search.add(new HitBoxComponent(rectangle: new Rectangle(0,0,80,20)));
         search.add(new FileSearchOnMouseClickComponent(entity: pathText));
+        search.add(new RegisterTextureAssetComponent(fileName: "home/programs/files/assets/file_icon.png"));
         
         Entity searchText = new Entity();
-        searchText.add(new PositionComponent(z: 1))
+        searchText.add(new PositionComponent(z: 3))
         searchText.add(new RelativePositionComponent(x: 30, y: 10));
         searchText.add(new ParentComponent(parent: search));
         searchText.add(new ColorComponent(color: Color.BLACK));
         searchText.add(new TextComponent(text: "Go"));
         searchText.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
+        searchText.add(new RegisterTextureAssetComponent(fileName: "home/programs/files/assets/folder_icon.png"));
         
         
         engine.addEntity(assetManagerEntity);
@@ -99,6 +105,7 @@ public class BootSystem extends EntitySystem {
         engine.addEntity(search);
         engine.addEntity(searchText);
         engine.addEntity(background);
+        engine.addEntity(topBackground);
         
         engine.addSystem(new RenderSystem());
         engine.addSystem(new RelativeSizeSystem());
@@ -109,7 +116,12 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new TextureAtlasGetSystem());
         engine.addSystem(new MouseClickSystem());
         engine.addSystem(new MouseHoverSystem());
+        engine.addSystem(new DragSystem());
+        engine.addSystem(new PositionBoundsSystem());
+        engine.addSystem(new HitBoxBoundsSystem());
+        engine.addSystem(new ChangeColorOnMouseHoverSystem());
         engine.addSystem(new FileLoadSystem());
+        engine.addSystem(new TextLineSystem());
         engine.addSystem(new FocusSystem());
         engine.addSystem(new KeyboardInputSystem());
         engine.addSystem(new FocusOnMouseClickSystem());
@@ -130,6 +142,7 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new FileDeleteOnMouseClickSystem());
         engine.addSystem(new CloseOptionMenuOnMouseClickSystem());
         engine.addSystem(new OptionMenuSystem());
+        engine.addSystem(new ScrollBarSystem());
     }
     
     public void update(float delta) {
