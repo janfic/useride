@@ -79,6 +79,11 @@ public class TextLineSystem extends SortedIteratingSystem {
             currentHeight += size.height + 4;
             currentHeights.put(parentComponent.parent, currentHeight);
         }
+        
+        for(Entity e : currentHeights.keySet()) {
+            SizeComponent size = sizeMapper.get(e);
+            size.height = currentHeights.get(e);
+        }
     }
     
     public void processEntity(Entity entity, float delta) {

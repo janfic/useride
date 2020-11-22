@@ -37,19 +37,17 @@ public class ProgramShortcutSystem extends EntitySystem {
         }
         
         Entity shortcuts = new Entity();
-        shortcuts.add(new SizeComponent(width: 75, height: 75));
-        shortcuts.add(new PositionComponent(x: 25, y: 25));
+        shortcuts.add(new SizeComponent(width: 90, height: 100));
+        shortcuts.add(new PositionComponent(x: 25, y: 10));
         
         for(int i = 0; i < this.programs.size(); i++) {
             FileHandle program = this.programs.get(i);
             Entity shortcut = new Entity();
             shortcut.add(new PositionComponent());
-            shortcut.add(new SizeComponent());
+            shortcut.add(new SizeComponent(width: 75, height: 75));
             shortcut.add(new ProgramStartOnMouseClickComponent(name: program.name(), path: program.path()));
-            System.out.println(program.path());
             shortcut.add(new ParentComponent(parent: shortcuts));
-            shortcut.add(new RelativeSizeComponent(width: 100, height: 100, unit: "%"));
-            shortcut.add(new RelativePositionComponent(x: ((int) (i / 12)) * 100, y: 1200 - (i * 100), unit: "%"));
+            shortcut.add(new RelativePositionComponent(x: ((int) (i / 12)) * 100, y: 900 - (i * 100), unit: "%"));
             shortcut.add(new GetNinePatchComponent(name: "shortcut"));
             shortcut.add(new DragableComponent());
             shortcut.add(new ClickableComponent());
@@ -69,7 +67,17 @@ public class ProgramShortcutSystem extends EntitySystem {
             icon.add(new GetTextureAssetComponent(fileName: program.path() + "/assets/icon.png"));
             icon.add(new SizeComponent(width: 100, height: 100));
             
+            Entity text = new Entity();
+            text.add(new PositionComponent());
+            text.add(new ParentComponent(parent: shortcut));
+            text.add(new RelativePositionComponent(x: 0, y: -10));
+            text.add(new SizeComponent(width: 90));
+            text.add(new ScaleComponent(scaleX: 0.75f, scaleY: 0.75f));
+            text.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console.fnt"));
+            text.add(new TextComponent(text: program.name()));
+            
             engine.addEntity(icon);
+            engine.addEntity(text);
             engine.addEntity(shortcut);
         }
     }

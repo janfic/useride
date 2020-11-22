@@ -41,6 +41,8 @@ public class BootSystem extends EntitySystem {
         
         Entity scrollAnchor = new Entity();
         Entity scrollBar = new Entity();
+        Entity scrollRoot = new Entity();
+        scrollRoot.add(new SizeComponent(height: 390));
         
         Entity textEntry = new Entity();
         textEntry.add(new PositionComponent(x: 0, y: 0));
@@ -63,7 +65,7 @@ public class BootSystem extends EntitySystem {
         
         scrollAnchor.add(new PositionComponent(x: 10, y: 20));
         scrollAnchor.add(new SizeComponent(width: 450));
-        scrollAnchor.add(new RelativePositionComponent(x: 0, y: 740, parentMultiplier: -1.0, unit: " p"));
+        scrollAnchor.add(new RelativePositionComponent(x: 0, y: 0, parentMultiplier: -1.0, unit: " p"));
         scrollAnchor.add(new ParentComponent(parent: scrollBar));
         scrollAnchor.add(new TextLineRootComponent());
         
@@ -73,11 +75,13 @@ public class BootSystem extends EntitySystem {
         scrollBar.add(new ClickableComponent());
         scrollBar.add(new HitBoxComponent(rectangle: new Rectangle(0,0,10,40)));
         scrollBar.add(new DragableComponent());
-        scrollBar.add(new PositionBoundsComponent(minX: 485, maxX: 485, minY: 5, maxY: 355));
+        scrollBar.add(new HitBoxBoundsComponent(minX: 485, maxX: 495, minY: 0, maxY: 390));
+        scrollBar.add(new ScrollBarComponent(scrollRoot: scrollRoot, scrollContents: scrollAnchor));
         
         engine.addEntity(textEntry);
         engine.addEntity(scrollAnchor);
         engine.addEntity(scrollBar);
+        engine.addEntity(scrollRoot);
         engine.addEntity(assetManagerEntity);
         
         engine.addSystem(new TextInputSystem());
@@ -91,7 +95,7 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new TextLineSystem());
         engine.addSystem(new RelativePositionSystem());
         engine.addSystem(new DragSystem());
-        engine.addSystem(new PositionBoundsSystem());
+        engine.addSystem(new HitBoxBoundsSystem());
         engine.addSystem(new KeyboardInputSystem());
         engine.addSystem(new AssetLoadSystem());
         engine.addSystem(new AssetGetSystem());
@@ -106,6 +110,7 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new ProgramStartSystem());
         engine.addSystem(new ProgramManagerSystem());
         engine.addSystem(new ProgramEndSystem());
+        engine.addSystem(new ScrollBarSystem());
         
         engine.removeSystem(this);
     }
