@@ -41,7 +41,18 @@ public class FileRenameSystem extends EntitySystem {
             FileHandle newFile = fileComponent.file.sibling(renameComponent.rename.trim());
             entity.remove(FileRenameComponent.class);
             if(renameComponent.rename.trim().equals(fileComponent.file.name())) continue;
-            fileComponent.file.moveTo(newFile);
+            if(fileComponent.file.isDirectory()) {
+                newFile.mkdirs();
+                for(FileHandle child : fileComponent.file.list()) {
+                    child.moveTo(newFile);
+                }
+                if(fileComponent.file.list().length == 0) {
+                    fileComponent.file.deleteDirectory();
+                }
+            }
+            else {
+                fileComponent.file.moveTo(newFile);
+            }
         }
     }
     

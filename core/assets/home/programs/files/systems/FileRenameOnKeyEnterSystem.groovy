@@ -39,8 +39,8 @@ public class FileRenameOnKeyEnterSystem extends EntitySystem {
             KeyInputComponent keyInput = keyMapper.get(entity);
             TextComponent text = textMapper.get(entity);
             if(keyInput.keyTyped == 13) {
-                System.out.println(text.text)
                 entity.add(new FileRenameComponent(rename: text.text));
+                entity.remove(FocusedComponent.class);
             }
         }
     }

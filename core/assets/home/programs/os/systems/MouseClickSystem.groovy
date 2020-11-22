@@ -179,6 +179,8 @@ public class MouseClickSystem extends SortedIteratingSystem {
 
             click.count = Math.min(press.count, release.count);
             click.button = this.button;
+            click.x = this.mouseCoords.x;
+            click.y = this.mouseCoords.y;
         }
 
         hitBox.rectangle.setPosition(temp);

@@ -53,7 +53,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 program.add(fileRequest);
 
                 program.add(new GetNinePatchComponent(name: "window"));
-                program.add(new PositionComponent(x: 200, y: 100, z: 2));
+                program.add(new PositionComponent(x: 150, y: 550, z: 2));
                 program.add(new SizeComponent(width: 500, height: 400));
                 program.add(new HitBoxComponent(rectangle: new Rectangle(0, 400, 500, 35)));
                 program.add(new DragableComponent());
