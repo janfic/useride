@@ -47,29 +47,33 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
             
                 ProgramStartRequestComponent startRequest = new ProgramStartRequestComponent(name: start.path);
                 FileLoadRequestComponent fileRequest = new FileLoadRequestComponent(fileName: start.path);
-
+                
                 Entity program = new Entity();
+                Entity topbar = new Entity();
+                
                 program.add(startRequest);
                 program.add(fileRequest);
 
                 program.add(new GetNinePatchComponent(name: "window"));
-                program.add(new PositionComponent(x: 150, y: 550, z: 2));
+                program.add(new PositionComponent(x: 0, y: 0, z: 2));
                 program.add(new SizeComponent(width: 500, height: 400));
-                program.add(new HitBoxComponent(rectangle: new Rectangle(0, 400, 500, 35)));
-                program.add(new DragableComponent());
-                program.add(new ClickableComponent());
+                program.add(new HitBoxComponent(rectangle: new Rectangle(0, 0, 500, 400)));
+                //program.add(new ClickableComponent());
                 program.add(new FocusableComponent());
                 program.add(new FocusBringToFrontComponent());
                 program.add(new FocusOnMouseClickComponent());
+                program.add(new ParentComponent(parent: topbar));
+                program.add(new RelativePositionComponent(x: 0, y: -400, z:0, unit: "p"));
 
-                Entity topbar = new Entity();
                 
-                topbar.add(new PositionComponent(x: 100 , y: 100, z: 2));
-                topbar.add(new RelativePositionComponent(x: 0, y: 100, z:0, unit: "p%p"));
+                topbar.add(new PositionComponent(x: 150 , y: 550, z: 2));
                 topbar.add(new GetNinePatchComponent(name: "topbar"));
                 topbar.add(new SizeComponent(width: 100, height: 25));
-                topbar.add(new ParentComponent(parent: program));
                 topbar.add(new RelativeSizeComponent(width: 100, unit: "% "));
+                topbar.add(new DragableComponent());
+                topbar.add(new ClickableComponent());
+                topbar.add(new ParentComponent(parent: program))
+                topbar.add(new HitBoxComponent(rectangle: new Rectangle(0, 0, 500, 35)));
                 
                 Entity titleText = new Entity();
 
