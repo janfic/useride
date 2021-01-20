@@ -79,7 +79,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
 
                 titleText.add(new PositionComponent(z: 2));
                 titleText.add(new SizeComponent());
-                titleText.add(new RelativePositionComponent(x: 2, y: 40, z:1, unit: "%%p"));
+                titleText.add(new RelativePositionComponent(x: 2, y: 20, z:1, unit: "%%p"));
                 titleText.add(new ParentComponent(parent: topbar));
                 titleText.add(new TextComponent(text: start.name));
                 titleText.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console.fnt"));
@@ -108,9 +108,11 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 viewportComponent.viewport = new FitViewport(500, 400);
                 SpriteBatchComponent spriteBatchComponent = renderEntities.first().getComponent(SpriteBatchComponent.class);
                 FrameBufferComponent frameBuffer = new FrameBufferComponent(frameBuffer: new FrameBuffer(Pixmap.Format.RGBA8888, 500, 400, true));
+                SizeComponent size = new SizeComponent(width: 500, height: 400);
                 graphicsEntity.add(spriteBatchComponent);
                 graphicsEntity.add(frameBuffer);
                 graphicsEntity.add(viewportComponent);
+                graphicsEntity.add(size);
                 
                 program.add(frameBuffer);
 				

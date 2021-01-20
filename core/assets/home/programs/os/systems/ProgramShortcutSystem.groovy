@@ -70,7 +70,7 @@ public class ProgramShortcutSystem extends EntitySystem {
             Entity text = new Entity();
             text.add(new PositionComponent());
             text.add(new ParentComponent(parent: shortcut));
-            text.add(new RelativePositionComponent(x: 0, y: -10));
+            text.add(new RelativePositionComponent(x: 0, y: -20));
             text.add(new SizeComponent(width: 90));
             text.add(new ScaleComponent(scaleX: 0.75f, scaleY: 0.75f));
             text.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console.fnt"));

@@ -8,8 +8,11 @@ import com.badlogic.ashley.utils.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.*;
 import com.badlogic.gdx.utils.*;
+
+import ui.components.*;
 
 import com.janfic.useride.kernel.components.*;
 
@@ -31,6 +34,8 @@ public class RenderSystem extends SortedIteratingSystem {
     private final ComponentMapper<SpriteStackComponent> stackMapper;
     private final ComponentMapper<CameraComponent> cameraMapper;
     private final ComponentMapper<FrameBufferComponent> frameBufferMapper;
+    private final ComponentMapper<BackgroundColorComponent> bgColorMapper;
+    private final ComponentMapper<HitBoxComponent> hitBoxMapper;
 		
     private ImmutableArray<Entity> renderEntities, cameraEntity;
 	
@@ -38,6 +43,7 @@ public class RenderSystem extends SortedIteratingSystem {
     private Viewport viewport;
     private FrameBuffer frameBuffer;
     private CameraComponent camera;
+    private ShapeRenderer shapeRenderer;
     
     float ss_zStretch, angle;
 	
@@ -49,7 +55,8 @@ public class RenderSystem extends SortedIteratingSystem {
                 TextureRegionComponent.class,
                 TextComponent.class,
                 SpriteStackComponent.class,
-                FrameBufferComponent.class
+                FrameBufferComponent.class,
+                BackgroundColorComponent.class
             ).get(), 
             new ZComparator()
         );
@@ -66,6 +73,10 @@ public class RenderSystem extends SortedIteratingSystem {
         this.stackMapper = ComponentMapper.getFor(SpriteStackComponent.class);
         this.cameraMapper = ComponentMapper.getFor(CameraComponent.class);
         this.frameBufferMapper = ComponentMapper.getFor(FrameBufferComponent.class);
+        //css stuff
+        this.bgColorMapper = ComponentMapper.getFor(BackgroundColorComponent.class);
+        this.hitBoxMapper = ComponentMapper.getFor(HitBoxComponent.class);
+        this.shapeRenderer = new ShapeRenderer();
     }
 	
     public void addedToEngine(Engine engine) {
@@ -94,6 +105,7 @@ public class RenderSystem extends SortedIteratingSystem {
         viewport.apply(true);
 		
         batch.setProjectionMatrix(viewport.getCamera().combined);
+        shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
         if(frameBuffer != null) frameBuffer.begin();
         batch.begin();
         super.update(delta);
@@ -111,7 +123,10 @@ public class RenderSystem extends SortedIteratingSystem {
         BitmapFontComponent fontComponent = fontMapper.get(entity);
         SpriteStackComponent stackComponent = stackMapper.get(entity);
         FrameBufferComponent frameBufferComponent = frameBufferMapper.get(entity);
-		
+        
+        BackgroundColorComponent bgColorComponent = bgColorMapper.get(entity);
+        HitBoxComponent hitBoxComponent = hitBoxMapper.get(entity);
+        
         SizeComponent size = sizeMapper.get(entity);
         ScaleComponent scale = scaleMapper.get(entity);
         RotationComponent rot = rotationMapper.get(entity);
@@ -126,7 +141,20 @@ public class RenderSystem extends SortedIteratingSystem {
         float rotation = rot == null ? 0f : rot.rotation;
         float originX = 0;//position.x + width / 2;
         float originY = 0;//position.y + height / 2;
-		
+	
+        if(bgColorComponent != null && hitBoxComponent != null) {
+            batch.end();
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(bgColorComponent.color);
+            shapeRenderer.rect(position.x + hitBoxComponent.rectangle.getX(), position.y + hitBoxComponent.rectangle.getY(), hitBoxComponent.rectangle.getWidth(), hitBoxComponent.rectangle.getHeight());
+            shapeRenderer.end();
+            batch.begin();
+        }
+        if(frameBufferComponent != null) {
+            if(size == null) {width = frameBufferComponent.frameBuffer.getWidth(); height = frameBufferComponent.frameBuffer.getHeight();}
+            batch.draw(frameBufferComponent.frameBuffer.getColorBufferTexture(), position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation, 0, 0, (int) width, (int)height, false, true);
+            frameBufferComponent.frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, (int)width, (int)height, true);
+        }
         if(color != null) {
             batch.setColor(color.color);
         }
@@ -147,11 +175,7 @@ public class RenderSystem extends SortedIteratingSystem {
                 batch.draw(stackComponent.stack.get(i), position.x - (i * xStep * scaleX), position.y - (i * scaleY * yStep) - position.z, (float)(width / 2),(float)( height / 2), width, height, scaleX, scaleY, rotation);
             }
         }
-        if(frameBufferComponent != null) {
-            if(size == null) {width = frameBufferComponent.frameBuffer.getWidth(); height = frameBufferComponent.frameBuffer.getHeight();}
-            batch.draw(frameBufferComponent.frameBuffer.getColorBufferTexture(), position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation, 0, 0, (int) width, (int)height, false, true);
-            frameBufferComponent.frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, (int)width, (int)height, true);
-        }
+        
         if(region != null) {
             batch.draw(region.textureRegion, position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation);
         }
@@ -159,12 +183,13 @@ public class RenderSystem extends SortedIteratingSystem {
             if(color != null) fontComponent.font.setColor(color.color);
             if(scale != null) fontComponent.font.getData().setScale(scale.scaleX,scale.scaleY); else fontComponent.font.getData().setScale(1 , 1);
             if(size != null)
-            fontComponent.font.draw( batch, textComponent.text, position.x , (float) (position.y + fontComponent.font.getCapHeight() / 2), width, Align.left, true);
+            fontComponent.font.draw( batch, textComponent.text, position.x , (float) (position.y + fontComponent.font.getCapHeight()), width, Align.left, true);
             else
-            fontComponent.font.draw( batch, textComponent.text, position.x, (float) (position.y + fontComponent.font.getCapHeight() / 2));
+            fontComponent.font.draw( batch, textComponent.text, position.x, (float) (position.y + fontComponent.font.getCapHeight()));
             batch.flush();
             if(color != null) fontComponent.font.setColor(Color.WHITE); 
         }
+        
         
         batch.setColor(Color.WHITE);
     }
