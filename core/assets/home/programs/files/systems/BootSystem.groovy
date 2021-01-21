@@ -32,8 +32,8 @@ public class BootSystem extends EntitySystem {
         assetManagerEntity.add(amComp);
         assetManagerEntity.add(new LoadAssetsComponent());
         assetManagerEntity.add(new RegisterTextureAssetComponent(fileName: "home/programs/files/assets/folder.png"));
-        assetManagerEntity.add(new RegisterTextureAtlasAssetComponent(fileName: "home/programs/os/assets/userosgui/userosgui.atlas"));
-        assetManagerEntity.add(new GetTextureAtlasAssetComponent(fileName: "home/programs/os/assets/userosgui/userosgui.atlas"));
+        assetManagerEntity.add(new RegisterTextureAtlasAssetComponent(fileName: "computer/os/assets/userosgui/userosgui.atlas"));
+        assetManagerEntity.add(new GetTextureAtlasAssetComponent(fileName: "computer/os/assets/userosgui/userosgui.atlas"));
         
         Entity background = new Entity();
         background.add(new PositionComponent(x:2, y:1, z:-1));
@@ -61,7 +61,7 @@ public class BootSystem extends EntitySystem {
         pathText.add(new TextComponent(text: "/home"));
         pathText.add(new FileSearchComponent());
         pathText.add(new PositionComponent(z: 3));
-        pathText.add(new RelativePositionComponent(x: 10, y: 10));
+        pathText.add(new RelativePositionComponent(x: 10, y: 5));
         pathText.add(new KeyInputComponent());
         pathText.add(new ClickableComponent());
         pathText.add(new FocusableComponent());
@@ -70,8 +70,8 @@ public class BootSystem extends EntitySystem {
         pathText.add(new FocusOnMouseClickComponent());
         pathText.add(new SizeComponent(width: 400, height: 40));
         pathText.add(new HitBoxComponent(rectangle: new Rectangle(0,-10,350,20)));
-        pathText.add(new RegisterBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
-        pathText.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
+        pathText.add(new RegisterBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console 12px.fnt"));
+        pathText.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console 12px.fnt"));
         pathText.add(new RegisterTextureAssetComponent(fileName: "home/programs/files/assets/file.png"));
         pathText.add(new ColorComponent(color: Color.BLACK));
         pathText.add(new ChangeColorOnFocusedComponent(focusedColor: Color.BLUE, unfocusedColor: Color.BLACK));
@@ -90,11 +90,11 @@ public class BootSystem extends EntitySystem {
         
         Entity searchText = new Entity();
         searchText.add(new PositionComponent(z: 3))
-        searchText.add(new RelativePositionComponent(x: 30, y: 10));
+        searchText.add(new RelativePositionComponent(x: 30, y: 5));
         searchText.add(new ParentComponent(parent: search));
         searchText.add(new ColorComponent(color: Color.BLACK));
         searchText.add(new TextComponent(text: "Go"));
-        searchText.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
+        searchText.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console 12px.fnt"));
         searchText.add(new RegisterTextureAssetComponent(fileName: "home/programs/files/assets/folder_icon.png"));
         
         
