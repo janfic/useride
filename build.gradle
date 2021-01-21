@@ -38,7 +38,7 @@ allprojects {
 
 project(":desktop") {
     apply plugin: "java-library"
-
+    
 
     dependencies {
         implementation project(":core")
@@ -65,6 +65,7 @@ project(":core") {
         api 'junit:junit:4.12'
         testImplementation 'junit:junit:4.12'
         implementation 'org.codehaus.groovy:groovy-all:2.4.15'
+        implementation 'org.jsoup:jsoup:1.13.1'
     }
     
     test {

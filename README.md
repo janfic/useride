@@ -1,2 +1,6 @@
 # USER IDE
-A Game to teach others how to code
+An Entity-Component System Development Environment
+
+## Learn Entity Component System ( ECS ) Game Programming
+
+## Installation

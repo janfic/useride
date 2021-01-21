@@ -40,15 +40,17 @@ public class ProgramEndSystem extends EntitySystem {
         for (Entity entity : entities) {
             ProgramEndRequestComponent endRequest = programEndRequestMapper.get(entity);
             for (Entity program : programs) {
+                NameComponent nameComponent = nameMapper.get(program);
                 IDComponent idComponent = idMapper.get(program);
-                if (endRequest.id == idComponent.id) {
+                if (endRequest.programName.equals(nameComponent.name) && idComponent.id == endRequest.id) {
+                    System.out.println("[ ProgramEndSystem ]: Ended Program: " + nameComponent.name);
                     program.remove(EngineComponent.class);
                     program.remove(IDComponent.class);
                     program.remove(ClassLoaderComponent.class);
                     program.remove(NameComponent.class);
                 }
             }
-            
+
             entity.remove(ProgramEndRequestComponent.class);
         }
     }

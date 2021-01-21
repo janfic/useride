@@ -6,7 +6,7 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
 
 public class PrintTextSystem extends EntitySystem {
-	
+  
     private final ComponentMapper<TextComponent> textMapper;
 
     private ImmutableArray<Entity> entities;
@@ -24,7 +24,7 @@ public class PrintTextSystem extends EntitySystem {
     public void update(float delta) {
         for(Entity entity : entities) {
             TextComponent text = textMapper.get(entity);
-            System.out.println(text.text);
+            //System.out.println(text.text);
         }
     }
 

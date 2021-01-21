@@ -35,6 +35,7 @@ public class BootSystem extends EntitySystem {
         helloworld.add(new LoadAssetsComponent())
         helloworld.add(new ColorComponent(color: Color.RED));
         helloworld.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console.fnt"));
+
         helloworld.add(new KeyInputComponent())
         helloworld.add(new FocusedComponent())
         

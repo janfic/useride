@@ -23,7 +23,7 @@ public class ProgramManagerSystem extends EntitySystem {
     @Override
     public void addedToEngine(Engine engine) {
         this.entities = engine.getEntitiesFor(
-                Family.all(EngineComponent.class, IDComponent.class, NameComponent.class, ClassLoaderComponent.class).get()
+                Family.all(EngineComponent.class, IDComponent.class, NameComponent.class).get()
         );
     }
 
