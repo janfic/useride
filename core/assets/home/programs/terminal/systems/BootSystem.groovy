@@ -35,9 +35,9 @@ public class BootSystem extends EntitySystem {
         amComp.manager = new AssetManager();
         assetManagerEntity.add(amComp);
         assetManagerEntity.add(new LoadAssetsComponent());
-        assetManagerEntity.add(new RegisterTextureAtlasAssetComponent(fileName: "home/programs/os/assets/userosgui/userosgui.atlas"));
-        assetManagerEntity.add(new RegisterBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
-        assetManagerEntity.add(new GetTextureAtlasAssetComponent(fileName: "home/programs/os/assets/userosgui/userosgui.atlas"));
+        assetManagerEntity.add(new RegisterTextureAtlasAssetComponent(fileName: "computer/os/assets/userosgui/userosgui.atlas"));
+        assetManagerEntity.add(new RegisterBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console 12px.fnt"));
+        assetManagerEntity.add(new GetTextureAtlasAssetComponent(fileName: "computer/os/assets/userosgui/userosgui.atlas"));
         
         Entity scrollAnchor = new Entity();
         Entity scrollBar = new Entity();
@@ -48,7 +48,7 @@ public class BootSystem extends EntitySystem {
         textEntry.add(new PositionComponent(x: 0, y: 0));
         textEntry.add(new RelativePositionComponent(x: 0, y: 100));
         textEntry.add(new ParentComponent(parent: scrollAnchor))
-        textEntry.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
+        textEntry.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console 12px.fnt"));
         textEntry.add(new CommandComponent(location: "[USER]@[~/home]: ", text: ""))
         textEntry.add(new FileLoadRequestComponent(fileName: "/home"));
         textEntry.add(new TextComponent());
