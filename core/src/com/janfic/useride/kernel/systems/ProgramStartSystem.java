@@ -5,6 +5,9 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.files.FileHandle;
 import com.janfic.useride.kernel.components.*;
 import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyCodeSource;
+import java.util.Arrays;
+import org.codehaus.groovy.control.CompilerConfiguration;
 
 /**
  *
@@ -15,10 +18,13 @@ public class ProgramStartSystem extends EntitySystem {
     private final ComponentMapper<ProgramStartRequestComponent> startRequestMapper;
     private final ComponentMapper<ProgramEntityInjectionComponent> injectionMapper;
     private final ComponentMapper<ProgramArgumentsComponent> argumentMapper;
+    private final ComponentMapper<ClassLoaderComponent> loaderMapper;
     private final ComponentMapper<IDComponent> idMapper;
     private final ComponentMapper<FileComponent> fileMapper;
 
-    private ImmutableArray<Entity> entities;
+    private static GroovyClassLoader parent = ProgramStartSystem.parent == null ? new GroovyClassLoader() : ProgramStartSystem.parent;
+
+    private ImmutableArray<Entity> entities, loader;
 
     private int idCount;
 
@@ -28,7 +34,7 @@ public class ProgramStartSystem extends EntitySystem {
         this.fileMapper = ComponentMapper.getFor(FileComponent.class);
         this.injectionMapper = ComponentMapper.getFor(ProgramEntityInjectionComponent.class);
         this.argumentMapper = ComponentMapper.getFor(ProgramArgumentsComponent.class);
-
+        this.loaderMapper = ComponentMapper.getFor(ClassLoaderComponent.class);
         this.idCount = 0;
     }
 
@@ -37,33 +43,44 @@ public class ProgramStartSystem extends EntitySystem {
         this.entities = engine.getEntitiesFor(
                 Family.all(ProgramStartRequestComponent.class, FileComponent.class).get()
         );
+        this.loader = engine.getEntitiesFor(Family.all(ClassLoaderComponent.class).get());
     }
 
     @Override
     public void update(float deltaTime) {
+        if (loader.size() < 1) {
+            return;
+        }
+        ClassLoaderComponent loaderComponent = loaderMapper.get(loader.first());
         for (Entity entity : entities) {
+
+            System.out.println("[ ProgramStartSystem ]: Starting Program");
 
             FileComponent fileComponent = fileMapper.get(entity);
             ProgramStartRequestComponent startRequest = startRequestMapper.get(entity);
             ProgramEntityInjectionComponent entityInjection = injectionMapper.get(entity);
+
+            System.out.println("[ ProgramStartSystem ]: Program Name = " + startRequest.name);
 
             FileHandle rootProgramDirectory = fileComponent.file;
 
             FileHandle components = rootProgramDirectory.child("components");
             FileHandle systems = rootProgramDirectory.child("systems");
 
+            System.out.println("[ ProgramStartSystem ]: Analyzing System Structure.. ");
+
             if (!rootProgramDirectory.exists() || !components.exists() || !systems.exists()) {
-                System.out.println(rootProgramDirectory.exists());
-                System.out.println(components.exists());
-                System.out.println(systems.exists());
                 System.out.println(
-                        "A folder is missing"
+                        "[ ProgramStartSystem ] [ERROR] : A folder is missing - ABORTING Program Startup"
                 );
+                continue;
             }
+            System.out.println("[ ProgramStartSystem ]: Correct Structure Found ");
 
+            System.out.println("[ ProgramStartSystem ]: Creating Program Entity Components.. ");
             ClassLoaderComponent classLoaderComponent = new ClassLoaderComponent();
-            classLoaderComponent.classLoader = new GroovyClassLoader();
-
+            CompilerConfiguration config = new CompilerConfiguration();
+            classLoaderComponent.classLoader = new GroovyClassLoader(loaderComponent.classLoader);
             classLoaderComponent.classLoader.addClasspath(rootProgramDirectory.parent().path());
 
             IDComponent idComponent = new IDComponent();
@@ -74,26 +91,15 @@ public class ProgramStartSystem extends EntitySystem {
 
             EngineComponent engineComponent = new EngineComponent();
             engineComponent.engine = new Engine();
-            try {
-                for (FileHandle component : components.list(".groovy")) {
-                    Class c = classLoaderComponent.classLoader.loadClass(
-                            rootProgramDirectory.nameWithoutExtension() + ".components." + component.nameWithoutExtension());
-                }
 
-                for (FileHandle system : systems.list(".groovy")) {
-                    Class c = classLoaderComponent.classLoader.loadClass(
-                            rootProgramDirectory.nameWithoutExtension() + ".systems." + system.nameWithoutExtension());
-                    if (system.nameWithoutExtension().equals("BootSystem")) {
-                        EntitySystem bootSystem = (EntitySystem) c.newInstance();
-                        engineComponent.engine.addSystem(bootSystem);
-                    }
-                }
+            Entity en = new Entity();
+            en.add(classLoaderComponent);
+            engineComponent.engine.addEntity(en);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            System.out.println("[ ProgramStartSystem ]: Created Successfully ");
 
             if (entityInjection != null) {
+                System.out.println("[ ProgramStartSystem ]: Entity Injection Component found - injecting into program");
                 Entity e = new Entity();
                 e.add(entityInjection);
                 engineComponent.engine.addEntity(e);
@@ -101,14 +107,40 @@ public class ProgramStartSystem extends EntitySystem {
 
             ProgramArgumentsComponent arguments = argumentMapper.get(entity);
             if (arguments != null) {
+                System.out.println("[ ProgramStartSystem ]: ProgramArgumentsComponent found - adding to program");
                 Entity e = new Entity();
                 e.add(arguments);
             }
 
+            try {
+                System.out.println("[ ProgramStartSystem ]: Compiling Components: " + components.list(".groovy").length + " Component files found");
+                for (FileHandle component : components.list(".groovy")) {
+                    GroovyCodeSource source = new GroovyCodeSource(component.file());
+                    Class c = classLoaderComponent.classLoader.parseClass(source, false);
+                    //Class c2 = loaderComponent.classLoader.loadClass(rootProgramDirectory.name() + ".components." + component.nameWithoutExtension());
+                    //System.out.println("Class: " + c + "\t" + (c == c2));
+                }
+
+                System.out.println("[ ProgramStartSystem ]: Compiling Systems: " + systems.list(".groovy").length + " Systems files found");
+                for (FileHandle system : systems.list(".groovy")) {
+                    GroovyCodeSource source = new GroovyCodeSource(system.file());
+                    Class c = classLoaderComponent.classLoader.parseClass(source, false);
+                    // Class c2 = loaderComponent.classLoader.loadClass(rootProgramDirectory.name() + ".systems." + system.nameWithoutExtension());
+                    //System.out.println("Class: " + c + "\t" + (c == c2));
+                    if (system.nameWithoutExtension().equals("BootSystem")) {
+                        EntitySystem bootSystem = (EntitySystem) c.getConstructors()[0].newInstance();
+                        engineComponent.engine.addSystem(bootSystem);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            System.out.println("[ ProgramStartSystem ]: Program Successfully Started!");
             entity.add(engineComponent);
             entity.add(idComponent);
-            entity.add(classLoaderComponent);
             entity.add(nameComponent);
+            entity.add(loaderComponent);
 
             entity.remove(ProgramStartRequestComponent.class);
         }
@@ -120,4 +152,19 @@ public class ProgramStartSystem extends EntitySystem {
         super.removedFromEngine(engine); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public static class USERIDEClassLoader extends GroovyClassLoader {
+
+        public USERIDEClassLoader(CompilerConfiguration config) {
+            super(new GroovyClassLoader(), config, true);
+        }
+
+        public String[] classPaths() {
+            System.out.println(this.classCache);
+            return this.getClassPath();
+        }
+
+        public long time(Class c) {
+            return this.getTimeStamp(c);
+        }
+    }
 }
