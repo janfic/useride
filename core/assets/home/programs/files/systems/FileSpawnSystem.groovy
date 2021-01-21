@@ -131,9 +131,9 @@ public class FileSpawnSystem extends EntitySystem {
                 
                 //String name = child.name().length() > 11 ? child.name().substring(0, 5) + ".." + child.name().substring(child.name().length()  - 4) : child.name();
                 
-                fileName.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
+                fileName.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console 12px.fnt"));
                 fileName.add(new PositionComponent());
-                fileName.add(new RelativePositionComponent(x: 30, y: 10));
+                fileName.add(new RelativePositionComponent(x: 30, y: 5));
                 fileName.add(new TextComponent(text: child.name()));
                 fileName.add(new SizeComponent(width: 450, height: 20));
                 fileName.add(new ParentComponent(parent: file));

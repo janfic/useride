@@ -84,7 +84,7 @@ public class OptionMenuSystem extends EntitySystem {
             open.add(new RelativePositionComponent(x: 10, y: 130));
             open.add(new ParentComponent(parent: optionMenu));
             open.add(new TextComponent(text: "Open"));
-            open.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
+            open.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console 12px.fnt"));
             open.add(new OptionMenuComponent());
             open.add(new ColorComponent(color: Color.BLACK));
             open.add(new HitBoxComponent(rectangle: new Rectangle(0,-10, 80, 20)));
@@ -97,7 +97,7 @@ public class OptionMenuSystem extends EntitySystem {
             rename.add(new RelativePositionComponent(x: 10, y: 110));
             rename.add(new ParentComponent(parent: optionMenu));
             rename.add(new TextComponent(text: "Rename"));
-            rename.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
+            rename.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console 12px.fnt"));
             rename.add(new OptionMenuComponent());
             rename.add(new ColorComponent(color: Color.BLACK));
             rename.add(new HitBoxComponent(rectangle: new Rectangle(0,-10, 80, 20)));
@@ -110,7 +110,7 @@ public class OptionMenuSystem extends EntitySystem {
             cut.add(new RelativePositionComponent(x: 10, y: 90));
             cut.add(new ParentComponent(parent: optionMenu));
             cut.add(new TextComponent(text: "Cut"));
-            cut.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
+            cut.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console 12px.fnt"));
             cut.add(new OptionMenuComponent());
             cut.add(new ColorComponent(color: Color.BLACK));
             cut.add(new HitBoxComponent(rectangle: new Rectangle(0,-10, 80, 20)));
@@ -123,7 +123,7 @@ public class OptionMenuSystem extends EntitySystem {
             copy.add(new RelativePositionComponent(x: 10, y: 70));
             copy.add(new ParentComponent(parent: optionMenu));
             copy.add(new TextComponent(text: "Copy"));
-            copy.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
+            copy.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console 12px.fnt"));
             copy.add(new OptionMenuComponent());
             copy.add(new ColorComponent(color: Color.BLACK));
             copy.add(new HitBoxComponent(rectangle: new Rectangle(0,-10, 80, 20)));
@@ -136,7 +136,7 @@ public class OptionMenuSystem extends EntitySystem {
             paste.add(new RelativePositionComponent(x: 10, y: 50));
             paste.add(new ParentComponent(parent: optionMenu));
             paste.add(new TextComponent(text: "Paste"));
-            paste.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
+            paste.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console 12px.fnt"));
             paste.add(new OptionMenuComponent());
             paste.add(new ColorComponent(color: Color.BLACK));
             paste.add(new HitBoxComponent(rectangle: new Rectangle(0,-10, 80, 20)));
@@ -149,7 +149,7 @@ public class OptionMenuSystem extends EntitySystem {
             delete.add(new RelativePositionComponent(x: 10, y: 30));
             delete.add(new ParentComponent(parent: optionMenu));
             delete.add(new TextComponent(text: "Delete"));
-            delete.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console 12px.fnt"));
+            delete.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console 12px.fnt"));
             delete.add(new OptionMenuComponent());
             delete.add(new ColorComponent(color: Color.BLACK));
             delete.add(new HitBoxComponent(rectangle: new Rectangle(0,-10, 80, 20)));
