@@ -6,31 +6,30 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
 
 public class PrintTextSystem extends EntitySystem {
+  
+    private final ComponentMapper<TextComponent> textMapper;
+
+    private ImmutableArray<Entity> entities;
+
+    public PrintTextSystem() {
+        this.textMapper = ComponentMapper.getFor(TextComponent.class);
+    }
 	
-	private final ComponentMapper<TextComponent> textMapper;
+    public void addedToEngine(Engine engine) {
+        this.entities = engine.getEntitiesFor(
+            Family.all(TextComponent.class).get()
+        );
+    }
 
-	private ImmutableArray<Entity> entities;
+    public void update(float delta) {
+        for(Entity entity : entities) {
+            TextComponent text = textMapper.get(entity);
+            //System.out.println(text.text);
+        }
+    }
 
-	public PrintTextSystem() {
-		this.textMapper = ComponentMapper.getFor(TextComponent.class);
-	}
+    public void removedFromEngine(Engine engine) {
 	
-	public void addedToEngine(Engine engine) {
-		this.entities = engine.getEntitiesFor(
-			Family.all(TextComponent.class).get()
-		);
-	}
-
-	public void update(float delta) {
-		for(Entity entity : entities) {
-			TextComponent text = textMapper.get(entity);
-			//System.out.println(text.text);
-			//System.out.println(entity.getComponents());
-		}
-	}
-
-	public void removedFromEngine(Engine engine) {
-	
-	}
+    }
 
 }

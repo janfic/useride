@@ -30,11 +30,12 @@ public class BootSystem extends EntitySystem {
         Entity helloworld = new Entity();
         helloworld.add(new PositionComponent(x: 100, y: 200));
         helloworld.add(new TextComponent(text: "Hello World!"));
-        RegisterBitmapFontAssetComponent registerFont = new RegisterBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console.fnt");
+        RegisterBitmapFontAssetComponent registerFont = new RegisterBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console.fnt");
         helloworld.add(registerFont);
         helloworld.add(new LoadAssetsComponent())
         helloworld.add(new ColorComponent(color: Color.RED));
-        helloworld.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console.fnt"));
+        helloworld.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console.fnt"));
+
         helloworld.add(new KeyInputComponent())
         helloworld.add(new FocusedComponent())
         

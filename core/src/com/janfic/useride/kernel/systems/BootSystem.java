@@ -27,14 +27,13 @@ public class BootSystem extends EntitySystem {
         Entity entity = new Entity();
 
         FileLoadRequestComponent loadRequest = new FileLoadRequestComponent();
-        loadRequest.fileName = "home/programs/os";
+        loadRequest.fileName = "computer/os";
 
         ProgramStartRequestComponent startRequest = new ProgramStartRequestComponent();
         startRequest.name = "OS";
         
         ClassLoaderComponent loader = new ClassLoaderComponent();
         loader.classLoader = new GroovyClassLoader();
-        loader.classLoader.addClasspath("home/programs/");
 
         entity.add(loadRequest);
         entity.add(startRequest);
