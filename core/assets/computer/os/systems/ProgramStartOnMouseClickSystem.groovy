@@ -82,7 +82,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 titleText.add(new RelativePositionComponent(x: 2, y: 20, z:1, unit: "%%p"));
                 titleText.add(new ParentComponent(parent: topbar));
                 titleText.add(new TextComponent(text: start.name));
-                titleText.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console.fnt"));
+                titleText.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console.fnt"));
                 titleText.add(new ColorComponent(color: Color.BLACK))
 
                 Entity xButton = new Entity();

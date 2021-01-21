@@ -73,7 +73,7 @@ public class ProgramShortcutSystem extends EntitySystem {
             text.add(new RelativePositionComponent(x: 0, y: -20));
             text.add(new SizeComponent(width: 90));
             text.add(new ScaleComponent(scaleX: 0.75f, scaleY: 0.75f));
-            text.add(new GetBitmapFontAssetComponent(fileName: "home/programs/os/assets/userosgui/Lucida Console.fnt"));
+            text.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console.fnt"));
             text.add(new TextComponent(text: program.name()));
             
             engine.addEntity(icon);
