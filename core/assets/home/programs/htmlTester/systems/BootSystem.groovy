@@ -1,4 +1,4 @@
-package htmlTester.systems;
+package htmltester.systems;
 
 import com.janfic.useride.kernel.components.*;
 import os.components.*;
@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.gdx.*;
+import com.badlogic.gdx.*;
 import htmlTester.components.*;
 import ui.components.*;
 import ui.systems.*;
@@ -31,10 +32,10 @@ public class BootSystem extends EntitySystem {
         
         Entity e = new Entity();
         HTMLComponent html = new HTMLComponent();
-        html.html = "<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'></head><body><div class='parent'><p class='test'>Hello World</p><p class='test'>This is another text</p></div></body></html>";
+        html.html = Gdx.files.local("home/programs/htmlTester/assets/index.html").readString();
 
         CSSComponent css = new CSSComponent();
-        css.css = ".parent { color: #FF00FF; width: 100%; height: 100%; background-color: white; } .test { background-color: yellow; padding: 10%; margin: 10px; }"
+        css.css =  Gdx.files.local("home/programs/htmlTester/assets/styles.css").readString();
         
         SizeComponent size = new SizeComponent(width: 0, height: 0);
         PositionComponent position = new PositionComponent(x: 0, y: 0);
@@ -60,6 +61,8 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new AssetGetSystem());
         engine.addSystem(new AssetLoadSystem());
         engine.addSystem(new AssetRegisterSystem());
+        engine.addSystem(new RelativePositionSystem());
+        engine.addSystem(new ViewportSystem());
 
         super.addedToEngine(engine);
         

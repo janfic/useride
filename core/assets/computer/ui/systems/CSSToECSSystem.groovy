@@ -47,7 +47,6 @@ public class CSSToECSSystem extends EntitySystem {
         this.entities = engine.getEntitiesFor(
             Family.all(CSSComponent.class).get()
         );
-        
         this.htmlElements = engine.getEntitiesFor(
             Family.all(
                 ClassComponent.class, 
@@ -68,12 +67,12 @@ public class CSSToECSSystem extends EntitySystem {
             String css = cssComponent.css;
             
             if(cssComponent.parsed == false) {
-                Map<String, String> rules = parse(css);
+                ArrayList<String> orderedKeys = new ArrayList<String>();
+                Map<String, String> rules = parse(css, orderedKeys);
                 cssComponent.parsed = true;
                 
-                for(String key : rules.keySet()) {
+                for(String key : orderedKeys) {
                     String rule = rules.get(key);
-                    
                     for(Entity element : htmlElements) {
                         TagComponent tagComponent = tagMapper.get(element);
                         ClassComponent classComponent = classMapper.get(element);
@@ -81,13 +80,13 @@ public class CSSToECSSystem extends EntitySystem {
                         
                         boolean match = true;
                         if(key.startsWith(".")) {
-                            match = match && classComponent.classes.contains(key.substring(1));
+                            match = match && classComponent.classes.contains(key.substring(1).trim());
                         }
                         else if(key.startsWith("#")) {
-                            match = match && idComponent.id.equals(key.substring(1));
+                            match = match && idComponent.id.equals(key.substring(1).trim());
                         }
                         else {
-                            match = match && tagComponent.tag.equals(key.substring(1));
+                            match = match && tagComponent.tag.equals(key.trim());
                         }
                         if(match) generateComponents(rule, element);
                     }
@@ -257,19 +256,34 @@ public class CSSToECSSystem extends EntitySystem {
                 }
                 entity.add(rightComponent);
                 break;
-            case "border":
-                break;
-            case "border-width":
-                break;
             case "border-radius":
+                BorderComponent border = entity.getComponent(BorderComponent.class);
+                if(values[0].contains("px")) {
+                    border.radius = Float.parseFloat(values[0].substring(0, values[0].indexOf("px")));
+                    border.radiusType = "px";
+                }
                 break;
             case "border-color":
+                BorderComponent border = entity.getComponent(BorderComponent.class);
+                if(values[0].contains("#")) {
+                    border.color = Color.valueOf(values[0].trim());
+                }
+                else {
+                    border.color = Colors.get(values[0].trim().toUpperCase());
+                }
+                break;
+            case "border-width":
+                BorderComponent border = entity.getComponent(BorderComponent.class);
+                if(values[0].contains("px")) {
+                    border.thickness = Float.parseFloat(values[0].substring(0, values[0].indexOf("px")));
+                    border.thicknessType = "px";
+                }
                 break;
             }
         }
     }
     
-    public Map<String, String> parse(String string) {
+    public Map<String, String> parse(String string, List<String> orderedKeys) {
         Map<String, String> rules = new HashMap<String, String>();
         
         final Matcher matcher = pattern.matcher(string);
@@ -285,6 +299,7 @@ public class CSSToECSSystem extends EntitySystem {
             
             for(String key : keys) {
                 rules.put(key.trim(), rule);
+                orderedKeys.add(key.trim());
             }
         }
         
