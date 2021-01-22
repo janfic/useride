@@ -41,6 +41,7 @@ public class CSSPositioningSystem extends EntitySystem {
     private final ComponentMapper<MarginComponent> marginMapper;
     private final ComponentMapper<BitmapFontComponent> fontMapper;
     private final ComponentMapper<TextComponent> textMapper;
+    private final ComponentMapper<BorderComponent> borderMapper;
     
     private ImmutableArray<Entity> entities, htmlElements;
     
@@ -64,6 +65,7 @@ public class CSSPositioningSystem extends EntitySystem {
         this.marginMapper = ComponentMapper.getFor(MarginComponent.class);
         this.fontMapper = ComponentMapper.getFor(BitmapFontComponent.class);
         this.textMapper = ComponentMapper.getFor(TextComponent.class);
+        this.borderMapper = ComponentMapper.getFor(BorderComponent.class);
         layout = new GlyphLayout();
     }
     
@@ -83,7 +85,8 @@ public class CSSPositioningSystem extends EntitySystem {
                 PositionComponent.class,
                 DisplayComponent.class,
                 SizeComponent.class,
-                CSSComponent.class
+                CSSComponent.class,
+                BorderComponent.class
             ).get()
         );
     }
@@ -108,23 +111,18 @@ public class CSSPositioningSystem extends EntitySystem {
         PaddingComponent paddingComponent = paddingMapper.get(entity);
         MarginComponent marginComponent = marginMapper.get(entity);
         TagComponent tagComponent = tagMapper.get(entity);
+        BorderComponent borderComponent = borderMapper.get(entity);
         
         //Determine Size
         Entity parent = parentComponent.parent;
         SizeComponent parentSize = parent != null ? sizeMapper.get(parent) : null;
         PositionComponent parentPosition = parent != null ? positionMapper.get(parent) : null;
+        PaddingComponent parentPadding = parent != null ? paddingMapper.get(parent) : null;
         
         float width, height;
         TextComponent textComponent;
         BitmapFontComponent fontComponent;
-        if((textComponent = textMapper.get(entity)) != null && (fontComponent = fontMapper.get(entity)) != null) {
-            layout.setText(fontComponent.font, textComponent.text, Color.BLACK, 0, Align.left, true);
-            
-            height += layout.height;
-            width += layout.width;
-            
-            layout.reset();
-        }
+        
         if(widthComponent != null) {
             if(widthComponent.type.equals("px")) {
                 width = widthComponent.width;
@@ -134,11 +132,28 @@ public class CSSPositioningSystem extends EntitySystem {
             }
         }
         else {
-            for(Entity child : childrenComponent.children) {
-                HitBoxComponent childHitBox = hitBoxMapper.get(child);
-                width += childHitBox.rectangle.getWidth();
+            if(parentSize != null) {
+                width = parentSize.width;
+                float numerator = parentSize.width - borderComponent.thickness * 2;
+                float denominator = 1;
+                for(int i = 1; i < 4; i+=2) {
+                    if(paddingComponent.types[i].equals("px")) {
+                        numerator -= paddingComponent.padding[i];
+                    }
+                    else if (paddingComponent.types[i].equals("%")) {
+                        denominator += paddingComponent.padding[i];
+                    }
+                    if(marginComponent.types[i].equals("px")) {
+                        numerator -= marginComponent.margin[i];
+                    }
+                    else if (marginComponent.types[i].equals("%")) {
+                        denominator += marginComponent.margin[i];
+                    }
+                }
+                width = numerator / denominator;
             }
         }
+        
         
         if(heightComponent != null) {
             if(heightComponent.type.equals("px")) {
@@ -146,14 +161,43 @@ public class CSSPositioningSystem extends EntitySystem {
             }
             else if(heightComponent.type.equals("%") && parentSize != null){
                 height = heightComponent.height * parentSize.height;
+                
             }
         }
         else {
-            for(Entity child : childrenComponent.children) {
-                HitBoxComponent childHitBox = hitBoxMapper.get(child);
-                height += childHitBox.rectangle.getHeight();
+            for(int i = 0; i < childrenComponent.children.size(); i++ ) {
+                HitBoxComponent childHitBox = hitBoxMapper.get(childrenComponent.children.get(i));
+                MarginComponent childMargin = marginMapper.get(childrenComponent.children.get(i));
+                if(i != 0 && childMargin.types[0].equals("px")) {
+                    height += childMargin.margin[0];
+                }
+                else if(i != 0 && childMargin.types[0].equals("%") && parentSize != null){
+                    height += childMargin.margin[0] * parentSize.height;
+                }
+                if(i != childrenComponent.children.size() - 1 && childMargin.types[2].equals("px")) {
+                    height += childMargin.margin[2];
+                }
+                else if(i != childrenComponent.children.size() - 1 && childMargin.types[2].equals("%") && parentSize != null){
+                    height += childMargin.margin[2] * parentSize.height;
+                }
+                height += childHitBox.rectangle.getHeight() + childMargin.margin[0];
             }
         }
+        
+        
+        if((textComponent = textMapper.get(entity)) != null && (fontComponent = fontMapper.get(entity)) != null) {
+            layout.setText(fontComponent.font, textComponent.text, Color.BLACK, width, Align.left, true);
+            if(parentSize != null && parentSize.width < layout.width) {
+                layout.setText(fontComponent.font, textComponent.text, Color.BLACK, parentSize.width, Align.left, true);
+            }
+            height += layout.height;
+            width += width == 0 ? layout.width : 0;
+            
+            layout.reset();
+        }
+        
+        
+        
         sizeComponent.width = width;
         sizeComponent.height = height;
         
@@ -168,9 +212,10 @@ public class CSSPositioningSystem extends EntitySystem {
             y += parentPosition.y;
             z = parentPosition.z + 1;
         }
-        
+
         if(parentSize != null) {
-            y = parentSize.height - sizeComponent.height;
+            y += parentSize.height - sizeComponent.height;
+            
         }
         
         if(paddingComponent.types[0].equals("%"))        y -= paddingComponent.padding[0] * sizeComponent.width;
@@ -203,74 +248,7 @@ public class CSSPositioningSystem extends EntitySystem {
             css(child);
         }
     }
-    
-    //    
-    //    public void determinePositioning(Entity entity, Set<Entity> marked) {
-    //        if(marked.contains(entity)) return;
-    //        
-    //        ParentComponent parentComponent = parentMapper.get(entity);
-    //        SiblingsComponent siblingsComponent = siblingsMapper.get(entity);
-    //        ChildrenComponent childrenComponent = childrenMapper.get(entity);
-    //        PositionTypeComponent positionTypeComponen = positionTypeMapper.get(entity);
-    //        PositionComponent positionComponent = positionMapper.get(entity);
-    //        WidthComponent widthComponent = widthMapper.get(entity);
-    //        HeightComponent heightComponent = heightMapper.get(entity);
-    //        SizeComponent sizeComponent = sizeMapper.get(entity);
-    //        HitBoxComponent hitBoxComponent = hitBoxMapper.get(entity);
-    //        PaddingComponent paddingComponent = paddingMapper.get(entity);
-    //        MarginComponent marginComponent = marginMapper.get(entity);
-    //        
-    //        
-    //        float width = 0, height = 0;
-    //        if(widthComponent == null && heightComponent == null) {
-    //            for(Entity child : childrenComponent.children) {
-    //                HitBoxComponent childHitBox = hitBoxMapper.get(child);
-    //                width += childHitBox.rectangle.getWidth();
-    //                height += childHitBox.rectangle.getHeight();
-    //            }
-    //        }
-    //        else {
-    //            
-    //            Entity parent = parentComponent.parent;
-    //            SizeComponent parentSize = parent != null ? sizeMapper.get(parent) : null;
-    //            if(widthComponent != null) {
-    //                if(widthComponent.type.equals("px")) {
-    //                    width = widthComponent.width;
-    //                }
-    //                else if(widthComponent.type.equals("%") && parentSize != null){
-    //                    width = widthComponent.width * parentSize.width;
-    //                }
-    //            }
-    //            if(heightComponent != null) {
-    //                if(heightComponent.type.equals("px")) {
-    //                    height = heightComponent.height;
-    //                }
-    //                else if(heightComponent.type.equals("%") && parentSize != null){
-    //                    height = heightComponent.height * parentSize.height;
-    //                }
-    //            }
-    //        }
-    //        sizeComponent.width = width;
-    //        sizeComponent.height = height;
-    //        
-    //        Entity parent = parentComponent.parent;
-    //        HitBoxComponent parentHitBox = hitBoxMapper.get(parent);
-    //        PositionComponent parentPosition = positionMapper.get(parent);
-    //        PaddingComponent parentPadding = paddingMapper.get(parent);
-    //        SizeComponent parentSize = sizeMapper.get(parent);
-    //        if(parentPosition != null) {
-    //            positionComponent.z = parentPosition.z + 1;
-    //            if(parentSize != null && parentPadding != null) {
-    //                positionComponent.x = parentPosition.x + marginComponent.margin[];
-    //                positionComponent.y = parentPosition.y + parentSize.height - sizeComponent.height;
-    //            }
-    //        }
-    //        
-    //        calculateHitBox(paddingComponent, sizeComponent, hitBoxComponent, positionComponent, marginComponent);
-    //        marked.add(entity);
-    //        //calculate position based on parent and siblings
-    //    }
-    
+
     //hitbox = padding + size
     //padding can depend on size
     private void calculateHitBox(PaddingComponent padding, SizeComponent size, HitBoxComponent hitbox, PositionComponent position) {

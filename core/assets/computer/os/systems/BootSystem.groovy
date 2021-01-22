@@ -61,6 +61,7 @@ public class BootSystem extends EntitySystem {
         ViewportComponent viewportComponent = new ViewportComponent();
         viewportComponent.viewport = new ScreenViewport();
         viewportComponent.viewport.setWorldSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        viewportComponent.viewport.setScreenSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         assetManagerEntity.add(viewportComponent);
 
         SizeComponent viewportSize = new SizeComponent(width: Gdx.graphics.getWidth(), height:  Gdx.graphics.getHeight());
