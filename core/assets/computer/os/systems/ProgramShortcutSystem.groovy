@@ -19,9 +19,15 @@ public class ProgramShortcutSystem extends EntitySystem {
     
     private ArrayList<FileHandle> programs;
     
+    Properties defaultProperties;
+    
     public ProgramShortcutSystem() {
         this.shortcutMapper = ComponentMapper.getFor(ProgramStartOnMouseClickComponent.class);
         this.programs = new ArrayList<FileHandle>();
+        this.defaultProperties = new Properties();
+        this.defaultProperties.setProperty("width", "500");
+        this.defaultProperties.setProperty("height", "400");
+        this.defaultProperties.setProperty("fullscreen", "false");
     }
 	
     public void addedToEngine(Engine engine) {
@@ -41,11 +47,26 @@ public class ProgramShortcutSystem extends EntitySystem {
         shortcuts.add(new PositionComponent(x: 25, y: 10));
         
         for(int i = 0; i < this.programs.size(); i++) {
+            
             FileHandle program = this.programs.get(i);
+
+            String propertiesName = program.name() + ".properties";
+            Properties properties = new Properties(defaultProperties);
+            properties.setProperty("name", program.name());
+            properties.setProperty("displayName", program.name());
+            properties.setProperty("shortcutName", program.name());
+            if(program.child("assets/" + propertiesName).exists()) {
+                try {
+                    properties.load(new FileInputStream(program.child("assets/" + propertiesName).file()));
+                }
+                catch(Exception e) {}
+            }
+            
+           
             Entity shortcut = new Entity();
             shortcut.add(new PositionComponent());
             shortcut.add(new SizeComponent(width: 75, height: 75));
-            shortcut.add(new ProgramStartOnMouseClickComponent(name: program.name(), path: program.path()));
+            shortcut.add(new ProgramStartOnMouseClickComponent(name: properties.getProperty("name"), path: program.path()));
             shortcut.add(new ParentComponent(parent: shortcuts));
             shortcut.add(new RelativePositionComponent(x: ((int) (i / 12)) * 100, y: 900 - (i * 100), unit: "%"));
             shortcut.add(new GetNinePatchComponent(name: "shortcut"));
@@ -55,7 +76,7 @@ public class ProgramShortcutSystem extends EntitySystem {
             shortcut.add(new HitBoxComponent(rectangle: new Rectangle(0,0,75,75)));
             shortcut.add(new ColorComponent(color: Color.CLEAR));
             shortcut.add(new ChangeColorOnMouseHoverComponent(hoverColor: Color.WHITE.cpy().sub(0,0,0,0.5f), offColor: Color.CLEAR));
-
+            shortcut.add(new PropertiesComponent(properties: properties));
 
             Entity icon = new Entity();
 
@@ -74,7 +95,7 @@ public class ProgramShortcutSystem extends EntitySystem {
             text.add(new SizeComponent(width: 90));
             text.add(new ScaleComponent(scaleX: 0.75f, scaleY: 0.75f));
             text.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console.fnt"));
-            text.add(new TextComponent(text: program.name()));
+            text.add(new TextComponent(text: properties.getProperty("shortcutName")));
             
             engine.addEntity(icon);
             engine.addEntity(text);

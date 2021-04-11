@@ -9,17 +9,25 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.utils.viewport.*;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.Gdx;
 
+import java.util.Properties;
+
+import groovy.transform.CompileStatic;
+
+@CompileStatic
 public class ProgramStartOnMouseClickSystem extends EntitySystem {
 	
     private final ComponentMapper<ProgramStartOnMouseClickComponent> programStartMapper;
     private final ComponentMapper<MouseClickEventComponent> clickMapper;
+    private final ComponentMapper<PropertiesComponent> propertiesMapper;
 
     private ImmutableArray<Entity> entities, renderEntities;
 
     public ProgramStartOnMouseClickSystem() {
         this.programStartMapper = ComponentMapper.getFor(ProgramStartOnMouseClickComponent.class);
         this.clickMapper = ComponentMapper.getFor(MouseClickEventComponent.class);
+        this.propertiesMapper = ComponentMapper.getFor(PropertiesComponent.class);
     }
 	
     public void addedToEngine(Engine engine) {
@@ -27,7 +35,8 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
             Family.all(
                 ProgramStartOnMouseClickComponent.class,
                 ClickableComponent.class,
-                MouseClickEventComponent.class
+                MouseClickEventComponent.class,
+                PropertiesComponent.class
             ).get()
         );
         this.renderEntities = engine.getEntitiesFor(
@@ -42,10 +51,13 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
         for(Entity entity : entities) {
             ProgramStartOnMouseClickComponent start = programStartMapper.get(entity);
             MouseClickEventComponent click = clickMapper.get(entity);
+            PropertiesComponent propertiesComponent = propertiesMapper.get(entity);
+            
+            System.out.println(propertiesComponent.properties);
             
             if(click.count >= 2 ) {
             
-                ProgramStartRequestComponent startRequest = new ProgramStartRequestComponent(name: start.path);
+                ProgramStartRequestComponent startRequest = new ProgramStartRequestComponent(name: propertiesComponent.properties.getProperty("name"));
                 FileLoadRequestComponent fileRequest = new FileLoadRequestComponent(fileName: start.path);
                 
                 Entity program = new Entity();
@@ -56,24 +68,27 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
 
                 program.add(new GetNinePatchComponent(name: "window"));
                 program.add(new PositionComponent(x: 0, y: 0, z: 2));
-                program.add(new SizeComponent(width: 500, height: 400));
-                program.add(new HitBoxComponent(rectangle: new Rectangle(0, 0, 500, 400)));
+                program.add(new SizeComponent(width: Integer.parseInt(propertiesComponent.properties.getProperty("width")), height: Integer.parseInt(propertiesComponent.properties.getProperty("height"))));
+                program.add(new HitBoxComponent(rectangle: new Rectangle(0, 0, Integer.parseInt(propertiesComponent.properties.getProperty("width")), Integer.parseInt(propertiesComponent.properties.getProperty("height")))));
                 //program.add(new ClickableComponent());
                 program.add(new FocusableComponent());
                 program.add(new FocusBringToFrontComponent());
                 program.add(new FocusOnMouseClickComponent());
                 program.add(new ParentComponent(parent: topbar));
-                program.add(new RelativePositionComponent(x: 0, y: -400, z:0, unit: "p"));
+                program.add(new RelativePositionComponent(x: 0, y: -Integer.parseInt(propertiesComponent.properties.getProperty("height")), z:0, unit: "p"));
 
                 
-                topbar.add(new PositionComponent(x: 150 , y: 550, z: 2));
+                int centerWidth = (int)(Gdx.graphics.getWidth() / 2) - (int)(Integer.parseInt(propertiesComponent.properties.getProperty("width")) / 2); ///
+                int centerHeight = (int)(Gdx.graphics.getHeight() / 2) + (int)(Integer.parseInt(propertiesComponent.properties.getProperty("height")) / 2); ///
+                
+                topbar.add(new PositionComponent(x: centerWidth , y: centerHeight, z: 2));
                 topbar.add(new GetNinePatchComponent(name: "topbar"));
                 topbar.add(new SizeComponent(width: 100, height: 25));
                 topbar.add(new RelativeSizeComponent(width: 100, unit: "% "));
                 topbar.add(new DragableComponent());
                 topbar.add(new ClickableComponent());
                 topbar.add(new ParentComponent(parent: program))
-                topbar.add(new HitBoxComponent(rectangle: new Rectangle(0, 0, 500, 35)));
+                topbar.add(new HitBoxComponent(rectangle: new Rectangle(0, 0, Integer.parseInt(propertiesComponent.properties.getProperty("width")), 35)));
                 
                 Entity titleText = new Entity();
 
@@ -81,7 +96,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 titleText.add(new SizeComponent());
                 titleText.add(new RelativePositionComponent(x: 2, y: 20, z:1, unit: "%%p"));
                 titleText.add(new ParentComponent(parent: topbar));
-                titleText.add(new TextComponent(text: start.name));
+                titleText.add(new TextComponent(text: propertiesComponent.properties.getProperty("displayName")));
                 titleText.add(new GetBitmapFontAssetComponent(fileName: "computer/os/assets/userosgui/Lucida Console.fnt"));
                 titleText.add(new ColorComponent(color: Color.BLACK))
 
@@ -105,10 +120,10 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
 				
                 Entity graphicsEntity = new Entity();
                 ViewportComponent viewportComponent = new ViewportComponent();
-                viewportComponent.viewport = new FitViewport(500, 400);
+                viewportComponent.viewport = new FitViewport(Integer.parseInt(propertiesComponent.properties.getProperty("width")), Integer.parseInt(propertiesComponent.properties.getProperty("height")));
                 SpriteBatchComponent spriteBatchComponent = renderEntities.first().getComponent(SpriteBatchComponent.class);
-                FrameBufferComponent frameBuffer = new FrameBufferComponent(frameBuffer: new FrameBuffer(Pixmap.Format.RGBA8888, 500, 400, true));
-                SizeComponent size = new SizeComponent(width: 500, height: 400);
+                FrameBufferComponent frameBuffer = new FrameBufferComponent(frameBuffer: new FrameBuffer(Pixmap.Format.RGBA8888, Integer.parseInt(propertiesComponent.properties.getProperty("width")), Integer.parseInt(propertiesComponent.properties.getProperty("height")), true));
+                SizeComponent size = new SizeComponent(width: Integer.parseInt(propertiesComponent.properties.getProperty("width")), height: Integer.parseInt(propertiesComponent.properties.getProperty("height")));
                 graphicsEntity.add(spriteBatchComponent);
                 graphicsEntity.add(frameBuffer);
                 graphicsEntity.add(viewportComponent);
