@@ -46,6 +46,7 @@ public class ViewportSystem extends EntitySystem {
             ViewportComponent viewportComponent = viewportMapper.get(entity);
 
             viewportComponent.viewport.setScreenBounds((int) position.x, (int) position.y, (int) size.width,(int) size.height);
+            viewportComponent.viewport.apply();
         }
     }
 }

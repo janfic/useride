@@ -36,6 +36,7 @@ public class RenderSystem extends SortedIteratingSystem {
     private final ComponentMapper<FrameBufferComponent> frameBufferMapper;
     private final ComponentMapper<BackgroundColorComponent> bgColorMapper;
     private final ComponentMapper<HitBoxComponent> hitBoxMapper;
+    private final ComponentMapper<BorderComponent> borderMapper;
 		
     private ImmutableArray<Entity> renderEntities, cameraEntity;
 	
@@ -44,6 +45,8 @@ public class RenderSystem extends SortedIteratingSystem {
     private FrameBuffer frameBuffer;
     private CameraComponent camera;
     private ShapeRenderer shapeRenderer;
+    
+    private GlyphLayout layout;
     
     float ss_zStretch, angle;
 	
@@ -76,7 +79,9 @@ public class RenderSystem extends SortedIteratingSystem {
         //css stuff
         this.bgColorMapper = ComponentMapper.getFor(BackgroundColorComponent.class);
         this.hitBoxMapper = ComponentMapper.getFor(HitBoxComponent.class);
+        this.borderMapper = ComponentMapper.getFor(BorderComponent.class);
         this.shapeRenderer = new ShapeRenderer();
+        layout = new GlyphLayout();
     }
 	
     public void addedToEngine(Engine engine) {
@@ -125,6 +130,7 @@ public class RenderSystem extends SortedIteratingSystem {
         FrameBufferComponent frameBufferComponent = frameBufferMapper.get(entity);
         
         BackgroundColorComponent bgColorComponent = bgColorMapper.get(entity);
+        BorderComponent borderComponent = borderMapper.get(entity);
         HitBoxComponent hitBoxComponent = hitBoxMapper.get(entity);
         
         SizeComponent size = sizeMapper.get(entity);
@@ -142,11 +148,20 @@ public class RenderSystem extends SortedIteratingSystem {
         float originX = 0;//position.x + width / 2;
         float originY = 0;//position.y + height / 2;
 	
+        if(borderComponent != null && hitBoxComponent != null) {
+            batch.end();
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(borderComponent.color);
+            borders(position.x + hitBoxComponent.rectangle.getX(), position.y + hitBoxComponent.rectangle.getY(), hitBoxComponent.rectangle.getWidth(), hitBoxComponent.rectangle.getHeight(), borderComponent.radius, borderComponent.thickness);
+            shapeRenderer.end();
+            batch.begin();
+        }
+        
         if(bgColorComponent != null && hitBoxComponent != null) {
             batch.end();
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(bgColorComponent.color);
-            shapeRenderer.rect(position.x + hitBoxComponent.rectangle.getX(), position.y + hitBoxComponent.rectangle.getY(), hitBoxComponent.rectangle.getWidth(), hitBoxComponent.rectangle.getHeight());
+            roundedRect(position.x + hitBoxComponent.rectangle.getX(), position.y + hitBoxComponent.rectangle.getY(), hitBoxComponent.rectangle.getWidth(), hitBoxComponent.rectangle.getHeight(), borderComponent.radius);
             shapeRenderer.end();
             batch.begin();
         }
@@ -182,10 +197,11 @@ public class RenderSystem extends SortedIteratingSystem {
         if(textComponent != null && fontComponent != null) {
             if(color != null) fontComponent.font.setColor(color.color);
             if(scale != null) fontComponent.font.getData().setScale(scale.scaleX,scale.scaleY); else fontComponent.font.getData().setScale(1 , 1);
+            layout.setText(fontComponent.font, textComponent.text, Color.BLACK, width, Align.left, true);
             if(size != null)
-            fontComponent.font.draw( batch, textComponent.text, position.x , (float) (position.y + fontComponent.font.getCapHeight()), width, Align.left, true);
+            fontComponent.font.draw( batch, textComponent.text, position.x , (float) (position.y  + layout.height), width, Align.left, true);
             else
-            fontComponent.font.draw( batch, textComponent.text, position.x, (float) (position.y + fontComponent.font.getCapHeight()));
+            fontComponent.font.draw( batch, textComponent.text, position.x, (float) (position.y + layout.height));
             batch.flush();
             if(color != null) fontComponent.font.setColor(Color.WHITE); 
         }
@@ -201,6 +217,44 @@ public class RenderSystem extends SortedIteratingSystem {
         public int compare(Entity e1, Entity e2) {
             return (int)Math.signum(pm.get(e1).z - pm.get(e2).z);
         }
+    }
+    
+    private void roundedRect(float x, float y, float width, float height, float radius){
+        // Central rectangle
+        shapeRenderer.rect(x + radius, y + radius, width - 2*radius, height - 2*radius);
+
+        // Four side rectangles, in clockwise order
+        shapeRenderer.rect(x + radius, y, width - 2*radius, radius);
+        shapeRenderer.rect(x + width - radius, y + radius, radius, height - 2*radius);
+        shapeRenderer.rect(x + radius, y + height - radius, width - 2*radius, radius);
+        shapeRenderer.rect(x, y + radius, radius, height - 2*radius);
+
+        // Four arches, clockwise too
+        shapeRenderer.arc(x + radius, y + radius, radius, 180f, 90f);
+        shapeRenderer.arc(x + width - radius, y + radius, radius, 270f, 90f);
+        shapeRenderer.arc(x + width - radius, y + height - radius, radius, 0f, 90f);
+        shapeRenderer.arc(x + radius, y + height - radius, radius, 90f, 90f);
+    }
+    
+    private void borders(float x, float y, float width, float height, float radius, float thickness) {
+        
+        float x1, y1, x2, y2;
+        x1 = (float) (x - thickness / 2);
+        y1 = (float) (y - thickness / 2);
+        x2 = (float) (x + width + thickness / 2);
+        y2 = (float) (y + height + thickness / 2);
+        
+        shapeRenderer.arc(x + radius - thickness, y + radius - thickness, radius, 180f, 90f);
+        shapeRenderer.arc(x + width - radius + thickness, y + radius - thickness, radius, 270f, 90f);
+        shapeRenderer.arc(x + width - radius + thickness, y + height - radius + thickness, radius, 0f, 90f);
+        shapeRenderer.arc(x + radius - thickness, y + height - radius + thickness, radius, 90f, 90f);
+        
+        shapeRenderer.rect(x + radius - thickness, y - thickness, width - 2*radius + 2*thickness, radius);
+        shapeRenderer.rect(x + width - radius + thickness, y + radius - thickness, radius, height - 2*radius + 2*thickness);
+        shapeRenderer.rect(x + radius - thickness, y + height - radius + thickness, width - 2*radius + 2*thickness, radius);
+        shapeRenderer.rect(x - thickness, y + radius - thickness, radius, height - 2*radius + 2*thickness);
+        
+       
     }
 	
 }

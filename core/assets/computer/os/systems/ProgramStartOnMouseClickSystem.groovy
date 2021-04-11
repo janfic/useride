@@ -129,6 +129,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 graphicsEntity.add(viewportComponent);
                 graphicsEntity.add(size);
                 
+                
                 program.add(frameBuffer);
 				
                 Entity assetManager = new Entity();

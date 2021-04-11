@@ -1,0 +1,22 @@
+p {
+    padding: 10px;
+}
+
+.cloud {
+    background-color: white; 
+    border-radius: 10px; 
+    padding: 10px; 
+    margin: 5px 10px 5px 10px;
+}
+
+.container {
+    background-color: #dcdcdc;
+    padding: 10px;
+}
+
+body {
+    background-color: sky;
+    padding: 10px 0px 0px 0px;
+}
+
+
