@@ -70,7 +70,7 @@ public class ProgramShortcutSystem extends EntitySystem {
             shortcut.add(new ParentComponent(parent: shortcuts));
             shortcut.add(new RelativePositionComponent(x: ((int) (i / 12)) * 100, y: 900 - (i * 100), unit: "%"));
             shortcut.add(new GetNinePatchComponent(name: "shortcut"));
-            shortcut.add(new DragableComponent());
+            shortcut.add(new DragableComponent(verticle: false));
             shortcut.add(new ClickableComponent());
             shortcut.add(new HoverableComponent());
             shortcut.add(new HitBoxComponent(rectangle: new Rectangle(0,0,75,75)));

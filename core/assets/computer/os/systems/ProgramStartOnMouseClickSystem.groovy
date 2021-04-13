@@ -1,6 +1,7 @@
 package os.systems;
 
 import os.components.*;
+import ui.components.*;
 import com.janfic.useride.kernel.components.*;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
@@ -60,31 +61,76 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 ProgramStartRequestComponent startRequest = new ProgramStartRequestComponent(name: propertiesComponent.properties.getProperty("name"));
                 FileLoadRequestComponent fileRequest = new FileLoadRequestComponent(fileName: start.path);
                 
-                Entity program = new Entity();
+                int centerWidth = (int)(Gdx.graphics.getWidth() / 2) - (int)(Integer.parseInt(propertiesComponent.properties.getProperty("width")) / 2); ///
+                int centerHeight = (int)(Gdx.graphics.getHeight() / 2) - (int)(Integer.parseInt(propertiesComponent.properties.getProperty("height")) / 2); ///
+                
+                Entity leftResize = new Entity();
+                Entity rightResize = new Entity();
+                Entity topResize = new Entity();
+                Entity bottomResize = new Entity();
                 Entity topbar = new Entity();
+                Entity program = new Entity();
+                
+                leftResize.add(new PositionComponent(x: centerWidth, y: centerHeight));
+                leftResize.add(new HitBoxComponent(rectangle: new Rectangle(0,0, 10, Integer.parseInt(propertiesComponent.properties.getProperty("height")))));
+                leftResize.add(new ClickableComponent());
+                leftResize.add(new DragableComponent(verticle: false));
+                leftResize.add(new SizeComponent(width: 10, height: Integer.parseInt(propertiesComponent.properties.getProperty("height"))));
+                leftResize.add(new RelativePositionComponent(x: 0, y: 0, unit: "%p", parent: bottomResize));
+                leftResize.add(new ParentComponent(parent: program));
+                leftResize.add(new HeightBetweenComponent(a: topResize, b: bottomResize));
+                
+                rightResize.add(new PositionComponent(x: centerWidth + Integer.parseInt(propertiesComponent.properties.getProperty("width")), y: centerHeight));
+                rightResize.add(new HitBoxComponent(rectangle: new Rectangle(0,0, 10, Integer.parseInt(propertiesComponent.properties.getProperty("height")))));
+                rightResize.add(new ClickableComponent());
+                rightResize.add(new DragableComponent(verticle: false));
+                rightResize.add(new SizeComponent(width: 10, height: Integer.parseInt(propertiesComponent.properties.getProperty("height"))));
+                rightResize.add(new RelativePositionComponent(x: 100, y: 0, unit: "%p", parent: program));
+                rightResize.add(new ParentComponent(parent: program));
+                rightResize.add(new HeightBetweenComponent(a: topResize, b: bottomResize));
+                
+                topResize.add(new PositionComponent(x: centerWidth, y: centerHeight + Integer.parseInt(propertiesComponent.properties.getProperty("height"))));
+                topResize.add(new HitBoxComponent(rectangle: new Rectangle(0,0, Integer.parseInt(propertiesComponent.properties.getProperty("width")), 10)));
+                topResize.add(new ClickableComponent());
+                topResize.add(new DragableComponent(horizontal: false));
+                topResize.add(new SizeComponent(width: Integer.parseInt(propertiesComponent.properties.getProperty("width")), height: 35));
+                topResize.add(new RelativePositionComponent(x: 0, y: 100, unit: "p%", parent: program));
+                topResize.add(new ParentComponent(parent: program));
+                topResize.add(new WidthBetweenComponent(a: leftResize, b: rightResize));
+                
+                bottomResize.add(new PositionComponent(x: centerWidth, y: centerHeight));
+                bottomResize.add(new HitBoxComponent(rectangle: new Rectangle(0,0, Integer.parseInt(propertiesComponent.properties.getProperty("width")), 10)));
+                bottomResize.add(new ClickableComponent());
+                bottomResize.add(new DragableComponent(horizontal: false));
+                bottomResize.add(new SizeComponent(width: Integer.parseInt(propertiesComponent.properties.getProperty("width")), height: 10));
+                bottomResize.add(new RelativePositionComponent(x: 0, y: 0));
+                bottomResize.add(new WidthBetweenComponent(a: leftResize, b: rightResize));
+                bottomResize.add(new ParentComponent(parent: program));
+                
                 
                 program.add(startRequest);
                 program.add(fileRequest);
 
+                
                 program.add(new GetNinePatchComponent(name: "window"));
                 program.add(new PositionComponent(x: 0, y: 0, z: 2));
                 program.add(new SizeComponent(width: Integer.parseInt(propertiesComponent.properties.getProperty("width")), height: Integer.parseInt(propertiesComponent.properties.getProperty("height"))));
-                program.add(new HitBoxComponent(rectangle: new Rectangle(0, 0, Integer.parseInt(propertiesComponent.properties.getProperty("width")), Integer.parseInt(propertiesComponent.properties.getProperty("height")))));
+                //program.add(new HitBoxComponent(rectangle: new Rectangle(0, 0, Integer.parseInt(propertiesComponent.properties.getProperty("width")), Integer.parseInt(propertiesComponent.properties.getProperty("height")))));
                 //program.add(new ClickableComponent());
                 program.add(new FocusableComponent());
                 program.add(new FocusBringToFrontComponent());
                 program.add(new FocusOnMouseClickComponent());
+                program.add(new WidthBetweenComponent(a: leftResize, b: rightResize));
+                program.add(new HeightBetweenComponent(a: topResize, b: bottomResize));
+                program.add(new RelativePositionComponent(x: 0, y: -100, unit: "ps"));
                 program.add(new ParentComponent(parent: topbar));
-                program.add(new RelativePositionComponent(x: 0, y: -Integer.parseInt(propertiesComponent.properties.getProperty("height")), z:0, unit: "p"));
-
                 
-                int centerWidth = (int)(Gdx.graphics.getWidth() / 2) - (int)(Integer.parseInt(propertiesComponent.properties.getProperty("width")) / 2); ///
-                int centerHeight = (int)(Gdx.graphics.getHeight() / 2) + (int)(Integer.parseInt(propertiesComponent.properties.getProperty("height")) / 2); ///
                 
                 topbar.add(new PositionComponent(x: centerWidth , y: centerHeight, z: 2));
                 topbar.add(new GetNinePatchComponent(name: "topbar"));
                 topbar.add(new SizeComponent(width: 100, height: 25));
                 topbar.add(new RelativeSizeComponent(width: 100, unit: "% "));
+                topbar.add(new RelativePositionComponent(x: 0, y: 100, unit: "p% ", parent: leftResize));
                 topbar.add(new DragableComponent());
                 topbar.add(new ClickableComponent());
                 topbar.add(new ParentComponent(parent: program))
@@ -113,7 +159,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 xButton.add(new ChangeColorOnMouseHoverComponent(hoverColor: Color.LIGHT_GRAY, offColor: Color.WHITE));
                 xButton.add(new ProgramEndOnMouseClickComponent(name: start.name));
                 xButton.add(new RequestProgramIDComponent(program: program));
-                xButton.add(new RemoveEntitiesOnMouseClickComponent(entities: [program, titleText, topbar, xButton]));
+                xButton.add(new RemoveEntitiesOnMouseClickComponent(entities: [program, titleText, topbar, xButton, leftResize, rightResize, topResize, bottomResize]));
                 
                 ProgramEntityInjectionComponent inject = new ProgramEntityInjectionComponent();
                 inject.entities = new ArrayList<Entity>();
@@ -147,6 +193,10 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 this.getEngine().addEntity(topbar);
                 this.getEngine().addEntity(titleText);
                 this.getEngine().addEntity(xButton);
+                this.getEngine().addEntity(leftResize);
+                this.getEngine().addEntity(rightResize);
+                this.getEngine().addEntity(topResize);
+                this.getEngine().addEntity(bottomResize);
                 
                 entity.remove(MouseClickEventComponent.class);
                 entity.remove(MousePressEventComponent.class);

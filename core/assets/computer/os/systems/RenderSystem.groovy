@@ -167,6 +167,8 @@ public class RenderSystem extends SortedIteratingSystem {
         }
         if(frameBufferComponent != null) {
             if(size == null) {width = frameBufferComponent.frameBuffer.getWidth(); height = frameBufferComponent.frameBuffer.getHeight();}
+            if(width <= 0) width = 1;
+            if(height <= 0) height = 1;
             batch.draw(frameBufferComponent.frameBuffer.getColorBufferTexture(), position.x, position.y, originX, originY, width, height, scaleX, scaleY, rotation, 0, 0, (int) width, (int)height, false, true);
             frameBufferComponent.frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, (int)width, (int)height, true);
         }
