@@ -13,11 +13,14 @@ public class RelativePositionSystem extends EntitySystem {
 
     private ImmutableArray<Entity> entities;
     
+    private Set<Entity> marked;
+    
     public RelativePositionSystem() {
         this.positionMapper = ComponentMapper.getFor(PositionComponent.class);
         this.sizeMapper = ComponentMapper.getFor(SizeComponent.class);
         this.relativePositionMapper = ComponentMapper.getFor(RelativePositionComponent.class);
         this.parentMapper = ComponentMapper.getFor(ParentComponent.class);
+        this.marked = new HashSet<Entity>();
     }
 	
     public void addedToEngine(Engine engine) {
@@ -27,17 +30,22 @@ public class RelativePositionSystem extends EntitySystem {
     }
 
     public void update(float delta) {
+        this.marked.clear();
         for(Entity entity : entities) {
             processEntity(entity);
         } 
     }   
     
     public void processEntity(Entity entity) {
+        if(this.marked.contains(entity)) return;
+        this.marked.add(entity);
+        
         PositionComponent childPosition = positionMapper.get(entity);
+        SizeComponent childSize = sizeMapper.get(entity);
         RelativePositionComponent relativePosition = relativePositionMapper.get(entity);
         ParentComponent parentComponent = parentMapper.get(entity);
             
-        Entity parent = parentComponent.parent;
+        Entity parent = relativePosition.parent == null ? parentComponent.parent : relativePosition.parent;
         PositionComponent parentPosition = positionMapper.get(parent);
         SizeComponent parentSize = sizeMapper.get(parent);
             
@@ -52,6 +60,10 @@ public class RelativePositionSystem extends EntitySystem {
             childPosition.x = parentPosition.x * relativePosition.parentMultiplier + (relativePosition.x * parentSize.width * 0.01);
             childPosition.y = parentPosition.y * relativePosition.parentMultiplier + (relativePosition.y * parentSize.height * 0.01);
         }
+        else if(relativePosition.unit.equals("s") && childSize != null) {
+            childPosition.x = parentPosition.x * relativePosition.parentMultiplier + (relativePosition.x * childSize.width * 0.01);
+            childPosition.y = parentPosition.y * relativePosition.parentMultiplier + (relativePosition.y * childSize.height * 0.01);
+        }
         else if(relativePosition.unit.length() > 1) {
             if(relativePosition.unit.charAt(0) == 'p') {
                 childPosition.x = parentPosition.x * relativePosition.parentMultiplier + relativePosition.x;
@@ -59,11 +71,17 @@ public class RelativePositionSystem extends EntitySystem {
             else if (relativePosition.unit.charAt(0) == '%') {
                 childPosition.x = parentPosition.x * relativePosition.parentMultiplier + (relativePosition.x * parentSize.width * 0.01);
             }
+            else if (relativePosition.unit.charAt(0) == 's') {
+                childPosition.x = parentPosition.x * relativePosition.parentMultiplier + (relativePosition.x * childSize.width * 0.01);
+            }
             if(relativePosition.unit.charAt(1) == 'p') {
                 childPosition.y = parentPosition.y * relativePosition.parentMultiplier + relativePosition.y;
             }
             else if (relativePosition.unit.charAt(1) == '%') {
                 childPosition.y = parentPosition.y * relativePosition.parentMultiplier + (relativePosition.y * parentSize.height * 0.01);
+            }
+            else if (relativePosition.unit.charAt(1) == 's') {
+                childPosition.y = parentPosition.y * relativePosition.parentMultiplier + (relativePosition.y * childSize.height * 0.01);
             }
             if(relativePosition.unit.length() > 2) {
                 if(relativePosition.unit.charAt(2) == 'p') {

@@ -136,8 +136,11 @@ public class BootSystem extends EntitySystem {
 
         engine.addSystem(new RenderSystem());
         engine.addSystem(new DragSystem());
-        engine.addSystem(new RelativeSizeSystem());
+        engine.addSystem(new HitBoxSizeSystem());
+        engine.addSystem(new HeightBetweenSystem());
+        engine.addSystem(new WidthBetweenSystem());
         engine.addSystem(new RelativePositionSystem());
+        engine.addSystem(new RelativeSizeSystem());
         engine.addSystem(new AssetLoadSystem());
         engine.addSystem(new AssetGetSystem());
         engine.addSystem(new AssetRegisterSystem());

@@ -11,70 +11,73 @@ import com.badlogic.gdx.math.*;
 @CompileStatic
 public class DragSystem extends EntitySystem {
 	
-	private final ComponentMapper<DraggingComponent> draggingMapper;;
-	private final ComponentMapper<PositionComponent> positionMapper;;
-	private final ComponentMapper<ViewportComponent> viewportMapper;;
-	private final ComponentMapper<MousePressEventComponent> pressMapper;;
+    private final ComponentMapper<DraggingComponent> draggingMapper;;
+    private final ComponentMapper<PositionComponent> positionMapper;;
+    private final ComponentMapper<ViewportComponent> viewportMapper;;
+    private final ComponentMapper<MousePressEventComponent> pressMapper;;
+    private final ComponentMapper<DragableComponent> dragableMapper;;
 
-	private ImmutableArray<Entity> entities, renderEntity, dragging;
+    private ImmutableArray<Entity> entities, renderEntity, dragging;
 
-	public DragSystem() {
-		this.draggingMapper = ComponentMapper.getFor(DraggingComponent.class);
-		this.positionMapper = ComponentMapper.getFor(PositionComponent.class);
-		this.viewportMapper = ComponentMapper.getFor(ViewportComponent.class);
-		this.pressMapper = ComponentMapper.getFor(MousePressEventComponent.class);
-	}
+    public DragSystem() {
+        this.draggingMapper = ComponentMapper.getFor(DraggingComponent.class);
+        this.positionMapper = ComponentMapper.getFor(PositionComponent.class);
+        this.viewportMapper = ComponentMapper.getFor(ViewportComponent.class);
+        this.pressMapper = ComponentMapper.getFor(MousePressEventComponent.class);
+        this.dragableMapper = ComponentMapper.getFor(DragableComponent.class);
+    }
 	
-	public void addedToEngine(Engine engine) {
-		this.renderEntity = engine.getEntitiesFor(
-			Family.all(
-				ViewportComponent.class
-			).get()
-		);
-		this.entities = engine.getEntitiesFor(
-			Family.all(
-				MousePressEventComponent.class, 
-				DragableComponent.class,
-				PositionComponent.class
-			)
-			.get()
-		);
-		this.dragging = engine.getEntitiesFor(
-			Family.all(
-				DraggingComponent.class,
-				PositionComponent.class,
-				DragableComponent.class
-			).get()
-		);
-	}
+    public void addedToEngine(Engine engine) {
+        this.renderEntity = engine.getEntitiesFor(
+            Family.all(
+                ViewportComponent.class
+            ).get()
+        );
+        this.entities = engine.getEntitiesFor(
+            Family.all(
+                MousePressEventComponent.class, 
+                DragableComponent.class,
+                PositionComponent.class
+            )
+            .get()
+        );
+        this.dragging = engine.getEntitiesFor(
+            Family.all(
+                DraggingComponent.class,
+                PositionComponent.class,
+                DragableComponent.class
+            ).get()
+        );
+    }
 
-	public void update(float delta) {
-		if(renderEntity.size() < 1) return;
-		ViewportComponent viewport = viewportMapper.get(renderEntity.first());
+    public void update(float delta) {
+        if(renderEntity.size() < 1) return;
+        ViewportComponent viewport = viewportMapper.get(renderEntity.first());
+        
+        Vector2 mouseCoords = viewport.viewport.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 
-		Vector2 mouseCoords = viewport.viewport.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 
-
-		for(Entity entity : entities) {
-			MousePressEventComponent press = pressMapper.get(entity);
-			if(press.timer >= 0.25f) {
-				entity.add(new DraggingComponent(previousX: mouseCoords.x, previousY: mouseCoords.y));
-			}
-		}
+        for(Entity entity : entities) {
+            MousePressEventComponent press = pressMapper.get(entity);
+            if(press.timer >= 0.25f) {
+                entity.add(new DraggingComponent(previousX: mouseCoords.x, previousY: mouseCoords.y));
+            }
+        }
 		
-		for(Entity entity : dragging) {
-			PositionComponent position = positionMapper.get(entity);
-			DraggingComponent draggingComponent = draggingMapper.get(entity);
+        for(Entity entity : dragging) {
+            DragableComponent dragable = dragableMapper.get(entity)
+            PositionComponent position = positionMapper.get(entity);
+            DraggingComponent draggingComponent = draggingMapper.get(entity);
 
-			position.x += mouseCoords.x - draggingComponent.previousX;
-			position.y += mouseCoords.y - draggingComponent.previousY;
+            position.x += (dragable.horizontal) ? mouseCoords.x - draggingComponent.previousX : 0;
+            position.y += (dragable.verticle  ) ? mouseCoords.y - draggingComponent.previousY : 0;
 
-			draggingComponent.previousX = mouseCoords.x;
-			draggingComponent.previousY = mouseCoords.y;
+            draggingComponent.previousX = mouseCoords.x;
+            draggingComponent.previousY = mouseCoords.y;
 
-			if(Gdx.input.isTouched() == false) {
-				entity.remove(DraggingComponent.class);
-			}
-		}
-	}
+            if(Gdx.input.isTouched() == false) {
+                entity.remove(DraggingComponent.class);
+            }
+        }
+    }
 }

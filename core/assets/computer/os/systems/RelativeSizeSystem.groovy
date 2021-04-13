@@ -30,7 +30,7 @@ public class RelativeSizeSystem extends EntitySystem {
             RelativeSizeComponent relativeSize = relativeSizeMapper.get(entity);
             ParentComponent parentComponent = parentMapper.get(entity);
             
-            Entity parent = parentComponent.parent;
+            Entity parent = relativeSize.parent == null ? parentComponent.parent : relativeSize.parent;
             SizeComponent parentSize = sizeMapper.get(parent);
             
             if(parentSize == null) continue;
