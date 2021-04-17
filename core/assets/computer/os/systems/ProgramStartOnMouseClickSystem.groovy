@@ -54,8 +54,6 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
             MouseClickEventComponent click = clickMapper.get(entity);
             PropertiesComponent propertiesComponent = propertiesMapper.get(entity);
             
-            System.out.println(propertiesComponent.properties);
-            
             if(click.count >= 2 ) {
             
                 ProgramStartRequestComponent startRequest = new ProgramStartRequestComponent(name: propertiesComponent.properties.getProperty("name"));
