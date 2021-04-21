@@ -105,6 +105,7 @@ gradle-app.setting
 /android/build/
 /core/build/
 /desktop/build/
+/userlang/build/
 /html/build/
 /ios/build/
 /ios-moe/build/
