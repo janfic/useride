@@ -94,6 +94,14 @@ public class HTMLToECSSystem extends EntitySystem {
         PaddingComponent paddingComponent = new PaddingComponent();
         MarginComponent marginComponent = new MarginComponent();
         
+        if(tagComponent.tag.equalsIgnoreCase("textarea")) {
+            e.add(new KeyInputComponent());
+            e.add(new ClickableComponent());
+            e.add(new FocusableComponent());
+            e.add(new FocusOnMouseClickComponent());
+            e.add(new ChangeBackgroundColorOnFocusedComponent(focused: Color.WHITE, unfocused: Color.GRAY));
+        }
+        
         e.add(tagComponent);
         e.add(classComponent);
         e.add(idComponent);
