@@ -99,7 +99,8 @@ public class HTMLToECSSystem extends EntitySystem {
             e.add(new ClickableComponent());
             e.add(new FocusableComponent());
             e.add(new FocusOnMouseClickComponent());
-            e.add(new ChangeBackgroundColorOnFocusedComponent(focused: Color.WHITE, unfocused: Color.GRAY));
+            e.add(new ChangeBackgroundColorOnFocusedComponent(focused: Color.WHITE, unfocused: Color.LIGHT_GRAY));
+            e.add(new ChangeBorderColorOnFocusedComponent(focused: Color.BLACK, unfocused: Color.WHITE));
         }
         
         e.add(tagComponent);

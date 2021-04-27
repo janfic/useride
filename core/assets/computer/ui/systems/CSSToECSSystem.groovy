@@ -270,6 +270,7 @@ public class CSSToECSSystem extends EntitySystem {
                 }
                 else {
                     border.color = Colors.get(values[0].trim().toUpperCase());
+                    System.out.println(border.color);
                 }
                 break;
             case "border-width":

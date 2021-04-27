@@ -69,6 +69,7 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new TextInputSystem());
         engine.addSystem(new FocusOnMouseClickSystem());
         engine.addSystem(new ChangeBackgroundColorOnFocusedSystem());
+        engine.addSystem(new ChangeBorderColorOnFocusedSystem());
 
         super.addedToEngine(engine);
         
