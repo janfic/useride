@@ -161,7 +161,7 @@ public class RenderSystem extends SortedIteratingSystem {
             batch.end();
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(bgColorComponent.color);
-            roundedRect(position.x + hitBoxComponent.rectangle.getX(), position.y + hitBoxComponent.rectangle.getY(), hitBoxComponent.rectangle.getWidth(), hitBoxComponent.rectangle.getHeight(), borderComponent.radius);
+            roundedRect(position.x + hitBoxComponent.rectangle.getX(), position.y + hitBoxComponent.rectangle.getY(), hitBoxComponent.rectangle.getWidth(), hitBoxComponent.rectangle.getHeight(), borderComponent != null ? borderComponent.radius : 0);
             shapeRenderer.end();
             batch.begin();
         }
@@ -203,7 +203,6 @@ public class RenderSystem extends SortedIteratingSystem {
             fontComponent.font.draw( batch, textComponent.text, position.x , (float) (position.y  + layout.height), width, Align.left, true);
             else
             fontComponent.font.draw( batch, textComponent.text, position.x, (float) (position.y + layout.height));
-            batch.flush();
             if(color != null) fontComponent.font.setColor(Color.WHITE); 
         }
         
