@@ -68,7 +68,7 @@ public class HTMLToECSSystem extends EntitySystem {
         hitBoxComponent.rectangle = new Rectangle(0,0,0,0);
         BorderComponent borderComponent = new BorderComponent(color: Color.CLEAR);
         
-        if(el.hasText()) textComponent.text = el.ownText();
+        if(el.hasText()) textComponent.text = el.ownText(); else textComponent.text = "";
         attributesComponent.attributes = el.attributes();
         classComponent.raw = el.className();
         classComponent.classes = el.classNames();
@@ -127,7 +127,8 @@ public class HTMLToECSSystem extends EntitySystem {
         if(atRoot) e.add(new SiblingsComponent());
         if(!atRoot) e.add(positionComponent);
         if(!atRoot) {e.add(sizeComponent);}
-        if(el.hasText() && el.ownText().length() > 0) {e.add(textComponent); e.add(new BitmapFontComponent(font: new BitmapFont(Gdx.files.local("computer/os/assets/userosgui/Lucida Console 12px.fnt")))); e.add(new ColorComponent(color: Color.BLACK));}
+        e.add(textComponent); 
+        e.add(new BitmapFontComponent(font: new BitmapFont(Gdx.files.local("computer/os/assets/userosgui/Lucida Console 12px.fnt")))); e.add(new ColorComponent(color: Color.BLACK));
         
         if(!atRoot) getEngine().addEntity(e);
         return e;

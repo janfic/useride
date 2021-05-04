@@ -96,58 +96,66 @@ public class TextSelectionSystem extends EntitySystem {
             if(textSelectComponent.textCursorIndex == -1) textSelectComponent.textCursorIndex = textComponent.text.length();
             parentSelection.textCursorIndex = textSelectComponent.textCursorIndex;
             
-            // Retrieve Graphical layout representation of text
-            layout.setText(fontComponent.font, textComponent.text, Color.BLACK, sizeComponent.width, alignmentComponent.alignment, true);
+            if(textComponent.text.length() > 0) { 
             
-            // Create Textual representation of Graphic Layout of text ( lines and content of lines )
-            String[] sections = buildSections(textComponent.text, layout);
+                // Retrieve Graphical layout representation of text
+                layout.setText(fontComponent.font, textComponent.text, Color.BLACK, sizeComponent.width, alignmentComponent.alignment, true);
             
-            // Calculate Line and Row of Cursor
-            int textIndex = textSelectComponent.textCursorIndex;
-            int sectionNumber = 0, sectionIndex = textIndex;
-            int c = 0;
-            for(int i = 0; i < sections.length; i++) {
-                if(sectionIndex > sections[i].length()) {
-                    c += sections[i].length();
-                    sectionIndex -= sections[i].length();
-                    if( i < sections.length - 1 ) {
-                        int diff = (textComponent.text.indexOf(sections[i+1], c) - c);
-                        sectionIndex -= diff;
-                        c += diff;
+                // Create Textual representation of Graphic Layout of text ( lines and content of lines )
+                String[] sections = buildSections(textComponent.text, layout);
+            
+                // Calculate Line and Row of Cursor
+                int textIndex = textSelectComponent.textCursorIndex;
+                int sectionNumber = 0, sectionIndex = textIndex;
+                int c = 0;
+                for(int i = 0; i < sections.length; i++) {
+                    if(sectionIndex > sections[i].length()) {
+                        c += sections[i].length();
+                        sectionIndex -= sections[i].length();
+                        if( i < sections.length - 1 ) {
+                            int diff = (textComponent.text.indexOf(sections[i+1], c) - c);
+                            sectionIndex -= diff;
+                            c += diff;
+                        }
+                    }
+                    else {
+                        sectionNumber = i;
+                        break;
                     }
                 }
-                else {
-                    sectionNumber = i;
-                    break;
+            
+                // Adjust for "Invisible" non existant lines in graphical layout vs textual layout
+                int runNumber = sectionNumber;
+                for(int s = 0; s <= sectionNumber; s++) {
+                    if(sections[s].trim().equals("")) {
+                        runNumber--;
+                    }
                 }
-            }
+                if(sections[sectionNumber].trim().equals("")) {sectionIndex = 0;}
             
-            // Adjust for "Invisible" non existant lines in graphical layout vs textual layout
-            int runNumber = sectionNumber;
-            for(int s = 0; s <= sectionNumber; s++) {
-                if(sections[s].trim().equals("")) {
-                    runNumber--;
+                // Calculate position of cursor based on row and column of graphical layout
+                int rowHeight = fontComponent.font.getLineHeight();
+                int x = 0;
+                int y = sizeComponent.height - (rowHeight * (sectionNumber + 1)) ;  // top of text
+            
+                for( int i = 0; i <= sectionIndex & i < layout.runs.get(runNumber).xAdvances.size;  i++) {
+                    x += layout.runs.get(runNumber).xAdvances.get(i);
                 }
+
+                relativePositionComponent.x = x;
+                relativePositionComponent.y = y;
             }
-            if(sections[sectionNumber].trim().equals("")) {sectionIndex = 0;}
-            
-            // Calculate position of cursor based on row and column of graphical layout
-            int rowHeight = fontComponent.font.getLineHeight();
-            int x = 0;
-            int y = sizeComponent.height - (rowHeight * (sectionNumber + 1)) ;  // top of text
-            
-            for( int i = 0; i <= sectionIndex & i < layout.runs.get(runNumber).xAdvances.size;  i++) {
-                x += layout.runs.get(runNumber).xAdvances.get(i);
+            else {
+                relativePositionComponent.x =  0;
+                relativePositionComponent.y =  sizeComponent.height - fontComponent.font.getLineHeight();
             }
 
-            relativePositionComponent.x = x;
-            relativePositionComponent.y = y;
             relativePositionComponent.z = 1;
             
             // Blinker Timer calculation
             int width = 0;
             if(blinker < 0.75f) {
-               width = 1;
+                width = 1;
             }
             else if ( blinker > 0.75f) {
                 width = 0;
@@ -157,6 +165,7 @@ public class TextSelectionSystem extends EntitySystem {
             }
             
             // Update Cursor Look based on blinker
+            int rowHeight = fontComponent.font.getLineHeight();
             hitBoxComponent.rectangle.set(1 , 1 , width, rowHeight);
             
         }
