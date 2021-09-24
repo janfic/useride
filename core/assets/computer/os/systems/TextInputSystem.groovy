@@ -54,7 +54,12 @@ public class TextInputSystem extends EntitySystem {
             if(keyInputComponent.keyTyped != 0 && keyInputComponent.keyTyped != 8 && keyInputComponent.keyTyped != keyInputComponent.keyUp && !keyInputComponent.pressed.isEmpty()) {
                 String input = "" + (char)keyInputComponent.keyTyped;
                 if((char)keyInputComponent.keyTyped == 13) input = "\n";
-                textComponent.text = textComponent.text.substring(0, selectComponent.textCursorIndex) + input + textComponent.text.substring(selectComponent.textCursorIndex);
+                if(selectComponent.startIndex == -1) {
+                    textComponent.text = textComponent.text.substring(0, selectComponent.textCursorIndex) + input + textComponent.text.substring(selectComponent.textCursorIndex);
+                }
+                else {
+                    textComponent.text = textComponent.text.substring(0, selectComponent.startIndex) + input + textComponent.text.substring(selectComponent.endIndex);
+                }
                 selectComponent.textCursorIndex = selectComponent.textCursorIndex + 1 ;
                 selectComponent.startIndex = -1;
                 selectComponent.endIndex = -1;
@@ -106,7 +111,7 @@ public class TextInputSystem extends EntitySystem {
                     selectComponent.startIndex = selectComponent.textCursorIndex;
                     selectComponent.endIndex = selectComponent.textCursorIndex + 1;
                 }
-                selectComponent.textCursorIndex = selectComponent.endIndex;
+                selectComponent.textCursorIndex = selectComponent.startIndex;
             }
             
             if(keyInputComponent.pressed.contains(Input.Keys.RIGHT) && keyInputComponent.pressed.contains(Input.Keys.SHIFT_LEFT)) {
@@ -120,7 +125,7 @@ public class TextInputSystem extends EntitySystem {
                         selectComponent.startIndex = selectComponent.textCursorIndex;
                         selectComponent.endIndex = selectComponent.textCursorIndex + 1;
                     }
-                    selectComponent.textCursorIndex = selectComponent.endIndex;
+                    selectComponent.textCursorIndex = selectComponent.startIndex;
                 }
             }
             
