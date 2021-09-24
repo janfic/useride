@@ -4,6 +4,7 @@ import os.components.*;
 import ui.components.*;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -18,12 +19,14 @@ public class TextSelectionSystem extends EntitySystem {
     private final ComponentMapper<BitmapFontComponent> fontMapper;
     private final ComponentMapper<AlignmentComponent> alignMapper;
     private final ComponentMapper<ParentComponent> parentMapper;
+    private final ComponentMapper<ChildrenComponent> childrenMapper;
     private final ComponentMapper<HitBoxComponent> hitBoxMapper;
     private final ComponentMapper<SizeComponent> sizeMapper;
     private final ComponentMapper<RelativePositionComponent> relativePositionMapper;
     
-    private ImmutableArray<Entity> entities;
+    private ImmutableArray<Entity> entities, highLightEntities;
     private Family textEntitiesFamily;
+    private Family selectBoxFamily;
     
     private GlyphLayout layout;
     private float blinker;
@@ -34,6 +37,7 @@ public class TextSelectionSystem extends EntitySystem {
         this.fontMapper = ComponentMapper.getFor(BitmapFontComponent.class);
         this.alignMapper = ComponentMapper.getFor(AlignmentComponent.class);
         this.parentMapper = ComponentMapper.getFor(ParentComponent.class);
+        this.childrenMapper = ComponentMapper.getFor(ChildrenComponent.class);
         this.hitBoxMapper = ComponentMapper.getFor(HitBoxComponent.class);
         this.sizeMapper = ComponentMapper.getFor(SizeComponent.class);
         this.relativePositionMapper = ComponentMapper.getFor(RelativePositionComponent.class);
@@ -51,6 +55,15 @@ public class TextSelectionSystem extends EntitySystem {
                 BackgroundColorComponent.class
             ).get()
         );
+        this.selectBoxFamily = Family.all(
+            ParentComponent.class,
+            HitBoxComponent.class,
+            PositionComponent.class,
+            RelativePositionComponent.class,
+            BackgroundColorComponent.class,
+            TextHighlightComponent.class,
+        ).get();
+        this.highLightEntities = engine.getEntitiesFor(selectBoxFamily);
         this.textEntitiesFamily = Family.all(
             TextComponent.class,
             HitBoxComponent.class,
@@ -67,6 +80,10 @@ public class TextSelectionSystem extends EntitySystem {
     public void update(float delta) {
         blinker += delta;
         
+        for( Entity entity : highLightEntities) {
+            getEngine().removeEntity(entity);
+        }
+        
         for( Entity entity : entities) {
             
             // Get Components of Cursor
@@ -74,6 +91,9 @@ public class TextSelectionSystem extends EntitySystem {
             TextSelectionComponent textSelectComponent = selectMapper.get(entity);
             HitBoxComponent hitBoxComponent = hitBoxMapper.get(entity);
             RelativePositionComponent relativePositionComponent = relativePositionMapper.get(entity);
+
+            
+            
             if(textSelectComponent.textCursorIndex == -1) hitBoxComponent.rectangle.setSize(0,0);
             
             // Get Components of Text ( Parent )
@@ -90,9 +110,12 @@ public class TextSelectionSystem extends EntitySystem {
             BitmapFontComponent fontComponent = fontMapper.get(parentComponent.parent);
             AlignmentComponent alignmentComponent = alignMapper.get(parentComponent.parent);
             SizeComponent sizeComponent = sizeMapper.get(parentComponent.parent);
-                        
+
+            
             // Adjust index based on parent cursor index
             textSelectComponent.textCursorIndex = parentSelection.textCursorIndex;
+            textSelectComponent.startIndex = parentSelection.startIndex;
+            textSelectComponent.endIndex = parentSelection.endIndex;
             if(textSelectComponent.textCursorIndex == -1) textSelectComponent.textCursorIndex = textComponent.text.length();
             parentSelection.textCursorIndex = textSelectComponent.textCursorIndex;
             
@@ -104,26 +127,11 @@ public class TextSelectionSystem extends EntitySystem {
                 // Create Textual representation of Graphic Layout of text ( lines and content of lines )
                 String[] sections = buildSections(textComponent.text, layout);
             
-                // Calculate Line and Row of Cursor
-                int textIndex = textSelectComponent.textCursorIndex;
-                int sectionNumber = 0, sectionIndex = textIndex;
-                int c = 0;
-                for(int i = 0; i < sections.length; i++) {
-                    if(sectionIndex > sections[i].length()) {
-                        c += sections[i].length();
-                        sectionIndex -= sections[i].length();
-                        if( i < sections.length - 1 ) {
-                            int diff = (textComponent.text.indexOf(sections[i+1], c) - c);
-                            sectionIndex -= diff;
-                            c += diff;
-                        }
-                    }
-                    else {
-                        sectionNumber = i;
-                        break;
-                    }
-                }
-            
+                // Calculate Line and Row Index of Cursor
+                int[] calc = getLineAndIndex(textSelectComponent.textCursorIndex, sections, textComponent.text);
+                int sectionIndex = calc[0]; 
+                int sectionNumber = calc[1];
+           
                 // Adjust for "Invisible" non existant lines in graphical layout vs textual layout
                 int runNumber = sectionNumber;
                 for(int s = 0; s <= sectionNumber; s++) {
@@ -134,16 +142,38 @@ public class TextSelectionSystem extends EntitySystem {
                 if(sections[sectionNumber].trim().equals("")) {sectionIndex = 0;}
             
                 // Calculate position of cursor based on row and column of graphical layout
-                int rowHeight = fontComponent.font.getLineHeight();
-                int x = 0;
-                int y = sizeComponent.height - (rowHeight * (sectionNumber + 1)) ;  // top of text
-            
-                for( int i = 0; i <= sectionIndex & i < layout.runs.get(runNumber).xAdvances.size;  i++) {
-                    x += layout.runs.get(runNumber).xAdvances.get(i);
+                int[] rp = getRelativePosition(fontComponent.font.getLineHeight(), layout, sizeComponent.height, sectionNumber, sectionIndex, runNumber);
+                
+                relativePositionComponent.x = rp[0];
+                relativePositionComponent.y = rp[1];
+                
+                if(textSelectComponent.startIndex > -1 && textSelectComponent.endIndex > -1) {
+                    
+                    int[] n = selectionSections(sections, textSelectComponent.startIndex, textSelectComponent.endIndex, textComponent.text);
+                    
+                    if(n != null) {
+                        int rn = n[0];
+                        for(int s = 0; s <= n[0]; s++) {
+                            if(sections[s].trim().equals("")) {
+                                rn--;
+                            }
+                        }
+                        if(sections[n[0]].trim().equals("")) {sectionIndex = 0;}
+                        
+                        int[] srp = getRelativePosition(fontComponent.font.getLineHeight(), layout, sizeComponent.height, n[0], n[1], rn);
+                        int[] erp = getRelativePosition(fontComponent.font.getLineHeight(), layout, sizeComponent.height, n[0], n[2], rn);
+                        
+                        Entity selectEntity = new Entity();
+                        selectEntity.add(new PositionComponent());
+                        selectEntity.add(new SizeComponent());
+                        selectEntity.add(new ParentComponent(parent: parentComponent.parent));
+                        selectEntity.add(new HitBoxComponent(rectangle: new Rectangle(1,1, erp[0] - srp[0], fontComponent.font.getLineHeight())));
+                        selectEntity.add(new RelativePositionComponent(x: srp[0], y: srp[1], unit: "ppp"));
+                        selectEntity.add(new BackgroundColorComponent(color: Color.valueOf("0000ff44")));
+                        selectEntity.add(new TextHighlightComponent());
+                        getEngine().addEntity(selectEntity);
+                    }
                 }
-
-                relativePositionComponent.x = x;
-                relativePositionComponent.y = y;
             }
             else {
                 relativePositionComponent.x =  0;
@@ -162,6 +192,10 @@ public class TextSelectionSystem extends EntitySystem {
             }
             if ( blinker > 1.5f) {
                 blinker = 0;
+            }
+            
+            if(textSelectComponent.startIndex != -1) {
+                
             }
             
             // Update Cursor Look based on blinker
@@ -223,5 +257,56 @@ public class TextSelectionSystem extends EntitySystem {
             s += (char) glyphs.get(i).id;
         }
         return s;
+    }
+    
+    private int[] getRelativePosition(float lineHeight, GlyphLayout layout, float height, int sectionNumber, int sectionIndex, int runNumber) {
+        int rowHeight = lineHeight;
+        int x = 0;
+        int y = height - (rowHeight * (sectionNumber + 1)) ;  // top of text
+            
+        for( int i = 0; i <= sectionIndex & i < layout.runs.get(runNumber).xAdvances.size;  i++) {
+            x += layout.runs.get(runNumber).xAdvances.get(i);
+        }
+        return [x, y];
+    }
+    
+    /**
+     * Calculates and returns start and end indexes of each section selection is in
+     * Format: int[] {sectionNumber, startIndexOfSection, endIndexOfSection, ...  }
+     **/
+    private int[] selectionSections(String[] sections, int startIndex, int endIndex, String text) {
+        int[] startInfo = getLineAndIndex(startIndex, sections, text);
+        int[] endInfo = getLineAndIndex(endIndex, sections, text);
+        
+        int startSection = startInfo[1];
+        int endSection = endInfo[1];
+        if(startSection == endSection) {
+            return [startSection, startInfo[0], endInfo[0]];
+        }
+        else {
+            return null;
+        }
+    }
+    
+    // Calculate Line and Row Index of Cursor
+    private int[] getLineAndIndex(int textIndex, String[] sections, String text) {
+        int sectionNumber = 0, sectionIndex = textIndex;
+        int c = 0;
+        for(int i = 0; i < sections.length; i++) {
+            if(sectionIndex > sections[i].length()) {
+                c += sections[i].length();
+                sectionIndex -= sections[i].length();
+                if( i < sections.length - 1 ) {
+                    int diff = (text.indexOf(sections[i+1], c) - c);
+                    sectionIndex -= diff;
+                    c += diff;
+                }
+            }
+            else {
+                sectionNumber = i;
+                break;
+            }
+        }
+        return [sectionIndex, sectionNumber];
     }
 }

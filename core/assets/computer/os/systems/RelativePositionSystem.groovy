@@ -44,13 +44,17 @@ public class RelativePositionSystem extends EntitySystem {
         SizeComponent childSize = sizeMapper.get(entity);
         RelativePositionComponent relativePosition = relativePositionMapper.get(entity);
         ParentComponent parentComponent = parentMapper.get(entity);
-            
+
         Entity parent = relativePosition.parent == null ? parentComponent.parent : relativePosition.parent;
         PositionComponent parentPosition = positionMapper.get(parent);
         SizeComponent parentSize = sizeMapper.get(parent);
-            
+        
         if(Family.all(PositionComponent.class, RelativePositionComponent.class, ParentComponent.class).exclude(DraggingComponent.class).get().matches(parent)) processEntity(parent);
         if(parentPosition == null) return;    
+        
+        if(childPosition.x == 100 && childPosition.y == 100) {
+            //System.out.println(parentPosition.x + " " + parentPosition.y);
+        }
         
         if(relativePosition.unit.equals("p")) {
             childPosition.x = parentPosition.x * relativePosition.parentMultiplier + relativePosition.x;

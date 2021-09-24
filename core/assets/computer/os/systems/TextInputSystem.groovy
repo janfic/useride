@@ -56,34 +56,103 @@ public class TextInputSystem extends EntitySystem {
                 if((char)keyInputComponent.keyTyped == 13) input = "\n";
                 textComponent.text = textComponent.text.substring(0, selectComponent.textCursorIndex) + input + textComponent.text.substring(selectComponent.textCursorIndex);
                 selectComponent.textCursorIndex = selectComponent.textCursorIndex + 1 ;
+                selectComponent.startIndex = -1;
+                selectComponent.endIndex = -1;
             }
             
             if(keyInputComponent.keyTyped == 8 && textComponent.text.length() >= 1 && selectComponent.textCursorIndex > 0) {
                 textComponent.text = textComponent.text.substring(0, selectComponent.textCursorIndex - 1) + textComponent.text.substring(selectComponent.textCursorIndex);
                 selectComponent.textCursorIndex = selectComponent.textCursorIndex - 1 ;
+                selectComponent.startIndex = -1;
+                selectComponent.endIndex = -1;
             }
             
-            if(keyInputComponent.keyDown == Input.Keys.LEFT) {
+            if(keyInputComponent.keyDown == Input.Keys.LEFT && keyInputComponent.pressed.contains(Input.Keys.SHIFT_LEFT)) {
+                wait = 0;
+                System.out.println(selectComponent.textCursorIndex + " " + selectComponent.startIndex + " " + selectComponent.endIndex);
+                if(selectComponent.startIndex > 0) {
+                    selectComponent.startIndex -= 1;
+                    selectComponent.textCursorIndex = selectComponent.startIndex;
+                }
+                else if( selectComponent.startIndex == -1 && selectComponent.textCursorIndex > 0) {
+                    selectComponent.startIndex = selectComponent.textCursorIndex - 1;
+                    selectComponent.endIndex = selectComponent.textCursorIndex;
+                    selectComponent.textCursorIndex = selectComponent.startIndex;
+                }
+            }
+            
+            if(keyInputComponent.pressed.contains(Input.Keys.LEFT) && keyInputComponent.pressed.contains(Input.Keys.SHIFT_LEFT)) {
+                wait += delta;
+                if(wait >= 0.75f) {
+                    wait -= 0.05f
+                    if(selectComponent.startIndex > 0) {
+                        selectComponent.startIndex -= 1;
+                        selectComponent.textCursorIndex = selectComponent.startIndex;
+                    }
+                    else if( selectComponent.startIndex == -1 && selectComponent.textCursorIndex > 0){
+                        selectComponent.startIndex = selectComponent.textCursorIndex - 1;
+                        selectComponent.endIndex = selectComponent.textCursorIndex;
+                        selectComponent.textCursorIndex = selectComponent.startIndex;
+                    }
+                }
+            }
+            
+            if(keyInputComponent.keyDown == Input.Keys.RIGHT && keyInputComponent.pressed.contains(Input.Keys.SHIFT_LEFT)) {
+                wait = 0;
+                if(selectComponent.endIndex < textComponent.text.length() && selectComponent.endIndex > -1) {
+                    selectComponent.endIndex += 1;
+                }
+                else if( selectComponent.endIndex == -1 && selectComponent.textCursorIndex < textComponent.text.length()) {
+                    selectComponent.startIndex = selectComponent.textCursorIndex;
+                    selectComponent.endIndex = selectComponent.textCursorIndex + 1;
+                }
+                selectComponent.textCursorIndex = selectComponent.endIndex;
+            }
+            
+            if(keyInputComponent.pressed.contains(Input.Keys.RIGHT) && keyInputComponent.pressed.contains(Input.Keys.SHIFT_LEFT)) {
+                wait += delta;
+                if(wait >= 0.75f) {
+                    wait -= 0.05f
+                    if(selectComponent.endIndex < textComponent.text.length() && selectComponent.endIndex > -1) {
+                        selectComponent.endIndex += 1;
+                    }
+                    else if( selectComponent.endIndex == -1 && selectComponent.textCursorIndex < textComponent.text.length()) {
+                        selectComponent.startIndex = selectComponent.textCursorIndex;
+                        selectComponent.endIndex = selectComponent.textCursorIndex + 1;
+                    }
+                    selectComponent.textCursorIndex = selectComponent.endIndex;
+                }
+            }
+            
+            if(keyInputComponent.keyDown == Input.Keys.LEFT && !keyInputComponent.pressed.contains(Input.Keys.SHIFT_LEFT)) {
                 wait = 0;
                 if(selectComponent.textCursorIndex > 0) selectComponent.textCursorIndex = selectComponent.textCursorIndex - 1 ;
+                selectComponent.startIndex = -1;
+                selectComponent.endIndex = -1;
             }
-            if(keyInputComponent.pressed.contains(Input.Keys.LEFT)) {
+            if(keyInputComponent.pressed.contains(Input.Keys.LEFT) && !keyInputComponent.pressed.contains(Input.Keys.SHIFT_LEFT)) {
                 wait += delta;
                 if(wait >= 0.75f) {
                     wait -= 0.05f
                     if(selectComponent.textCursorIndex > 0) selectComponent.textCursorIndex = selectComponent.textCursorIndex - 1 ;
+                    selectComponent.startIndex = -1;
+                    selectComponent.endIndex = -1;
                 }
             }
             
-            if(keyInputComponent.keyDown == Input.Keys.RIGHT) {
+            if(keyInputComponent.keyDown == Input.Keys.RIGHT && !keyInputComponent.pressed.contains(Input.Keys.SHIFT_LEFT)) {
                 wait = 0;
                 if(selectComponent.textCursorIndex < textComponent.text.length()) selectComponent.textCursorIndex = selectComponent.textCursorIndex + 1 ;
+                selectComponent.startIndex = -1;
+                selectComponent.endIndex = -1;
             }
-            if(keyInputComponent.pressed.contains(Input.Keys.RIGHT)) {
+            if(keyInputComponent.pressed.contains(Input.Keys.RIGHT) && !keyInputComponent.pressed.contains(Input.Keys.SHIFT_LEFT)) {
                 wait += delta;
                 if(wait >= 0.75f) {
                     wait -= 0.05f
                     if(selectComponent.textCursorIndex < textComponent.text.length()) selectComponent.textCursorIndex = selectComponent.textCursorIndex + 1 ;
+                    selectComponent.startIndex = -1;
+                    selectComponent.endIndex = -1;
                 }
             }
         }
