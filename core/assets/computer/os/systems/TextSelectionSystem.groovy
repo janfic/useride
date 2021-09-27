@@ -308,7 +308,6 @@ public class TextSelectionSystem extends EntitySystem {
                     r.add(sections[i].length());
                 }
             }
-            System.out.println(r);
             return r.toArray();
         }
     }
