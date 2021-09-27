@@ -68,7 +68,7 @@ public class HTMLToECSSystem extends EntitySystem {
         hitBoxComponent.rectangle = new Rectangle(0,0,0,0);
         BorderComponent borderComponent = new BorderComponent(color: Color.CLEAR);
         
-        if(el.hasText()) textComponent.text = el.ownText();
+        if(el.hasText()) textComponent.text = el.ownText(); else textComponent.text = "";
         attributesComponent.attributes = el.attributes();
         classComponent.raw = el.className();
         classComponent.classes = el.classNames();
@@ -99,7 +99,19 @@ public class HTMLToECSSystem extends EntitySystem {
             e.add(new ClickableComponent());
             e.add(new FocusableComponent());
             e.add(new FocusOnMouseClickComponent());
-            e.add(new ChangeBackgroundColorOnFocusedComponent(focused: Color.WHITE, unfocused: Color.GRAY));
+            e.add(new ChangeBackgroundColorOnFocusedComponent(focused: Color.WHITE, unfocused: Color.LIGHT_GRAY));
+            e.add(new ChangeBorderColorOnFocusedComponent(focused: Color.BLACK, unfocused: Color.WHITE));
+            e.add(new AlignmentComponent(alignment: Align.left));
+            e.add(new TextSelectionComponent());
+            
+            Entity ecursor = new Entity();
+            ecursor.add(new PositionComponent());
+            ecursor.add(new RelativePositionComponent(unit: "ppp"));
+            ecursor.add(new TextSelectionComponent());
+            ecursor.add(new ParentComponent(parent: e));
+            ecursor.add(new BackgroundColorComponent(color: Color.BLUE));
+            ecursor.add(new HitBoxComponent(rectangle: new Rectangle(0,0,0,0)));
+            getEngine().addEntity(ecursor)
         }
         
         e.add(tagComponent);
@@ -115,7 +127,8 @@ public class HTMLToECSSystem extends EntitySystem {
         if(atRoot) e.add(new SiblingsComponent());
         if(!atRoot) e.add(positionComponent);
         if(!atRoot) {e.add(sizeComponent);}
-        if(el.hasText() && el.ownText().length() > 0) {e.add(textComponent); e.add(new BitmapFontComponent(font: new BitmapFont(Gdx.files.local("computer/os/assets/userosgui/Lucida Console 12px.fnt")))); e.add(new ColorComponent(color: Color.BLACK));}
+        e.add(textComponent); 
+        e.add(new BitmapFontComponent(font: new BitmapFont(Gdx.files.local("computer/os/assets/userosgui/Lucida Console 12px.fnt")))); e.add(new ColorComponent(color: Color.BLACK));
         
         if(!atRoot) getEngine().addEntity(e);
         return e;

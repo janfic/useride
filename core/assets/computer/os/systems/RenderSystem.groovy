@@ -100,7 +100,6 @@ public class RenderSystem extends SortedIteratingSystem {
     }
 	
     public void update(float delta) {
-        
         if(renderEntities.size() == 0) return;
         if(cameraEntity.size() > 0) camera = cameraMapper.get(cameraEntity.first());
         forceSort();
@@ -150,19 +149,25 @@ public class RenderSystem extends SortedIteratingSystem {
 	
         if(borderComponent != null && hitBoxComponent != null) {
             batch.end();
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(borderComponent.color);
             borders(position.x + hitBoxComponent.rectangle.getX(), position.y + hitBoxComponent.rectangle.getY(), hitBoxComponent.rectangle.getWidth(), hitBoxComponent.rectangle.getHeight(), borderComponent.radius, borderComponent.thickness);
             shapeRenderer.end();
+            Gdx.gl.glDisable(GL20.GL_BLEND);
             batch.begin();
         }
         
         if(bgColorComponent != null && hitBoxComponent != null) {
             batch.end();
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(bgColorComponent.color);
-            roundedRect(position.x + hitBoxComponent.rectangle.getX(), position.y + hitBoxComponent.rectangle.getY(), hitBoxComponent.rectangle.getWidth(), hitBoxComponent.rectangle.getHeight(), borderComponent.radius);
+            roundedRect(position.x + hitBoxComponent.rectangle.getX(), position.y + hitBoxComponent.rectangle.getY(), hitBoxComponent.rectangle.getWidth(), hitBoxComponent.rectangle.getHeight(), borderComponent != null ? borderComponent.radius : 0);
             shapeRenderer.end();
+            Gdx.gl.glDisable(GL20.GL_BLEND);
             batch.begin();
         }
         if(frameBufferComponent != null) {
@@ -203,7 +208,6 @@ public class RenderSystem extends SortedIteratingSystem {
             fontComponent.font.draw( batch, textComponent.text, position.x , (float) (position.y  + layout.height), width, Align.left, true);
             else
             fontComponent.font.draw( batch, textComponent.text, position.x, (float) (position.y + layout.height));
-            batch.flush();
             if(color != null) fontComponent.font.setColor(Color.WHITE); 
         }
         
