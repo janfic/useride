@@ -152,26 +152,29 @@ public class TextSelectionSystem extends EntitySystem {
                     int[] n = selectionSections(sections, textSelectComponent.startIndex, textSelectComponent.endIndex, textComponent.text);
                     
                     if(n != null) {
-                        int rn = n[0];
-                        for(int s = 0; s <= n[0]; s++) {
-                            if(sections[s].trim().equals("")) {
-                                rn--;
+                        
+                        for(int i = 0; i < n.length; i+= 3) {
+                            int rn = n[i];
+                            for(int s = 0; s <= n[i]; s++) {
+                                if(sections[s].trim().equals("")) {
+                                    rn--;
+                                }
                             }
+                            if(sections[n[0]].trim().equals("")) {sectionIndex = 0;}
+                        
+                            int[] srp = getRelativePosition(fontComponent.font.getLineHeight(), layout, sizeComponent.height, n[i], n[i + 1], rn);
+                            int[] erp = getRelativePosition(fontComponent.font.getLineHeight(), layout, sizeComponent.height, n[i], n[i + 2], rn);
+                        
+                            Entity selectEntity = new Entity();
+                            selectEntity.add(new PositionComponent());
+                            selectEntity.add(new SizeComponent());
+                            selectEntity.add(new ParentComponent(parent: parentComponent.parent));
+                            selectEntity.add(new HitBoxComponent(rectangle: new Rectangle(1,1, erp[0] - srp[0], fontComponent.font.getLineHeight())));
+                            selectEntity.add(new RelativePositionComponent(x: srp[0], y: srp[1], unit: "ppp"));
+                            selectEntity.add(new BackgroundColorComponent(color: Color.valueOf("0000ff44")));
+                            selectEntity.add(new TextHighlightComponent());
+                            getEngine().addEntity(selectEntity);
                         }
-                        if(sections[n[0]].trim().equals("")) {sectionIndex = 0;}
-                        
-                        int[] srp = getRelativePosition(fontComponent.font.getLineHeight(), layout, sizeComponent.height, n[0], n[1], rn);
-                        int[] erp = getRelativePosition(fontComponent.font.getLineHeight(), layout, sizeComponent.height, n[0], n[2], rn);
-                        
-                        Entity selectEntity = new Entity();
-                        selectEntity.add(new PositionComponent());
-                        selectEntity.add(new SizeComponent());
-                        selectEntity.add(new ParentComponent(parent: parentComponent.parent));
-                        selectEntity.add(new HitBoxComponent(rectangle: new Rectangle(1,1, erp[0] - srp[0], fontComponent.font.getLineHeight())));
-                        selectEntity.add(new RelativePositionComponent(x: srp[0], y: srp[1], unit: "ppp"));
-                        selectEntity.add(new BackgroundColorComponent(color: Color.valueOf("0000ff44")));
-                        selectEntity.add(new TextHighlightComponent());
-                        getEngine().addEntity(selectEntity);
                     }
                 }
             }
@@ -275,8 +278,12 @@ public class TextSelectionSystem extends EntitySystem {
      * Format: int[] {sectionNumber, startIndexOfSection, endIndexOfSection, ...  }
      **/
     private int[] selectionSections(String[] sections, int startIndex, int endIndex, String text) {
+       
+        
         int[] startInfo = getLineAndIndex(startIndex, sections, text);
         int[] endInfo = getLineAndIndex(endIndex, sections, text);
+        
+        
         
         int startSection = startInfo[1];
         int endSection = endInfo[1];
@@ -284,7 +291,25 @@ public class TextSelectionSystem extends EntitySystem {
             return [startSection, startInfo[0], endInfo[0]];
         }
         else {
-            return null;
+            List<Integer> r = new ArrayList<>();
+            
+            r.add(startSection);
+            r.add(startInfo[0]);
+            r.add(sections[startSection].length());
+            for(int i = startSection + 1; i <= endSection; i++) {
+                if( i == endSection) {
+                    r.add(i);
+                    r.add(0);
+                    r.add(endInfo[0]);
+                }
+                else {
+                    r.add(i);
+                    r.add(0);
+                    r.add(sections[i].length());
+                }
+            }
+            System.out.println(r);
+            return r.toArray();
         }
     }
     
