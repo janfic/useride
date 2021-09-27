@@ -39,6 +39,7 @@ public class ProgramShortcutSystem extends EntitySystem {
         for(FileHandle file : programsDir.list()) {
             if(file.isDirectory() && file.child("components").exists() && file.child("systems").exists() && file.child("assets/icon.png").exists()) {
                 this.programs.add(file);
+                System.out.println(file);
             }
         }
         
