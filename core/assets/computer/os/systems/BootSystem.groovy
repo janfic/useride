@@ -135,6 +135,8 @@ public class BootSystem extends EntitySystem {
         //engine.addEntity(pizza);
 
         engine.addSystem(new RenderSystem());
+        engine.addSystem(new TextDragSystem());
+        engine.addSystem(new MoveOnDragSystem());
         engine.addSystem(new DragSystem());
         engine.addSystem(new HitBoxSizeSystem());
         engine.addSystem(new HeightBetweenSystem());

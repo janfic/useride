@@ -73,6 +73,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 leftResize.add(new HitBoxComponent(rectangle: new Rectangle(0,0, 10, Integer.parseInt(propertiesComponent.properties.getProperty("height")))));
                 leftResize.add(new ClickableComponent());
                 leftResize.add(new DragableComponent(verticle: false));
+                leftResize.add(new MoveOnDragComponent());
                 leftResize.add(new SizeComponent(width: 10, height: Integer.parseInt(propertiesComponent.properties.getProperty("height"))));
                 leftResize.add(new RelativePositionComponent(x: 0, y: 0, unit: "%p", parent: bottomResize));
                 leftResize.add(new ParentComponent(parent: program));
@@ -82,6 +83,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 rightResize.add(new HitBoxComponent(rectangle: new Rectangle(0,0, 10, Integer.parseInt(propertiesComponent.properties.getProperty("height")))));
                 rightResize.add(new ClickableComponent());
                 rightResize.add(new DragableComponent(verticle: false));
+                rightResize.add(new MoveOnDragComponent());
                 rightResize.add(new SizeComponent(width: 10, height: Integer.parseInt(propertiesComponent.properties.getProperty("height"))));
                 rightResize.add(new RelativePositionComponent(x: 100, y: 0, unit: "%p", parent: program));
                 rightResize.add(new ParentComponent(parent: program));
@@ -90,6 +92,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 topResize.add(new PositionComponent(x: centerWidth, y: centerHeight + Integer.parseInt(propertiesComponent.properties.getProperty("height"))));
                 topResize.add(new HitBoxComponent(rectangle: new Rectangle(0,0, Integer.parseInt(propertiesComponent.properties.getProperty("width")), 10)));
                 topResize.add(new ClickableComponent());
+                topResize.add(new MoveOnDragComponent());
                 topResize.add(new DragableComponent(horizontal: false));
                 topResize.add(new SizeComponent(width: Integer.parseInt(propertiesComponent.properties.getProperty("width")), height: 35));
                 topResize.add(new RelativePositionComponent(x: 0, y: 100, unit: "p%", parent: program));
@@ -99,6 +102,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 bottomResize.add(new PositionComponent(x: centerWidth, y: centerHeight));
                 bottomResize.add(new HitBoxComponent(rectangle: new Rectangle(0,0, Integer.parseInt(propertiesComponent.properties.getProperty("width")), 10)));
                 bottomResize.add(new ClickableComponent());
+                bottomResize.add(new MoveOnDragComponent());
                 bottomResize.add(new DragableComponent(horizontal: false));
                 bottomResize.add(new SizeComponent(width: Integer.parseInt(propertiesComponent.properties.getProperty("width")), height: 10));
                 bottomResize.add(new RelativePositionComponent(x: 0, y: 0));
@@ -130,6 +134,7 @@ public class ProgramStartOnMouseClickSystem extends EntitySystem {
                 topbar.add(new RelativeSizeComponent(width: 100, unit: "% "));
                 topbar.add(new RelativePositionComponent(x: 0, y: 100, unit: "p% ", parent: leftResize));
                 topbar.add(new DragableComponent());
+                topbar.add(new MoveOnDragComponent());
                 topbar.add(new ClickableComponent());
                 topbar.add(new ParentComponent(parent: program))
                 topbar.add(new HitBoxComponent(rectangle: new Rectangle(0, 0, Integer.parseInt(propertiesComponent.properties.getProperty("width")), 35)));
