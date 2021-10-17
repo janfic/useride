@@ -75,10 +75,10 @@ public class TextDragSystem extends EntitySystem {
             SizeComponent sizeComponent = sizeMapper.get(entity);
             TextSelectionComponent selectComponent = selectMapper.get(entity);
             
+            
             layout.setText(fontComponent.font, textComponent.text, Color.BLACK, sizeComponent.width, alignmentComponent.alignment, true);
             
             String[] sections = buildSections(textComponent.text, layout);
-            
             
             int index = 0;
             int run = 0;
@@ -91,6 +91,14 @@ public class TextDragSystem extends EntitySystem {
                         && draggingComponent.startY > (sizeComponent.height + positionComponent.y) - (i + 1) * fontComponent.font.getLineHeight()
                         && draggingComponent.startY < (sizeComponent.height + positionComponent.y) - (i) * fontComponent.font.getLineHeight()) {
                         selectComponent.textCursorIndex = index;
+                        selectComponent.startIndex = index;
+                    }
+                    if(
+                        draggingComponent.previousX > positionComponent.x + xStart 
+                        && draggingComponent.previousX < positionComponent.x + xStart + fontComponent.font.getData().spaceXadvance
+                        && draggingComponent.previousY > (sizeComponent.height + positionComponent.y) - (i + 1) * fontComponent.font.getLineHeight()
+                        && draggingComponent.previousY < (sizeComponent.height + positionComponent.y) - (i) * fontComponent.font.getLineHeight()) {
+                        selectComponent.endIndex = index + 1;
                     }
                     index += sections[i].length();
                     run -= 1;
@@ -103,6 +111,14 @@ public class TextDragSystem extends EntitySystem {
                             && draggingComponent.startY > (sizeComponent.height + positionComponent.y) - (i + 1) * fontComponent.font.getLineHeight()
                             && draggingComponent.startY < (sizeComponent.height + positionComponent.y) - (i) * fontComponent.font.getLineHeight()) {
                             selectComponent.textCursorIndex = index;
+                            selectComponent.startIndex = index;
+                        }
+                        if(
+                            draggingComponent.previousX > positionComponent.x + xStart 
+                            && draggingComponent.previousX < positionComponent.x + xStart + fontComponent.font.getData().spaceXadvance
+                            && draggingComponent.previousY > (sizeComponent.height + positionComponent.y) - (i + 1) * fontComponent.font.getLineHeight()
+                            && draggingComponent.previousY < (sizeComponent.height + positionComponent.y) - (i) * fontComponent.font.getLineHeight()) {
+                            selectComponent.endIndex = index;
                         }
                         index += 1;
                         xStart += layout.runs.get(run).xAdvances.get(j + 1);

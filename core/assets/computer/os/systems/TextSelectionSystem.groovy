@@ -111,6 +111,11 @@ public class TextSelectionSystem extends EntitySystem {
             AlignmentComponent alignmentComponent = alignMapper.get(parentComponent.parent);
             SizeComponent sizeComponent = sizeMapper.get(parentComponent.parent);
 
+            if(parentSelection.startIndex > parentSelection.endIndex) {
+                int temp = parentSelection.startIndex;
+                parentSelection.startIndex = parentSelection.endIndex;
+                parentSelection.endIndex = temp;
+            }
             
             // Adjust index based on parent cursor index
             textSelectComponent.textCursorIndex = parentSelection.textCursorIndex;

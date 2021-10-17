@@ -57,8 +57,9 @@ public class TextInputSystem extends EntitySystem {
                 if(selectComponent.startIndex == -1) {
                     textComponent.text = textComponent.text.substring(0, selectComponent.textCursorIndex) + input + textComponent.text.substring(selectComponent.textCursorIndex);
                 }
-                else {
+                else if(selectComponent.startIndex >= 0 && selectComponent.endIndex < textComponent.text.length()){
                     textComponent.text = textComponent.text.substring(0, selectComponent.startIndex) + input + textComponent.text.substring(selectComponent.endIndex);
+                    selectComponent.textCursorIndex = selectComponent.startIndex;
                 }
                 selectComponent.textCursorIndex = selectComponent.textCursorIndex + 1 ;
                 selectComponent.startIndex = -1;
