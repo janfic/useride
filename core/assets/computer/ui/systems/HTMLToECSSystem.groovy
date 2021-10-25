@@ -116,6 +116,12 @@ public class HTMLToECSSystem extends EntitySystem {
             getEngine().addEntity(ecursor)
         }
         
+        if(attributesComponent.attributes.hasKey("ecs")) {
+            String ecs = attributesComponent.attributes.get("ecs");
+            ECSAttributeComponent ecsComponent = new ECSAttributeComponent(ecs: ecs);
+            e.add(ecsComponent);
+        }
+        
         e.add(tagComponent);
         e.add(classComponent);
         e.add(idComponent);

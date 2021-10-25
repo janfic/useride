@@ -56,6 +56,7 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new HTMLToECSSystem());
         engine.addSystem(new CSSToECSSystem());
         engine.addSystem(new CSSPositioningSystem());
+        engine.addSystem(new ECSAttributeSystem());
 
         engine.addSystem(new RenderSystem());
         engine.addSystem(new AssetGetSystem());
