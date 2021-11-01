@@ -96,9 +96,9 @@ public class HTMLToECSSystem extends EntitySystem {
         
         if(tagComponent.tag.equalsIgnoreCase("textarea")) {
             e.add(new KeyInputComponent());
-            e.add(new ClickableComponent());
             e.add(new FocusableComponent());
             e.add(new DragableComponent());
+            e.add(new TextDragComponent());
             e.add(new TextDragComponent());
             e.add(new FocusOnMouseClickComponent());
             e.add(new ChangeBackgroundColorOnFocusedComponent(focused: Color.WHITE, unfocused: Color.LIGHT_GRAY));
@@ -132,6 +132,8 @@ public class HTMLToECSSystem extends EntitySystem {
         e.add(hitBoxComponent);
         e.add(borderComponent);
         e.add(displayComponent);
+        e.add(new HoverableComponent());
+        e.add(new ClickableComponent());
         if(atRoot) e.add(new SiblingsComponent());
         if(!atRoot) e.add(positionComponent);
         if(!atRoot) {e.add(sizeComponent);}

@@ -6,6 +6,8 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.*;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import com.janfic.useride.kernel.components.ClassLoaderComponent;
 
 public class ECSAttributeSystem extends EntitySystem {
@@ -36,13 +38,31 @@ public class ECSAttributeSystem extends EntitySystem {
     public void update(float delta) {
         if(loader.size() < 1) return;
         ClassLoaderComponent classLoaderComponent = classLoaderMapper.get(loader.first());
-        System.out.println(classLoaderComponent.classLoader.getLoadedClasses());
-        GroovyShell shell = new GroovyShell(classLoaderComponent.classLoader);
+        CompilerConfiguration compilerConfiguration = new CompilerConfiguration();
+        ImportCustomizer importCustomizer = new ImportCustomizer();
+        importCustomizer.addStarImports("com.badlogic.ashley.core", "com.badlogic.ashley.utils", "com.badlogic.gdx", "com.badlogic.gdx.graphics", "com.badlogic.gdx.graphics.g2d");
+        GroovyClassLoader loader = classLoaderComponent.classLoader;
+        while(loader != null && loader instanceof GroovyClassLoader) {
+            for(Class c : loader.getLoadedClasses()) {
+                importCustomizer.addImports(c.getName());
+            }
+            if(loader.getParent() instanceof GroovyClassLoader) {
+                loader = loader.getParent();
+            }
+            else {
+                break;
+            }
+        }
+        compilerConfiguration.addCompilationCustomizers(importCustomizer);
+        GroovyShell shell = new GroovyShell(classLoaderComponent.classLoader, compilerConfiguration);
         for( Entity entity : entities) {
             ECSAttributeComponent ecsAttribute = ecsMapper.get(entity);
             Object o = shell.evaluate(ecsAttribute.ecs);
             entity.remove(ECSAttributeComponent.class);
-            System.out.println(o);
+            List<? extends Component> components = (List<? extends Component>) o;
+            for( Component c : components) { 
+                entity.add(c);
+            }
         }
     }
 }
