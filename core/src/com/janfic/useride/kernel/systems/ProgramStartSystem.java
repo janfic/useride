@@ -3,12 +3,9 @@ package com.janfic.useride.kernel.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.janfic.useride.kernel.components.*;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
-import java.util.Arrays;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
 
