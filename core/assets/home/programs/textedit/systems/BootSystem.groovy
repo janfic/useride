@@ -53,6 +53,7 @@ public class BootSystem extends EntitySystem {
         
         engine.addEntity(e);
         
+        
         engine.addSystem(new HTMLToECSSystem());
         engine.addSystem(new CSSToECSSystem());
         engine.addSystem(new CSSPositioningSystem());
@@ -78,6 +79,9 @@ public class BootSystem extends EntitySystem {
         engine.addSystem(new TextDragSystem());
         engine.addSystem(new DragSystem());
 
+        engine.addSystem(new SaveFileInTextEditorOnMouseClickSystem());
+        engine.addSystem(new LoadFileInTextEditorOnMouseClickSystem());
+        
         super.addedToEngine(engine);
         
         engine.removeSystem(this);

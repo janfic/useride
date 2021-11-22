@@ -5,9 +5,9 @@
     </head>
     <body>
         <div class="file">FILE:</div>
-        <textarea class="path">home/documents</textarea>
-        <button>SAVE</button>
-        <button>LOAD</button>
-        <textarea class="editor">Text!</textarea>
+        <textarea class="path" ecs="[new PathComponent()]">home/documents/newfile.txt</textarea>
+        <button ecs="[new SaveFileOnMouseClickComponent()]">SAVE</button>
+        <button ecs="[new LoadFileOnMouseClickComponent()]">LOAD</button>
+        <textarea class="editor" ecs="[new TextEditComponent()]">Text!</textarea>
     </body>
 </html>
