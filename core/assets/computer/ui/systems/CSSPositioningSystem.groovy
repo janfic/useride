@@ -42,6 +42,7 @@ public class CSSPositioningSystem extends EntitySystem {
     private final ComponentMapper<BitmapFontComponent> fontMapper;
     private final ComponentMapper<TextComponent> textMapper;
     private final ComponentMapper<BorderComponent> borderMapper;
+    private final ComponentMapper<DisplayComponent> displayMapper;
     
     private ImmutableArray<Entity> entities, htmlElements;
     
@@ -66,6 +67,7 @@ public class CSSPositioningSystem extends EntitySystem {
         this.fontMapper = ComponentMapper.getFor(BitmapFontComponent.class);
         this.textMapper = ComponentMapper.getFor(TextComponent.class);
         this.borderMapper = ComponentMapper.getFor(BorderComponent.class);
+        this.displayMapper = ComponentMapper.getFor(DisplayComponent.class);
         layout = new GlyphLayout();
     }
     
@@ -112,6 +114,8 @@ public class CSSPositioningSystem extends EntitySystem {
         MarginComponent marginComponent = marginMapper.get(entity);
         TagComponent tagComponent = tagMapper.get(entity);
         BorderComponent borderComponent = borderMapper.get(entity);
+        DisplayComponent displayComponent = displayMapper.get(entity);
+        
         
         //Determine Size
         Entity parent = parentComponent.parent;
@@ -227,12 +231,20 @@ public class CSSPositioningSystem extends EntitySystem {
             if(sib == entity) break;
             HitBoxComponent sibBox = hitBoxMapper.get(sib);
             SizeComponent sibSize = sizeMapper.get(sib);
-            y -= sibBox.rectangle.getHeight();
             MarginComponent sibMargin = marginMapper.get(sib);
-            if(sibMargin.types[0].equals("%"))        y -= sibMargin.margin[0] * sibSize.width;
-            else if(sibMargin.types[0].equals("px"))  y -= sibMargin.margin[0];
-            if(sibMargin.types[2].equals("%"))        y -= sibMargin.margin[2] * sibSize.width;
-            else if(sibMargin.types[2].equals("px"))  y -= sibMargin.margin[2];
+            DisplayComponent sibDisplay = displayMapper.get(sib);
+            if(!displayComponent.display.equals("inline")) {
+                if(!sibDisplay.display.equals("inline")) {
+                    y -= sibBox.rectangle.getHeight();
+                    if(sibMargin.types[0].equals("%"))        y -= sibMargin.margin[0] * sibSize.width;
+                    else if(sibMargin.types[0].equals("px"))  y -= sibMargin.margin[0];
+                    if(sibMargin.types[2].equals("%"))        y -= sibMargin.margin[2] * sibSize.width;
+                    else if(sibMargin.types[2].equals("px"))  y -= sibMargin.margin[2];
+                }
+            }
+            else {
+                x += sibBox.rectangle.getWidth();
+            }
         }
         
         if(marginComponent.types[0].equals("%"))        y -= marginComponent.margin[0] * sizeComponent.width;

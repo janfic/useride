@@ -279,6 +279,11 @@ public class CSSToECSSystem extends EntitySystem {
                     border.thicknessType = "px";
                 }
                 break;
+            case "display":
+                DisplayComponent display = entity.getComponent(DisplayComponent.class);
+                display.display = values[0];
+                System.out.println(display.display)
+                break;
             }
         }
     }

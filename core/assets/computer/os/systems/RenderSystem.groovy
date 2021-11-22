@@ -204,10 +204,17 @@ public class RenderSystem extends SortedIteratingSystem {
             if(color != null) fontComponent.font.setColor(color.color);
             if(scale != null) fontComponent.font.getData().setScale(scale.scaleX,scale.scaleY); else fontComponent.font.getData().setScale(1 , 1);
             layout.setText(fontComponent.font, textComponent.text, Color.BLACK, width, Align.left, true);
-            if(size != null)
-            fontComponent.font.draw( batch, textComponent.text, position.x , (float) (position.y  + layout.height), width, Align.left, true);
-            else
-            fontComponent.font.draw( batch, textComponent.text, position.x, (float) (position.y + layout.height));
+            if(size != null) {
+                if(entity.getComponent(TagComponent.class) == null) {
+                    fontComponent.font.draw( batch, textComponent.text, position.x , (float) (position.y  + layout.height), width, Align.left, true);
+                }
+                else {
+                    fontComponent.font.draw( batch, textComponent.text, position.x , (float) (position.y  + height), width, Align.left, true);
+                }
+            }
+            else {
+                fontComponent.font.draw( batch, textComponent.text, position.x, (float) (position.y + layout.height));
+            }
             if(color != null) fontComponent.font.setColor(Color.WHITE); 
         }
         

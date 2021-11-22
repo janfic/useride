@@ -1,0 +1,48 @@
+textarea {
+    border-width: 1px;
+    border-color: black;
+}
+
+.file {
+    border-width: 1px;
+    border-color: black;
+    border-radius: 1px; 
+    padding: 5px;
+    width: 10%;
+}
+
+.path {
+    width: 61%;
+    padding: 5px;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 1px; 
+    display: inline;
+}
+
+button {
+    border-width: 1px;
+    border-color: black;
+    border-radius: 1px; 
+    padding: 5px;
+    background-color: light_gray;
+    display: inline;
+    width: 10%;
+}
+
+.editor {
+    border-width: 1px;
+    border-color: black;
+    border-radius: 1px; 
+    padding: 5px;
+    width: 100%;
+    height: 90%;
+    margin: 5px 0px 0px 0px;
+}
+
+body {
+    background-color: white;
+    padding: 5px 0px 0px 2px;
+}
+
+
